@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - E-Learning</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .error-message {
+            color: #ef233c;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">E-Learning</a>
+                <div class="nav-links">
+                    <a href="index.html">Back to Home</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <h1 class="auth-title">Login to Your Account</h1>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                    <div id="emailError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <div id="passwordError" class="error-message"></div>
+                </div>
+                <div class="form-actions">
+                    <a href="register.html">Create account</a>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            
+            // Hide previous errors
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+            
+            // Get user database from localStorage
+            const userDatabase = JSON.parse(localStorage.getItem('userDatabase')) || [];
+            
+            // Find user
+            const user = userDatabase.find(u => u.email === email);
+            
+            if (!user) {
+                emailError.textContent = 'Email not registered';
+                emailError.style.display = 'block';
+                return;
+            }
+            
+            if (user.password !== password) {
+                passwordError.textContent = 'Incorrect password';
+                passwordError.style.display = 'block';
+                return;
+            }
+            
+            // Successful login - save to session
+            sessionStorage.setItem('currentUser', JSON.stringify(user));
+            
+            // Redirect based on role
+            switch(user.role) {
+                case 'student':
+                    window.location.href = 'student/dashboard.html';
+                    break;
+                case 'tutor':
+                    window.location.href = 'tutor/dashboard.html';
+                    break;
+                case 'admin':
+                    window.location.href = 'admin/dashboard.html';
+                    break;
+                default:
+                    alert('Invalid user role');
+            }
+        });
+    </script> -->
+</body>
+</html>
