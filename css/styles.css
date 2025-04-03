@@ -20,12 +20,27 @@
     --card-red: #ffebee;
     --card-teal: #e0f7fa;
 
+    --gradient-purple: linear-gradient(135deg, #8a2be2 0%, #4361ee 100%);
+    --gradient-blue: linear-gradient(135deg, #4361ee 0%, #4cc9f0 100%);
+    --gradient-orange: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+
+    /* Card colors */
+    --card-blue: #e3f2fd;
+    --card-orange: #fff3e0;
+    --card-purple: #f3e5f5;
+    --card-teal: #e0f7fa;
+
     /* Spacing */
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
     --space-lg: 1.5rem;
     --space-xl: 2rem;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
 }
 
 * {
@@ -38,13 +53,11 @@
 body {
     background-color: var(--light);
     color: var(--dark);
-    line-height: 1.6;
 }
 
 header {
     background-color: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 1rem 2rem;
 }
 
 .header-container {
@@ -58,7 +71,7 @@ header {
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--primary-light);
 }
 
 .navbar {
@@ -283,68 +296,6 @@ footer {
     padding-top: 1rem; 
     padding-bottom: 1rem;
     border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-/* login */
-.auth-container {
-    max-width: 500px;
-    margin: var(--space-xl) auto;
-    padding: var(--space-xl);
-    background-color: var(--card-teal);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
-}
-
-.auth-title {
-    text-align: center;
-    margin-bottom: var(--space-xl);
-}
-
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-}
-
-.form-group label {
-    font-weight: 500;
-}
-
-.form-group input, 
-.form-group select, 
-.form-group textarea {
-    padding: var(--space-sm);
-    border: var(--border);
-    border-radius: var(--border-radius);
-}
-
-.form-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: var(--space-md);
-}
-
-.form-actions a{
-    text-decoration: none;
-    color: var(--primary-dark);
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: white;
-    padding : 0 10px 2px 10px;
-    border-radius: 5px;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-dark);
 }
 
 .badge {
