@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Design Thinking</title>
+    <link rel="stylesheet" href="../css/detail_course.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">Digital Design Thinking</header>
+    <div class="container">
+        <div class="card" data-lesson="1"><div><h2>1. Pengantar Web Development</h2><p>Memahami dasar-dasar pengembangan web.</p></div></div>
+        <div class="card" data-lesson="2"><div><h2>2. HTML Dasar</h2><p>Struktur dasar HTML dan elemen penting.</p></div></div>
+        <div class="card" data-lesson="3"><div><h2>3. CSS untuk Styling</h2><p>Menggunakan CSS untuk desain web.</p></div></div>
+        <div class="card" data-lesson="4"><div><h2>4. JavaScript Dasar</h2><p>Dasar-dasar interaktivitas dengan JavaScript.</p></div></div>
+        <div class="card" data-lesson="5"><div><h2>5. Framework CSS</h2><p>Bootstrap dan Tailwind CSS.</p></div></div>
+        <div class="card" data-lesson="6"><div><h2>6. Responsive Design</h2><p>Menyesuaikan tampilan web untuk perangkat berbeda.</p></div></div>
+        <div class="card" data-lesson="7"><div><h2>7. Git dan Version Control</h2><p>Mengelola proyek dengan Git.</p></div></div>
+        <div class="card" data-lesson="8"><div><h2>8. Frontend Frameworks</h2><p>Pengenalan React, Vue, dan Angular.</p></div></div>
+        <div class="card" data-lesson="9"><div><h2>9. Backend Development</h2><p>Konsep dasar backend menggunakan Node.js atau PHP.</p></div></div>
+        <div class="card" data-lesson="10"><div><h2>10. RESTful API</h2><p>Menggunakan dan membuat API untuk aplikasi web.</p></div></div>
+    </div>
+    <a href="course.html" class="back-button">Kembali</a>
+    
+    <div class="modal" id="enrollModal">
+        <div class="modal-content">
+            <h3>Anda harus mendaftar dulu</h3>
+            <p>Untuk mengakses materi ini, silakan daftar terlebih dahulu.</p>
+            <button onclick="window.location.href='course.html'">Daftar Sekarang</button>
+            <button onclick="document.getElementById('enrollModal').style.display = 'none'">Nanti Saja</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const lessonNumber = parseInt(this.getAttribute('data-lesson'));
+                    
+                    // cek lessonNumber >= 3
+                    if (lessonNumber >= 3) {
+                        // cek udah daftar belum
+                        const isEnroll = checkUserEnroll();
+                        
+                        if (!isEnroll) {
+                            //kalo belum daftar
+                            document.getElementById('enrollModal').style.display = 'flex';
+                            return;
+                        }
+                    }
+                    
+                    // kalau sudah terdaftar atau lesson < 3, langsung masuk ke page yang di klik
+                    window.location.href = `lesson-${lessonNumber}.html`;
+                });
+            });
+            
+            // cek status daftar user
+            function checkUserEnroll() {
+                // Cek di localStorage/sessionStorage
+                // Ini contoh, tinggal di sesuaikan
+                const user = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+                
+                // kalau user ada di storage, return true
+                return user !== null;
+            }
+        });
+    </script>
+</body>
+</html>
