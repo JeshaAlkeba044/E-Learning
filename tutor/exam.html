@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tutor - Exam Management</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/exam.css">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+        <div class="logo">E-Learning</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h2>List of Exams</h2>
+      <table class="exam-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>File</th>
+            <th>Due Date</th>
+          </tr>
+        </thead>
+        <tbody id="exam-list">
+          <tr>
+            <td>Praktikum working with file</td>
+            <td>Jawaban di zip NIM_NAMA_Working_with_File</td>
+            <td> </td>
+            <td>2025-05-15</td>
+          </tr>
+          <tr>
+            <td>Praktikum Responsive</td>
+            <td>NIM_NAMA_Responsive</td>
+            <td> </td>
+            <td>2025-06-20</td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <div class="form-section">
+        <h2>Add New Exam</h2>
+        <form id="exam-form">
+          <div class="form-group">
+            <label for="title">Exam Title</label>
+            <input type="text" id="title" required />
+          
+            <label for="description">Description</label>
+            <textarea id="description" rows="3" required></textarea>
+
+            <label for="file">File</label>
+            <input type="file" id="myfile" name="myfile">
+         
+            <label for="date">Due Date</label>
+            <input type="datetime-local" id="date" required />
+          </div>
+          <button type="submit">Add Exam</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>E-Learning</h3>
+                <p>Your gateway to professional development and lifelong learning.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#courses">Courses</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect</h3>
+                <div class="social-links">
+                    <a href="#">@Facebook<i class="fab fa-facebook-f"></i></a>
+                    <a href="#">@twiter<i class="fab fa-twitter"></i></a>
+                    <a href="#">@instagram<i class="fab fa-instagram"></i></a>
+                    <a href="#">@linkedin<i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 E-Learning.</p>
+        </div>
+    </div>
+</footer>
+
+  <script>
+    const form = document.getElementById('exam-form');
+    const examList = document.getElementById('exam-list');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const date = document.getElementById('date').value;
+
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${title}</td>
+        <td>${description}</td>
+        <td>${date}</td>
+      `;
+      examList.appendChild(newRow);
+
+      form.reset();
+    });
+  </script>
+</body>
+</html>
