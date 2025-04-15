@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Learning Platform</title>
+    <link rel="stylesheet" href="../css/course.css">
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -15,7 +16,7 @@
 
     <main>
         <section class="hero">
-            <h1>Belajar Tanpa Batas</h1>
+            <h1>mari belajar di E-Learning</h1>
             <p>Silahkan daftar untuk memperluas jangkauan anda</p>
             <button class="btn btn-primary" id="show-registration">Daftar Sekarang</button>
         </section>
@@ -31,7 +32,7 @@
                         <h3 class="course-title">Digital Design Thinking</h3>
                         <p class="course-description">Pelajari pendekatan inovatif untuk memecahkan masalah kompleks dengan metodologi design thinking.</p>
                         <div class="course-meta">
-                            <span>📂 17 Materi</span>
+                            <span>📂 10 Materi</span>
                             <span>⏳ 40 Menit</span>
                         </div>
                         <div class="course-price">Rp 299.000/bulan</div>
@@ -46,7 +47,7 @@
                         <h3 class="course-title">Web Development</h3>
                         <p class="course-description">Kuasai dasar-dasar pengembangan web modern termasuk HTML, CSS, JavaScript dan framework populer.</p>
                         <div class="course-meta">
-                            <span>📂 20 Materi</span>
+                            <span>📂 10 Materi</span>
                             <span>⏳ 2 Jam</span>
                         </div>
                         <div class="course-price">Rp 399.000/bulan</div>
@@ -62,11 +63,11 @@
                         <h3 class="course-title">Creative Art Design</h3>
                         <p class="course-description">Eksplorasi kreativitas Anda melalui berbagai teknik seni digital dan tradisional.</p>
                         <div class="course-meta">
-                            <span>📂 15 Materi</span>
+                            <span>📂 10 Materi</span>
                             <span>⏳ 30 Menit</span>
                         </div>
                         <div class="course-price">Rp 249.000/bulan</div>
-                        <button class="btn btn-outline view-details" data-course="art-design"><a href="detail_art-design.html">Lihat Detail</a></button>
+                        <button class="btn btn-outline view-details" data-course="detail_art-design.html"><a href="detail_art-design.html">Lihat Detail</a></button>
                     </div>
                 </div>
             </div>
@@ -82,12 +83,12 @@
                 
                 <form id="enrollForm">
                     <div class="form-group">
-                        <label for="fullname">Nama Lengkap</label>
+                        <label for="fullname">Nama Lengkap :</label>
                         <input type="text" id="fullname" placeholder="Enter your name" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">Email :</label>
                         <input type="email" id="email" placeholder="Enter your email" required>
                     </div>
                     
@@ -141,7 +142,7 @@
                         <label for="agreeTerms">Saya menyetujui syarat dan ketentuan yang berlaku</label>
                     </div>
                     
-                    <button type="submit" class="btn-primary">Konfirmasi & Bayar</button>
+                    <button type="submit" class="btn-form">Konfirmasi & Bayar</button>
                 </form>
             </div>
         </div>
@@ -181,7 +182,7 @@
     </main>
 
     <script>
-        // Simulated database
+        // simulasi database
         let registeredUsers = [];
         let enrolledCourses = [];
         
@@ -193,24 +194,24 @@
         const courseCheckboxes = document.querySelectorAll('.course-checkbox');
         const totalPriceElement = document.getElementById('totalPrice');
         
-        // Show modal when button clicked
+        // munculin form pendaftaran
         showRegistrationBtn.addEventListener('click', function() {
             EnrollModal.style.display = 'flex';
         });
         
-        // Close modal
+        // tutup form
         closeModalBtn.addEventListener('click', function() {
             EnrollModal.style.display = 'none';
         });
         
-        // Close modal when clicking outside
+        // Close form kalau click outside
         window.addEventListener('click', function(e) {
             if (e.target === EnrollModal) {
                 EnrollModal.style.display = 'none';
             }
         });
         
-        // Calculate total price when course selection changes
+        // menghitung jumlah yg harus di bayar pas checkbox di klik
         courseCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', calculateTotal);
         });
@@ -223,7 +224,6 @@
                 }
             });
             
-            // Format to Indonesian Rupiah
             totalPriceElement.textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
         }
         
@@ -254,7 +254,7 @@
             // Calculate total
             const total = selectedCourses.reduce((sum, course) => sum + course.price, 0);
             
-            // Save to database (simulated)
+            //(contoh) penyimpatan ke database
             const newUser = {
                 id: Date.now(),
                 name: fullname,
@@ -269,15 +269,15 @@
             registeredUsers.push(newUser);
             enrolledCourses = [...selectedCourses];
             
-            // In a real app, you would send this data to your backend
-            console.log('New registration:', newUser);
+            // In a real app, you would send this data to your backend //kata gpt:)
+            console.log('New registration:', newUser); 
             
-            // Show success message
-            alert(`Pendaftaran berhasil! Total pembayaran: Rp ${total.toLocaleString('id-ID')}\nAnda akan diarahkan ke dashboard premium.`);
+            // pesan berhasil
+            alert(`Pendaftaran berhasil! Total pembayaran: Rp ${total.toLocaleString('id-ID')}\nAnda akan diarahkan ke premium.`);
             
-            // Redirect to premium dashboard (simulated)
+            // langsung ke page premium
             sessionStorage.setItem('currentUser', JSON.stringify(newUser));
-            window.location.href = 'student/dashboard.html';
+            window.location.href = '#.html';
         });
     </script>
 </body>

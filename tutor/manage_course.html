@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Learning Platform</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/manage_course.css">
 </head>
 <body>
     <header>
@@ -21,9 +22,10 @@
         </section>
 
         <section class="courses">
-            <h2 class="section-title">Kursus Tersedia</h2>
+            <h2 class="section-title">Kursus yang Anda Kelola</h2>
+            <button class="btn btn-primary add-course-btn">+ Tambah Kursus Baru</button>
+        
             <div class="course-grid">
-                <!-- Course 1 -->
                 <div class="course-card purple">
                     <div class="course-img"><img src="../img/UI UX Design Illustration.jpg"></div>
                     <div class="course-content">
@@ -35,10 +37,15 @@
                             <span>⏳ 40 Menit</span>
                         </div>
                         <div class="course-price">Rp 299.000/bulan</div>
-                        <button class="btn btn-outline view-details" data-course="design-thinking"><a href="detail_desain-thinking.html">Lihat Detail</a></button>
+        
+                        <!-- Tombol untuk tutor -->
+                        <div class="course-actions">
+                            <button class="btn-edit">✏️ Edit</button>
+                            <button class="btn-delete">🗑️ Hapus</button>
+                        </div>
                     </div>
                 </div>
-                
+                <!-- Tambahkan course-card lain seperti biasa -->
                 <!-- Course 2 -->
                 <div class="course-card blue">
                     <div class="course-img"><img src="../img/Free Vector _ Space icons.jpg"></div>
@@ -50,7 +57,11 @@
                             <span>⏳ 2 Jam</span>
                         </div>
                         <div class="course-price">Rp 399.000/bulan</div>
-                        <button class="btn btn-outline view-details" data-course="web-dev"><a href="detail_web-dev.html">Lihat Detail</a></button>
+                        <!-- Tombol untuk tutor -->
+                        <div class="course-actions">
+                            <button class="btn-edit">✏️ Edit</button>
+                            <button class="btn-delete">🗑️ Hapus</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -66,87 +77,18 @@
                             <span>⏳ 30 Menit</span>
                         </div>
                         <div class="course-price">Rp 249.000/bulan</div>
-                        <button class="btn btn-outline view-details" data-course="art-design"><a href="detail_art-design.html">Lihat Detail</a></button>
+                          <!-- Tombol untuk tutor -->
+                        <div class="course-actions">
+                            <button class="btn-edit">✏️ Edit</button>
+                            <button class="btn-delete">🗑️ Hapus</button>
+                        </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div>  
         </section>
-
-        <!-- Enroll Modal -->
-        <div id="EnrollModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Pendaftaran Kursus</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                
-                <form id="enrollForm">
-                    <div class="form-group">
-                        <label for="fullname">Nama Lengkap</label>
-                        <input type="text" id="fullname" placeholder="Enter your name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="Enter your email" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Pilih Kursus:</label>
-                        <div class="course-selection">
-                            <div class="course-item">
-                                <div>
-                                    <input type="checkbox" id="course1" class="course-checkbox" data-price="299000" data-course="design-thinking">
-                                    <label for="course1">Digital Design Thinking - Rp 299.000/bulan</label>
-                                </div>
-                            </div>
-                            
-                            <div class="course-item">
-                                <div>
-                                    <input type="checkbox" id="course2" class="course-checkbox" data-price="399000" data-course="web-dev">
-                                    <label for="course2">Web Development - Rp 399.000/bulan</label>
-                                </div>
-                            </div>
-                            
-                            <div class="course-item">
-                                <div>
-                                    <input type="checkbox" id="course3" class="course-checkbox" data-price="249000" data-course="art-design">
-                                    <label for="course3">Creative Art Design - Rp 249.000/bulan</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="total-price" id="totalPrice">
-                        Total: Rp 0
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Metode Pembayaran:</label>
-                        <div class="payment-methods">
-                            <label class="payment-method">
-                                <input type="radio" name="payment" value="transfer" checked> Transfer Bank
-                            </label>
-                            <label class="payment-method">
-                                <input type="radio" name="payment" value="credit-card"> Kartu Kredit
-                            </label>
-                            <label class="payment-method">
-                                <input type="radio" name="payment" value="e-wallet"> E-Wallet
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="checkbox" id="agreeTerms" required>
-                        <label for="agreeTerms">Saya menyetujui syarat dan ketentuan yang berlaku</label>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">Konfirmasi & Bayar</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Footer -->
+    </main>
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -178,8 +120,7 @@
             </div>
         </div>
     </footer>
-    </main>
-
+    
     <script>
         // Simulated database
         let registeredUsers = [];
@@ -278,6 +219,28 @@
             // Redirect to premium dashboard (simulated)
             sessionStorage.setItem('currentUser', JSON.stringify(newUser));
             window.location.href = 'student/dashboard.html';
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+                const confirmed = confirm('Yakin ingin menghapus kursus ini?');
+                if (confirmed) {
+                    // Di real app: Hapus dari database
+                    this.closest('.course-card').remove();
+                }
+            });
+        });
+    
+        document.querySelectorAll('.btn-edit').forEach(button => {
+            button.addEventListener('click', function () {
+                alert('Fitur edit belum tersedia. Silakan implementasikan di backend.');
+                // Arahkan ke halaman edit atau tampilkan form modal
+            });
+        });
+    
+        document.querySelector('.add-course-btn').addEventListener('click', function () {
+            alert('Fitur tambah kursus baru belum tersedia. Silakan implementasikan di backend.');
+            // Bisa arahkan ke form tambah kursus atau tampilkan modal
         });
     </script>
 </body>
