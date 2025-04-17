@@ -10,23 +10,27 @@
         <div class="header-container">
             <div class="logo">Admin Panel</div>
             <nav class="navbar">
-                <a href="verify_tutor.html">Verifikasi Tutor</a>
-                <a href="remove_tutor.html">Hapus Tutor</a>
-                <a href="verify_trans.html">Verifikasi Transaksi</a>
+                <div>
+                    <a href="verify_tutor.html">Verifikasi Tutor</a>
+                    <a href="remove_tutor.html">Hapus Tutor</a>
+                    <a href="verify_trans.html">Verifikasi Transaksi</a>
+                </div>
             </nav>
+            <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
         </div>
     </header>
 
     <main>
-        <h2 class="section-title">Verifikasi Pembayaran</h2>
+        <h2 class="section-title">Verifikasi Transaksi</h2>
 
-        <div class="course-list">
-            <div class="course-card green">
-                <div class="course-content">
+        <div class="trans-list">
+            <div class="trans-card green">
+                <div class="trans-content">
                     <h3>Transaksi #10293</h3>
-                    <p class="course-author">Pembayaran oleh: Indah Yuliana</p>
-                    <p class="course-description">Top-up saldo Rp 150.000, metode: Bank Transfer (BRI)</p>
-                    <div class="course-info">
+                    <p class="newLearner">Pembayaran oleh: Indah Yuliana</p>
+                    <p class="bill">Top-up saldo Rp 150.000</p>
+                    <p class="payment-method">Metode: Bank Transfer (BRI)</p>
+                    <div class="payment-time">
                         <span><div class="icon icon-time"></div> 4 Apr 2025, 14:22</span>
                     </div>
                     <button class="enroll-btn">Verifikasi</button>
