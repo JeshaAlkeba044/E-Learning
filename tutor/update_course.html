@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Learning Platform</title>
+    <title>Update Course</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/manage_course.css">
+    <link rel="stylesheet" href="../css/update_course.css">
 </head>
 <body>
     <header>
@@ -15,75 +15,34 @@
     </header>
 
     <main>
-        <section class="hero">
-            <h1>Belajar Tanpa Batas</h1>
-            <p>Silahkan daftar untuk memperluas jangkauan anda</p>
-            <button class="btn btn-primary" id="show-registration">Daftar Sekarang</button>
-        </section>
-
+        <h2 class="section-title">Update Course</h2>
         <section class="courses">
-            <h2 class="section-title">Kursus yang Anda Kelola</h2>
-            <a href="add_course.html"><button class="btn btn-primary add-course-btn">+ Tambah Kursus Baru</button></a>
-        
             <div class="course-grid">
-                <div class="course-card purple">
-                    <div class="course-img"><img src="../img/UI UX Design Illustration.jpg"></div>
-                    <div class="course-content">
-                        <span class="badge badge-popular">Popular</span>
-                        <h3 class="course-title">Digital Design Thinking</h3>
-                        <p class="course-description">Pelajari pendekatan inovatif untuk memecahkan masalah kompleks dengan metodologi design thinking.</p>
-                        <div class="course-meta">
-                            <span>📂 17 Materi</span>
-                            <span>⏳ 40 Menit</span>
-                        </div>
-                        <div class="course-price">Rp 299.000/bulan</div>
-        
-                        <div class="course-actions">
-                            <a href="update_course.html"><button class="btn-edit">✏️ Update</button></a>
-                            <button class="btn-delete">🗑️ Hapus</button>
-                        </div>
-                    </div>
-                </div>
+                <div class="course_card purple">
+                    <form id="edit_course" action="" method="get" enctype="multipart/form-data">
+                        <div class="edit_course_form">
+                            <h1>Update Course</h1>
+                          <label for="course_name">Couse Name</label>
+                          <input type="text" id="course_name" name="course_name" required value = "Digital Design Thinking"/>
+                          <br>
+                        
+                          <label for="course_desc">Description</label>
+                          <textarea id="course_desc" rows="3" required >Pelajari pendekatan inovatif untuk memecahkan masalah kompleks dengan metodologi design thinking.</textarea><br>
               
-                <div class="course-card blue">
-                    <div class="course-img"><img src="../img/Free Vector _ Space icons.jpg"></div>
-                    <div class="course-content">
-                        <h3 class="course-title">Web Development</h3>
-                        <p class="course-description">Kuasai dasar-dasar pengembangan web modern termasuk HTML, CSS, JavaScript dan framework populer.</p>
-                        <div class="course-meta">
-                            <span>📂 20 Materi</span>
-                            <span>⏳ 2 Jam</span>
+                          <label for="course_img">Course Image</label>
+                          <input type="file" id="course_img" name="course_img"><br>
+                       
+                          <label for="date">Price per month</label>
+                          <input type="number" id="date" required value = "299000"/>
+                          <br>
+                          <button type="submit" name = "update">Update Course</button>
                         </div>
-                        <div class="course-price">Rp 399.000/bulan</div>
-                        <div class="course-actions">
-                            <a href="update_course.html"><button class="btn-edit">✏️ Update</button></a>
-                            <button class="btn-delete">🗑️ Hapus</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-                
-                <div class="course-card orange">
-                    <div class="course-img"><img src="../img/RIVERPARK_TR.jpg"></div>
-                    <div class="course-content">
-                        <span class="badge badge-new">Baru</span>
-                        <h3 class="course-title">Creative Art Design</h3>
-                        <p class="course-description">Eksplorasi kreativitas Anda melalui berbagai teknik seni digital dan tradisional.</p>
-                        <div class="course-meta">
-                            <span>📂 15 Materi</span>
-                            <span>⏳ 30 Menit</span>
-                        </div>
-                        <div class="course-price">Rp 249.000/bulan</div>
-                        <div class="course-actions">
-                            <a href="update_course.html"><button class="btn-edit">✏️ Update</button></a>
-                            <button class="btn-delete">🗑️ Hapus</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>  
+            </div>
         </section>
     </main>
-    <!-- Footer -->
+    
     <footer>
         <div class="container">
             <div class="footer-content">
