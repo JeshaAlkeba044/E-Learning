@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Development - Materi</title>
+  <link rel="stylesheet" href="../../css/class.css" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+    <div class="navbar">
+      <div class="logo">E-Learning</div>
+      <nav>
+        <div class="dropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown()">MEMBER AREA</button>
+            <div class="dropdown-menu" id="memberAreaMenu">
+              <button onclick="aksesMemberArea('diskusi')">Diskusi</button>
+              <button onclick="aksesMemberArea('exam')">Exam</button>
+            </div>
+          </div>
+          <a href="../detail_web-dev.html" class="nav-link">Back</a>
+      </nav>
+    </div>
+
+  <main class="content">
+    <article class="materi">
+      <h1>CSS untuk Styling</h1>
+      <h4>Menggunakan CSS untuk desain web</h4>
+      <p class="meta">By E-Learning Team / April 18, 2025</p>
+    
+      <p><strong>CSS (Cascading Style Sheets)</strong> adalah bahasa yang digunakan untuk mengatur tampilan dan tata letak elemen HTML di halaman web. Dengan CSS, kita dapat menambahkan warna, mengatur ukuran font, mengatur jarak antar elemen, dan membuat desain web menjadi lebih menarik serta responsif.</p>
+    
+      <h3>1. Cara Menyisipkan CSS</h3>
+      <p>CSS dapat digunakan dengan tiga cara:</p>
+      <ul>
+        <li><strong>Inline</strong>: langsung di dalam tag HTML menggunakan atribut <code>style</code></li>
+        <li><strong>Internal</strong>: ditulis dalam tag <code>&lt;style&gt;</code> di dalam <code>&lt;head&gt;</code></li>
+        <li><strong>Eksternal</strong>: ditulis dalam file .css terpisah dan disambungkan menggunakan <code>&lt;link&gt;</code></li>
+      </ul>
+    
+      <h3>2. Contoh Dasar CSS</h3>
+      <pre>
+        /* File: styles.css */
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f0f0f0;
+        }
+        
+        h1 {
+          color: #3f37c9;
+          text-align: center;
+        }
+        
+        p {
+          font-size: 1rem;
+          line-height: 1.6;
+        }
+          </pre>
+        
+          <h3>3. Selektor dan Properti</h3>
+          <p>CSS menggunakan <strong>selektor</strong> untuk memilih elemen HTML yang ingin diubah, dan <strong>properti</strong> untuk menentukan gaya apa yang akan diterapkan. Misalnya:</p>
+          <pre>
+        p {
+          color: #333;
+          margin-bottom: 10px;
+        }
+          </pre>
+        
+          <h3>4. Responsif dan Media Query</h3>
+          <p>Dengan <code>@media</code> query, kita bisa membuat tampilan yang menyesuaikan dengan ukuran layar pengguna. Ini penting untuk memastikan website tampil baik di berbagai perangkat.</p>
+          <pre>
+        @media (max-width: 600px) {
+          body {
+            font-size: 14px;
+          }
+        }
+      </pre>
+    
+      <p><strong>Kesimpulan:</strong> CSS sangat penting dalam pengembangan web modern karena memungkinkan pengembang untuk menciptakan pengalaman visual yang menarik, konsisten, dan profesional. Dengan menguasai CSS, kamu bisa mengubah halaman HTML biasa menjadi website yang estetis dan user-friendly.</p>
+    </article>
+    
+  </main>
+
+       <!-- Footer -->
+       <footer>
+        <div class="container">
+          <div class="footer-content">
+            <div class="footer-column">
+              <h3>E-Learning</h3>
+              <p>Your gateway to professional development and lifelong learning.</p>
+            </div>
+            <div class="footer-column">
+              <h3>Quick Links</h3>
+              <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </div>
+            <div class="footer-column">
+              <h3>Connect</h3>
+              <div class="social-links">
+                <a href="#">@Facebook <i class="fab fa-facebook-f"></i></a><br>
+                <a href="#">@Twitter <i class="fab fa-twitter"></i></a><br>
+                <a href="#">@Instagram <i class="fab fa-instagram"></i></a><br>
+                <a href="#">@LinkedIn <i class="fab fa-linkedin-in"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="copyright">
+            <p>&copy; 2025 E-Learning.</p>
+          </div>
+        </div>
+      </footer>
+
+  <!-- kalo belum langganan -->
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <span class="close" onclick="closePopup()"><b>x</b></span><br>
+      <p>Anda belum berlangganan kursus ini.</p>
+      <a href="../detail_web-dev.html" class="btn-subscribe">Langganan Sekarang</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+        const menu = document.getElementById("memberAreaMenu");
+        menu.classList.toggle("show");
+      }
+      
+      document.addEventListener("click", function (e) {
+        const menu = document.getElementById("memberAreaMenu");
+        const toggle = document.querySelector(".dropdown-toggle");
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove("show");
+        }
+      });
+
+    const isSubscribed = true; // true karena sudah berlangganan
+
+    function aksesMemberArea(section) {
+      if (!isSubscribed) {
+        document.getElementById("popup").classList.remove("hidden");
+      } else {
+        window.location.href = `${section}.html`;
+      }
+    }
+
+    function closePopup() {
+      document.getElementById("popup").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
