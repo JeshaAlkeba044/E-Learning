@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Art Design - Materi</title>
+  <link rel="stylesheet" href="../../css/class.css" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+    <div class="navbar">
+      <div class="logo">E-Learning</div>
+      <nav>
+        <div class="dropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown()">MEMBER AREA</button>
+            <div class="dropdown-menu" id="memberAreaMenu">
+              <button onclick="aksesMemberArea('diskusi')">Diskusi</button>
+              <button onclick="aksesMemberArea('exam')">Exam</button>
+            </div>
+          </div>
+          <a href="../detail_art-design.html" class="nav-link">Back</a>
+      </nav>
+    </div>
+
+  <main class="content">
+    <article class="materi">
+      <h1>Komposisi Visual </h1>
+      <h4>Prinsip penataan elemen dalam karya seni.</h4>
+      <p class="meta">By E-Learning Team / April 18, 2025</p>
+      <p><em>Website</em> muncul atau tercipta pada pertengahan tahun 1990an ketika internet mulai dikenal dan digunakan secara luas oleh masyarakat. Saat itu, website masih sangat sederhana dan hanya menampilkan teks serta gambar statis. Namun, seiring berkembangnya teknologi dan kebutuhan informasi, pengembangan website pun semakin kompleks dan dinamis. Dunia web development mulai berkembang pesat dengan diperkenalkannya berbagai bahasa pemrograman dan tools seperti HTML, CSS, dan JavaScript.</p>    
+      <p>Adanya orang-orang yang terjun dan menggeluti dunia <em>website development</em> menjadikan industri ini sebagai salah satu sektor penting di era digital saat ini. Mereka yang berkecimpung di bidang ini disebut sebagai web developer, yang bertugas membangun dan memelihara sebuah website agar dapat diakses dan digunakan dengan baik oleh pengguna. Web development pun kini terbagi menjadi dua bagian besar, yaitu front-end development dan back-end development. Keduanya saling bekerja sama untuk menciptakan website yang fungsional dan menarik secara visual.</p>
+      <p>Fakta yang ada saat ini, pelaku industri pasti akan mempunyai <em>website</em> sebagai representasi digital dari produk, jasa, maupun organisasi yang mereka jalankan. Website kini menjadi kebutuhan utama dalam dunia bisnis dan komunikasi modern. Dengan memahami dasar-dasar pengembangan web, siapa pun bisa mulai membangun identitas digital mereka dan ikut berkontribusi dalam ekosistem teknologi global yang terus berkembang.</p>
+    </article>
+  </main>
+
+       <!-- Footer -->
+       <footer>
+        <div class="container">
+          <div class="footer-content">
+            <div class="footer-column">
+              <h3>E-Learning</h3>
+              <p>Your gateway to professional development and lifelong learning.</p>
+            </div>
+            <div class="footer-column">
+              <h3>Quick Links</h3>
+              <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </div>
+            <div class="footer-column">
+              <h3>Connect</h3>
+              <div class="social-links">
+                <a href="#">@Facebook <i class="fab fa-facebook-f"></i></a><br>
+                <a href="#">@Twitter <i class="fab fa-twitter"></i></a><br>
+                <a href="#">@Instagram <i class="fab fa-instagram"></i></a><br>
+                <a href="#">@LinkedIn <i class="fab fa-linkedin-in"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="copyright">
+            <p>&copy; 2025 E-Learning.</p>
+          </div>
+        </div>
+      </footer>
+
+  <!-- kalo belum langganan -->
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <span class="close" onclick="closePopup()"><b>x</b></span><br>
+      <p>Anda belum berlangganan kursus ini.</p>
+      <a href="../detail_web-dev.html" class="btn-subscribe">Langganan Sekarang</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+        const menu = document.getElementById("memberAreaMenu");
+        menu.classList.toggle("show");
+      }
+      
+      document.addEventListener("click", function (e) {
+        const menu = document.getElementById("memberAreaMenu");
+        const toggle = document.querySelector(".dropdown-toggle");
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove("show");
+        }
+      });
+
+    const isSubscribed = true; // true karena sudah berlangganan
+
+    function aksesMemberArea(section) {
+      if (!isSubscribed) {
+        document.getElementById("popup").classList.remove("hidden");
+      } else {
+        window.location.href = `${section}.html`;
+      }
+    }
+
+    function closePopup() {
+      document.getElementById("popup").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
