@@ -1,6 +1,6 @@
 header {
     background: var(--gradient-purple);
-    color: white;
+    color: rgb(15, 11, 11);
     padding: var(--space-md) 0;
     box-shadow: var(--shadow-md);
     position: sticky;
@@ -18,10 +18,11 @@ header {
 }
 
 .logo {
-    font-size: 1.8rem;
+    color: var(--light);
+    font-size: 2rem;
     font-weight: 700;
     letter-spacing: 1px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 3px 3px 5px rgba(53, 27, 27, 0.897);
 }
 
 .hero {
@@ -222,50 +223,6 @@ header {
     color: white;
 }
 
-footer {
-    background: var(--dark);
-    color: white;
-    padding: var(--space-xl) 0 var(--space-md);
-    margin-top: var(--space-xl);
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-xl);
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-md);
-}
-
-.footer-column h3 {
-    font-size: 1.2rem;
-    margin-bottom: var(--space-md);
-    color: var(--accent);
-}
-
-.social-links {
-    display: flex;
-    gap: var(--space-md);
-    flex-wrap: wrap;
-}
-
-.social-links a {
-    color: white;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.social-links a:hover {
-    color: var(--accent);
-}
-
-.copyright {
-    text-align: center;
-    margin-top: var(--space-xl);
-    padding-top: var(--space-md);
-    border-top: 1px solid rgba(255,255,255,0.1);
-}
 .btn {
     transition: all 0.2s ease;
 }

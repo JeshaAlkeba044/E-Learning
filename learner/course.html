@@ -18,166 +18,99 @@
         <section class="hero">
             <h1>mari belajar di E-Learning</h1>
             <p>Silahkan daftar untuk memperluas jangkauan anda</p>
-            <button class="btn btn-primary" id="show-registration">Daftar Sekarang</button>
         </section>
 
-        <section class="courses">
-            <h2 class="section-title">Kursus Tersedia</h2>
-            <div class="course-grid">
-                <!-- Course 1 -->
-                <div class="course-card purple">
-                    <div class="course-img"><img src="../img/UI UX Design Illustration.jpg"></div>
-                    <div class="course-content">
-                        <span class="badge badge-popular">Popular</span>
-                        <h3 class="course-title">Digital Design Thinking</h3>
-                        <p class="course-description">Pelajari pendekatan inovatif untuk memecahkan masalah kompleks dengan metodologi design thinking.</p>
-                        <div class="course-meta">
-                            <span>📂 10 Materi</span>
-                            <span>⏳ 40 Menit</span>
-                        </div>
-                        <div class="course-price">Rp 299.000/bulan</div>
-                        <button class="btn btn-outline view-details" data-course="design-thinking"><a href="detail_desain-thinking.html">Lihat Detail</a></button>
-                    </div>
+        <section class="course-grid">
+            <!-- Card 1 -->
+            <a href="detail_desain-thinking.html" class="course-card blue" style="text-decoration: none; color: inherit;">
+              <div class="course-img">
+                <img src="../img/UI UX Design Illustration.jpg" alt="Digital Design Thinking">
+              </div>
+              <div class="course-content">
+                <h3>Digital Design Thinking</h3>
+                <p>Learn innovative approaches to solve complex problems with design thinking methodology applied in the digital world.</p>
+                <div style="display: flex; gap: 1rem; margin: 1rem 0;">
+                  <span>📁 10 Modul</span>
+                  <span>⏱ 40 min</span>
+                  <span>👥 1.2k</span>
                 </div>
-                
-                <!-- Course 2 -->
-                <div class="course-card blue">
-                    <div class="course-img"><img src="../img/Free Vector _ Space icons.jpg"></div>
-                    <div class="course-content">
-                        <h3 class="course-title">Web Development</h3>
-                        <p class="course-description">Kuasai dasar-dasar pengembangan web modern termasuk HTML, CSS, JavaScript dan framework populer.</p>
-                        <div class="course-meta">
-                            <span>📂 10 Materi</span>
-                            <span>⏳ 2 Jam</span>
-                        </div>
-                        <div class="course-price">Rp 399.000/bulan</div>
-                        <button class="btn btn-outline view-details" data-course="web-dev"><a href="detail_web-dev.html">Lihat Detail</a></button>
-                    </div>
+                <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-top: 1rem;">
+                  Rp 120.000
                 </div>
-                
-                <!-- Course 3 -->
-                <div class="course-card orange">
-                    <div class="course-img"><img src="../img/RIVERPARK_TR.jpg"></div>
-                    <div class="course-content">
-                        <span class="badge badge-new">Baru</span>
-                        <h3 class="course-title">Creative Art Design</h3>
-                        <p class="course-description">Eksplorasi kreativitas Anda melalui berbagai teknik seni digital dan tradisional.</p>
-                        <div class="course-meta">
-                            <span>📂 10 Materi</span>
-                            <span>⏳ 30 Menit</span>
-                        </div>
-                        <div class="course-price">Rp 249.000/bulan</div>
-                        <button class="btn btn-outline view-details" data-course="detail_art-design.html"><a href="detail_art-design.html">Lihat Detail</a></button>
-                    </div>
+              </div>
+            </a>
+          
+            <!-- Card 2 -->
+            <a href="detail_web-dev.html" class="course-card orange" style="text-decoration: none; color: inherit;">
+              <div class="course-img">
+                <img src="../img/Free Vector _ Space icons.jpg" alt="Web Development">
+              </div>
+              <div class="course-content">
+                <h3>Web Development</h3>
+                <p>Web development courses typically cover the basics of front-end development such as HTML, CSS, and JavaScript, as well as an introduction to back-end and database technologies.</p>
+                <div style="display: flex; gap: 1rem; margin: 1rem 0;">
+                  <span>📁 10 Modul</span>
+                  <span>⏱ 2 hours</span>
+                  <span>👥 2.5k</span>
                 </div>
-            </div>
-        </section>
-
-        <!-- Enroll Modal -->
-        <div id="EnrollModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Pendaftaran Kursus</h3>
-                    <button class="close-modal">&times;</button>
+                <div style="font-size: 1.2rem; font-weight: bold; color: var(--danger); margin-top: 1rem;">
+                  Rp 150.000
                 </div>
-                
-                <form id="enrollForm">
-                    <div class="form-group">
-                        <label for="fullname">Nama Lengkap :</label>
-                        <input type="text" id="fullname" placeholder="Enter your name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email :</label>
-                        <input type="email" id="email" placeholder="Enter your email" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Pilih Kursus:</label>
-                        <div class="course-selection">
-                            <div class="course-item">
-                                <div>
-                                    <input type="checkbox" id="course1" class="course-checkbox" data-price="299000" data-course="design-thinking">
-                                    <label for="course1">Digital Design Thinking - Rp 299.000/bulan</label>
-                                </div>
-                            </div>
-                            
-                            <div class="course-item">
-                                <div>
-                                    <input type="checkbox" id="course2" class="course-checkbox" data-price="399000" data-course="web-dev">
-                                    <label for="course2">Web Development - Rp 399.000/bulan</label>
-                                </div>
-                            </div>
-                            
-                            <div class="course-item">
-                                <div>
-                                    <input type="checkbox" id="course3" class="course-checkbox" data-price="249000" data-course="art-design">
-                                    <label for="course3">Creative Art Design - Rp 249.000/bulan</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="total-price" id="totalPrice">
-                        Total: Rp 0
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Metode Pembayaran:</label>
-                        <div class="payment-methods">
-                            <label class="payment-method">
-                                <input type="radio" name="payment" value="transfer" checked> Transfer Bank
-                            </label>
-                            <label class="payment-method">
-                                <input type="radio" name="payment" value="credit-card"> Kartu Kredit
-                            </label>
-                            <label class="payment-method">
-                                <input type="radio" name="payment" value="e-wallet"> E-Wallet
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="checkbox" id="agreeTerms" required>
-                        <label for="agreeTerms">Saya menyetujui syarat dan ketentuan yang berlaku</label>
-                    </div>
-                    
-                    <button type="submit" class="btn-form">Konfirmasi & Bayar</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Footer -->
+              </div>
+            </a>
+          
+            <!-- Card 3 -->
+            <a href="detail_art-design.html" class="course-card" style="border-top: 4px solid var(--success); text-decoration: none; color: inherit;">
+              <div class="course-img">
+                <img src="../img/RIVERPARK_TR.jpg" alt="Creative Art Design">
+              </div>
+              <div class="course-content">
+                <h3>Creative Art Design</h3>
+                <p>Created by Art School</p>
+                <p>Explore your creativity through various digital and traditional art techniques to create stunning visual works.</p>
+                <div style="display: flex; gap: 1rem; margin: 1rem 0;">
+                  <span>📁 10 Modul</span>
+                  <span>⏱ 30 min</span>
+                  <span>👥 850</span>
+                </div>
+                <div style="font-size: 1.2rem; font-weight: bold; color: var(--success); margin-top: 1rem;">
+                  Rp 100.000
+                </div>
+              </div>
+            </a>
+          </section>
+          
+    <!-- Footer -->
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>E-Learning</h3>
-                    <p>Your gateway to professional development and lifelong learning.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#courses">Courses</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Connect</h3>
-                    <div class="social-links">
-                        <a href="#">@Facebook<i class="fab fa-facebook-f"></i></a>
-                        <a href="#">@twiter<i class="fab fa-twitter"></i></a>
-                        <a href="#">@instagram<i class="fab fa-instagram"></i></a>
-                        <a href="#">@linkedin<i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3>E-Learning</h3>
+            <p>Your gateway to professional development and lifelong learning.</p>
+          </div>
+          <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="#courses">Courses</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Connect</h3>
+            <div class="social-links">
+              <a href="#">@Facebook <i class="fab fa-facebook-f"></i></a><br>
+              <a href="#">@Twitter <i class="fab fa-twitter"></i></a><br>
+              <a href="#">@Instagram <i class="fab fa-instagram"></i></a><br>
+              <a href="#">@LinkedIn <i class="fab fa-linkedin-in"></i></a>
             </div>
-            <div class="copyright">
-                <p>&copy; 2025 E-Learning.</p>
-            </div>
+          </div>
         </div>
+        <div class="copyright">
+          <p>&copy; 2025 E-Learning.</p>
+        </div>
+      </div>
     </footer>
     </main>
 
