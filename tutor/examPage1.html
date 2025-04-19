@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Exam</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/exam.css">
+  <script src="../js/examPage1.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+        <div class="logo">E-Learning</div>
+        <nav class="navbar">
+          <div>
+              <a href=""></a>
+              <a href=""></a>
+              <a href=""></a>
+          </div>
+        </nav>
+        <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="exam_container">
+      <h2 class="section-title">Create Exam</h2>
+      <form id="exam-form">
+        <div class="form-group">
+          <label for="title">Exam Title</label>
+          <input type="text" id="title" required>
+
+          <label for="description">Exam Description</label>
+          <textarea id="description" required></textarea>
+
+          <label for="name">Name</label>
+          <input type="text" id="name" required>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <br>
+        <button type="submit" id="submit-btn">Create</button>
+      </form>
+
+      <div id="manage-buttons" style="display: none;">
+        <button id="add-question-btn">Add Question</button>
+        <button id="edit-exam-btn">Edit</button>
+        <a href="exam_list_tutor.html"><button id="delete-exam-btn">Delete</button></a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>E-Learning</h3>
+                <p>Your gateway to professional development and lifelong learning.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#courses">Courses</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect</h3>
+                <div class="social-links">
+                    <a href="#">@Facebook<i class="fab fa-facebook-f"></i></a>
+                    <a href="#">@twiter<i class="fab fa-twitter"></i></a>
+                    <a href="#">@instagram<i class="fab fa-instagram"></i></a>
+                    <a href="#">@linkedin<i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 E-Learning.</p>
+        </div>
+    </div>
+  </footer>
+</body>
+</html>
