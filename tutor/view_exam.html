@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learner Exam</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/view_exam.css">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">E-Learning</div>
+      <nav class="navbar">
+        <div>
+            <a href=""></a>
+            <a href=""></a>
+            <a href=""></a>
+        </div>
+        </nav>
+        <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="title">
+        <h1>Web Development Basics</h1>
+        <p>Pastikan tidak ada yang tidak terjawab, 1 soal 20 poin</p>
+      </div>
+      <form id="exam-form">
+        <div class="question-block">
+          <p>Nama</p>
+          <label><input type="text" name="nama" id="nama" required></label><br>
+        </div>
+
+        <div class="question-block">
+          <p>Email</p>
+          <label><input type="email" name="email" id="email" required></label><br>
+        </div>
+
+        <div class="question-block">
+          <p>1. What does HTML stand for?</p>
+          <label><input type="radio" name="q1" value="A"> A. Hyper Trainer Marking Language</label><br>
+          <label><input type="radio" name="q1" value="B"> B. HyperText Markup Language</label><br>
+          <label><input type="radio" name="q1" value="C"> C. Hyperlink and Text Markup Language</label><br>
+          <label><input type="radio" name="q1" value="D"> D. Home Tool Markup Language</label>
+        </div>
+
+        <div class="question-block">
+          <p>2. Which tag is used to link an external CSS file?</p>
+          <label><input type="radio" name="q2" value="A"> A. &lt;script&gt;</label><br>
+          <label><input type="radio" name="q2" value="B"> B. &lt;style&gt;</label><br>
+          <label><input type="radio" name="q2" value="C"> C. &lt;link&gt;</label><br>
+          <label><input type="radio" name="q2" value="D"> D. &lt;css&gt;</label>
+        </div>
+
+        <div class="question-block">
+          <p>3. Which tag is used to link an external CSS file?</p>
+          <img src="../img/UI UX Design Illustration.jpg" alt=""><br>
+          <label><input type="radio" name="q3" value="A"> A. &lt;script&gt;</label><br>
+          <label><input type="radio" name="q3" value="B"> B. &lt;style&gt;</label><br>
+          <label><input type="radio" name="q3" value="C"> C. &lt;link&gt;</label><br>
+          <label><input type="radio" name="q3" value="D"> D. &lt;css&gt;</label>
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <div id="result" class="form-section" style="display: none;"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 E-Learning Platform</p>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('exam-form');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      let score = 0;
+
+      const answers = {
+        q1: "B",
+        q2: "C"
+      };
+
+      for (let q in answers) {
+        const selected = document.querySelector(`input[name="${q}"]:checked`);
+        if (selected && selected.value === answers[q]) {
+          score++;
+        }
+      }
+
+      result.innerHTML = `<h3>Your Score: ${score} / ${Object.keys(answers).length}</h3>`;
+      result.style.display = "block";
+      window.scrollTo({ top: result.offsetTop, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>

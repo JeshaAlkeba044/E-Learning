@@ -3,65 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tutor - Exam Management</title>
+  <title>Exam List</title>
   <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/exam.css">
+  <link rel="stylesheet" href="../css/exam_list.css">
 </head>
 <body>
   <header>
     <div class="header-container">
         <div class="logo">E-Learning</div>
+        <nav class="navbar">
+          <div>
+              <a href=""></a>
+              <a href=""></a>
+              <a href=""></a>
+          </div>
+        </nav>
+        <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
     </div>
   </header>
 
   <main>
-    <div class="container">
-      <h2>List of Exams</h2>
+    <div class="exam_list_container">
+      <h2 class="section-title">List of Exams</h2>
       <table class="exam-table">
         <thead>
           <tr>
             <th>Title</th>
             <th>Description</th>
-            <th>File</th>
             <th>Due Date</th>
+            <th> </th>
           </tr>
         </thead>
         <tbody id="exam-list">
           <tr>
-            <td>Praktikum working with file</td>
-            <td>Jawaban di zip NIM_NAMA_Working_with_File</td>
-            <td> </td>
+            <td>Web Development Basics</td>
+            <td>Pastikan tidak ada yang tidak terjawab, 1 soal 20 poin</td>
             <td>2025-05-15</td>
+            <td><a href="view_exam.html"><button type="submit">Open</button></a></td>
           </tr>
           <tr>
-            <td>Praktikum Responsive</td>
-            <td>NIM_NAMA_Responsive</td>
-            <td> </td>
+            <td>Exam Responsive</td>
+            <td>Kuis 2</td>
             <td>2025-06-20</td>
+            <td><a href="view_exam.html"><button type="submit">Open</button></a></td>
           </tr>
         </tbody>
       </table>
-  
-      <div class="form-section">
-        <h2>Add New Exam</h2>
-        <form id="exam-form">
-          <div class="form-group">
-            <label for="title">Exam Title</label>
-            <input type="text" id="title" required />
-          
-            <label for="description">Description</label>
-            <textarea id="description" rows="3" required></textarea>
-
-            <label for="file">File</label>
-            <input type="file" id="myfile" name="myfile">
-         
-            <label for="date">Due Date</label>
-            <input type="datetime-local" id="date" required />
-          </div>
-          <button type="submit">Add Exam</button>
-        </form>
+      <br><br>
+      <div class="exam-list-buttons">
+        <a href="examPage1.html"><button type="submit" id="addNewExam">Add New Exam</button></a>
+        <a href="manage_course.html"><button type="submit">Back</button></a>
       </div>
-    </div>
   </main>
 
   <footer>
@@ -94,29 +86,6 @@
             <p>&copy; 2025 E-Learning.</p>
         </div>
     </div>
-</footer>
-
-  <script>
-    const form = document.getElementById('exam-form');
-    const examList = document.getElementById('exam-list');
-
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const title = document.getElementById('title').value;
-      const description = document.getElementById('description').value;
-      const date = document.getElementById('date').value;
-
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `
-        <td>${title}</td>
-        <td>${description}</td>
-        <td>${date}</td>
-      `;
-      examList.appendChild(newRow);
-
-      form.reset();
-    });
-  </script>
+  </footer>
 </body>
 </html>
