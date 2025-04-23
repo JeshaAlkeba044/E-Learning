@@ -22,7 +22,8 @@
 }
 
 .btn-edit,
-.btn-delete {
+.btn-delete,
+.btn-exam {
     padding: 0.4rem 1rem;
     border: none;
     border-radius: 6px;
@@ -47,4 +48,14 @@
 
 .btn-delete:hover {
     background-color: #c1121f;
+}
+
+.btn-exam{
+    background-color: var(--warning);
+    color: white;
+}
+
+.btn-exam:hover{
+    background-color: #d6a23b;
+    color: white;
 }
