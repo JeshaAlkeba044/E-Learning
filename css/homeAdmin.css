@@ -96,3 +96,7 @@ a {
 .dashboard-card.orange { border-top-color: var(--warning); }
 .dashboard-card.red { border-top-color: var(--danger); }
 .dashboard-card.green { border-top-color: var(--success); }
+
+footer{
+    margin-top: 120px;
+}

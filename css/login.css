@@ -15,16 +15,20 @@
 }
 
 .back-btn {
-    color: var(--primary);
-    text-decoration: none;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    cursor: pointer;
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 .back-btn:hover {
-    text-decoration: underline;
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
 .login-container {
