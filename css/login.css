@@ -97,6 +97,14 @@
     font-size: 1rem;
 }
 
+.form-check {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: -1rem;
+    font-size: 0.95rem;
+    color: var(--dark);
+}
+
 .login-btn {
     width: 100%;
     padding: 0.8rem;

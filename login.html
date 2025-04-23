@@ -16,8 +16,7 @@
     <div class="login-container">
         <div class="login-left">
             <h1>Welcome Back</h1>
-            <p>Turn your ideas into reality.</p>
-            <p>You can use an online menu for us today.</p>
+            <p>Please enter your data before logging into your account.</p>
         </div>
         
         <div class="login-right">
@@ -35,15 +34,28 @@
                     <input type="password" id="password" placeholder="Enter your password" required>
                     <div id="passwordError" class="error-message"></div>
                 </div>
+
+                <div class="form-check">
+                    <input type="checkbox" id="togglePassword">
+                    <label for="togglePassword">Show Password</label>
+                </div>
                 
                 <button type="submit" class="login-btn">Login</button>
                 
                 <div class="form-footer">
+                    <p><a href="forgot_pass.html">Forgot password?</a></p>
                     <p>Don't have an account? <a href="register.html">Create account</a></p>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        document.getElementById('togglePassword').addEventListener('change', function() {
+            const passwordInput = document.getElementById('password');
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+    </script>
 
     <!-- <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
