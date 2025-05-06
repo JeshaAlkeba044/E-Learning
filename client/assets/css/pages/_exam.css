@@ -1,0 +1,65 @@
+.exam-container {
+    max-width: 1000px;
+    margin: auto;
+  }
+  
+  .exam-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .exam-table th, 
+  .exam-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .exam-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .question-block {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 10px 0;
+  }
+  
+  .question-block input[type='radio'] {
+    margin: 10px 0;
+  }
+  
+  .title {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-top: 5px solid #4361ee;
+    padding: 10px 15px;
+  }
+  
+  .title h1, 
+  .title p {
+    padding: 10px;
+  }
+  
+  #finish-btn {
+    margin-top: 20px; 
+    padding: 10px 20px; 
+    background-color: #38b000; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    display: none;
+  }
+  
+  #finish-btn:hover {
+    background-color: #3a9a0d; 
+  }

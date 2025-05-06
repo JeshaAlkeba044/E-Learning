@@ -1,0 +1,34 @@
+/* Base */
+@import url('base/_variables.css');
+@import url('base/_reset.css');
+@import url('base/_typography.css');
+
+/* Components */
+@import url('components/_buttons.css');
+@import url('components/_cards.css');
+@import url('components/_forms.css');
+@import url('components/_modals.css');
+@import url('components/_navbar.css');
+@import url('components/_progress.css');
+@import url('components/_tooltip.css');
+@import url('components/_profile.css');
+@import url('components/_contact.css');
+
+/* Layouts */
+@import url('layouts/_header.css');
+/* @import url('layouts/_footer.css'); */
+@import url('layouts/_grid.css');
+
+/* Pages */
+@import url('pages/_auth.css');
+@import url('pages/_admin.css');
+@import url('pages/_tutor.css');
+@import url('pages/_learner.css');
+@import url('pages/_courses.css');
+@import url('pages/_exam.css');
+@import url('pages/_register.css');
+@import url('pages/_landingPage.css');
+
+/* Utilities */
+@import url('utilities/_helpers.css');
+@import url('utilities/_animations.css');

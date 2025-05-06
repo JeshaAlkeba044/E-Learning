@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password - E-Learning</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../shared/auth-styles.css">
+  <style>
+    /* Additional styles specific to reset password page */
+    .password-strength-meter {
+      margin-top: 0.5rem;
+      height: 4px;
+      background-color: var(--light-gray);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .password-strength-meter-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    
+    .password-requirements {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+    
+    .password-requirements ul {
+      padding-left: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    
+    .password-requirements li {
+      margin-bottom: 0.3rem;
+      position: relative;
+    }
+    
+    .password-requirements li.valid::before {
+      content: "✓";
+      color: var(--success);
+      position: absolute;
+      left: -1.2rem;
+    }
+    
+    .password-requirements li.invalid::before {
+      content: "✗";
+      color: var(--danger);
+      position: absolute;
+      left: -1.2rem;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--gray);
+      cursor: pointer;
+    }
+    
+    .password-input-wrapper {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <header class="auth-header">
+    <a class="logo" href="../../index.html">E-Learning</a>
+    <a href="../../index.html" class="back-btn btn btn-primary">Back Home</a>
+  </header>
+
+  <div class="auth-container">
+    <div class="auth-hero">
+      <h1>Create New Password</h1>
+      <p>Your new password must be different from previous used passwords.</p>
+    </div>
+
+    <div class="auth-content">
+      <form id="resetPasswordForm" class="auth-form">
+        <h2>Reset Password</h2>
+
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="newPassword" placeholder="Enter new password" minlength="8" required>
+            <button type="button" class="password-toggle" id="toggleNewPassword">👁️</button>
+          </div>
+          <div class="password-strength-meter">
+            <div class="password-strength-meter-fill" id="passwordStrength"></div>
+          </div>
+          <div class="password-requirements">
+            <p>Password must contain:</p>
+            <ul>
+              <li class="invalid" id="req-length">At least 8 characters</li>
+              <li class="invalid" id="req-uppercase">At least 1 uppercase letter</li>
+              <li class="invalid" id="req-number">At least 1 number</li>
+              <li class="invalid" id="req-special">At least 1 special character</li>
+            </ul>
+          </div>
+          <div id="newPasswordError" class="error-message"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+            <button type="button" class="password-toggle" id="toggleConfirmPassword">👁️</button>
+          </div>
+          <div id="confirmPasswordError" class="error-message"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-btn">Reset Password</button>
+
+        <div class="form-footer">
+          <p><a href="../login/indexLogin.html">Back to Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Password toggle functionality
+      const toggleNewPassword = document.getElementById('toggleNewPassword');
+      const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+      const newPasswordInput = document.getElementById('newPassword');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      
+      // Toggle password visibility
+      function setupPasswordToggle(toggle, input) {
+        toggle.addEventListener('click', function() {
+          const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+          input.setAttribute('type', type);
+          toggle.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+      }
+      
+      setupPasswordToggle(toggleNewPassword, newPasswordInput);
+      setupPasswordToggle(toggleConfirmPassword, confirmPasswordInput);
+      
+      // Password strength checker
+      newPasswordInput.addEventListener('input', function() {
+        const password = this.value;
+        checkPasswordStrength(password);
+      });
+      
+      // Form submission
+      const form = document.getElementById('resetPasswordForm');
+      const newPasswordError = document.getElementById('newPasswordError');
+      const confirmPasswordError = document.getElementById('confirmPasswordError');
+      
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newPassword = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        // Reset errors
+        newPasswordError.textContent = '';
+        newPasswordError.style.display = 'none';
+        confirmPasswordError.textContent = '';
+        confirmPasswordError.style.display = 'none';
+        
+        let isValid = true;
+        
+        // Validate new password
+        if (!validatePassword(newPassword)) {
+          showError(newPasswordError, 'Password does not meet requirements');
+          isValid = false;
+        }
+        
+        // Validate password match
+        if (newPassword !== confirmPassword) {
+          showError(confirmPasswordError, 'Passwords do not match');
+          isValid = false;
+        }
+        
+        if (isValid) {
+          // In a real app, you would send the new password to your backend
+          // For demo, we'll show a success message and redirect to login
+          alert('Password has been reset successfully!');
+          window.location.href = '/auth/login';
+        }
+      });
+      
+      // Password validation functions
+      function validatePassword(password) {
+        return (
+          password.length >= 8 &&
+          /[A-Z]/.test(password) &&
+          /\d/.test(password) &&
+          /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        );
+      }
+      
+      function checkPasswordStrength(password) {
+        const strengthMeter = document.getElementById('passwordStrength');
+        const requirements = {
+          length: document.getElementById('req-length'),
+          uppercase: document.getElementById('req-uppercase'),
+          number: document.getElementById('req-number'),
+          special: document.getElementById('req-special')
+        };
+        
+        let strength = 0;
+        const totalRequirements = 4;
+        
+        // Check each requirement
+        if (password.length >= 8) {
+          requirements.length.classList.add('valid');
+          requirements.length.classList.remove('invalid');
+          strength++;
+        } else {
+          requirements.length.classList.add('invalid');
+          requirements.length.classList.remove('valid');
+        }
+        
+        if (/[A-Z]/.test(password)) {
+          requirements.uppercase.classList.add('valid');
+          requirements.uppercase.classList.remove('invalid');
+          strength++;
+        } else {
+          requirements.uppercase.classList.add('invalid');
+          requirements.uppercase.classList.remove('valid');
+        }
+        
+        if (/\d/.test(password)) {
+          requirements.number.classList.add('valid');
+          requirements.number.classList.remove('invalid');
+          strength++;
+        } else {
+          requirements.number.classList.add('invalid');
+          requirements.number.classList.remove('valid');
+        }
+        
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+          requirements.special.classList.add('valid');
+          requirements.special.classList.remove('invalid');
+          strength++;
+        } else {
+          requirements.special.classList.add('invalid');
+          requirements.special.classList.remove('valid');
+        }
+        
+        // Update strength meter
+        const percentage = (strength / totalRequirements) * 100;
+        strengthMeter.style.width = `${percentage}%`;
+        
+        // Change color based on strength
+        if (percentage < 50) {
+          strengthMeter.style.backgroundColor = 'var(--danger)';
+        } else if (percentage < 75) {
+          strengthMeter.style.backgroundColor = 'var(--warning)';
+        } else {
+          strengthMeter.style.backgroundColor = 'var(--success)';
+        }
+      }
+      
+      function showError(element, message) {
+        element.textContent = message;
+        element.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

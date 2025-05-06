@@ -1,0 +1,35 @@
+.social-media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .social-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--dark);
+    transition: transform 0.3s ease;
+  }
+  
+  .social-icon:hover {
+    transform: translateY(-5px);
+  }
+  
+  .social-icon img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+    border-radius: 50%;
+    padding: 10px;
+    background: var(--light-gray);
+  }
+  
+  @media (max-width: 768px) {
+    .social-media-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }

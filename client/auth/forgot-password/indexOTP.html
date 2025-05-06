@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify OTP - E-Learning</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../shared/auth-styles.css">
+</head>
+<body>
+  <header class="auth-header">
+    <a class="logo" href="../../index.html">E-Learning</a>
+    <a href="../../index.html" class="back-btn btn-primary btn">Back Home</a>
+  </header>
+
+  <div class="auth-container">
+    <div class="auth-hero">
+      <h1>Verify Your Email</h1>
+      <p>We've sent a 6-digit code to your email.</p>
+      <p>Please enter it below to verify your identity.</p>
+    </div>
+
+    <div class="auth-content">
+      <form id="otpForm" class="auth-form">
+        <h2>Enter OTP Code</h2>
+
+        <div class="form-group">
+          <label for="otp">6-digit OTP Code</label>
+          <input type="text" id="otp" placeholder="Enter OTP code" maxlength="6" required>
+          <div id="otpError" class="error-message"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-btn">Verify Code</button>
+
+        <div class="form-footer">
+          <p>Didn't receive code? <a href="#" id="resendOtp">Resend OTP</a></p>
+          <p><a href="../login/indexLogin.html">Back to Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="../shared/auth-validation.js"></script>
+  <script type="module" src="otp-verification.js"></script>
+</body>
+</html>
