@@ -1,0 +1,23 @@
+.course-toolbar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .search-bar {
+    display: flex;
+    flex-grow: 1;
+  }
+  
+  .search-bar input {
+    flex-grow: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  }
+  
+  .filter-dropdown {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+  }

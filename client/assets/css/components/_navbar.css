@@ -1,0 +1,135 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) 0;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: var(--space-lg);
+  }
+  
+  .nav-link {
+    color: var(--dark);
+    font-weight: 500;
+    transition: var(--transition-fast);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+  }
+  
+  .nav-link:hover {
+    color: var(--primary);
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-toggle {
+    background-color: var(--primary);
+    color: white;
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    display: none;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+    border-radius: var(--radius-sm);
+  }
+  
+  .dropdown-menu.show {
+    display: block;
+  }
+  
+  .dropdown-menu button {
+    width: 100%;
+    text-align: left;
+    padding: var(--space-sm) var(--space-md);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--dark);
+  }
+  
+  .dropdown-menu button:hover {
+    background-color: var(--light-gray);
+  }
+
+
+
+  /* Profile Dropdown */
+.user-profile {
+  position: relative;
+  display: inline-block;
+  margin-left: auto;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--primary-light);
+  transition: transform 0.3s ease;
+}
+
+.profile-pic:hover {
+  transform: scale(1.1);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: var(--dark);
+  padding: var(--space-sm) var(--space-md);
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--light-gray);
+}
+
+.profile-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.notification-bell {
+  position: relative;
+  margin-right: 1rem;
+}
+
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--danger);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

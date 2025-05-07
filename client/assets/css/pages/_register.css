@@ -1,0 +1,263 @@
+    /* Registration Page Styles */
+.auth-container.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  gap: 2rem;
+}
+
+.auth-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+}
+
+.auth-hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.auth-hero p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 80%;
+}
+
+.auth-content {
+  display: flex;
+  align-items: center;
+  padding: 4rem 2rem;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.auth-form h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+}
+
+/* Role Selection Styles */
+.role-selection {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.role-option {
+  flex: 1;
+  padding: 1.5rem 1rem;
+  border: 2px solid var(--light-gray);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  background-color: white;
+}
+
+.role-option:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.role-option.selected {
+  border-color: var(--primary);
+  background-color: var(--primary-lightest);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
+}
+
+.role-option input {
+  display: none;
+}
+
+.role-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--gray);
+  transition: all 0.3s ease;
+}
+
+.role-option.selected .role-icon {
+  color: var(--primary);
+}
+
+.role-option h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.role-option p {
+  font-size: 0.9rem;
+  color: var(--gray);
+  margin: 0;
+}
+
+/* Form Layout Styles */
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  outline: none;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Tutor Specific Fields */
+.tutor-fields {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--lightest-gray);
+  border-radius: var(--radius-md);
+  animation: fadeIn 0.3s ease;
+}
+
+/* Terms Checkbox */
+.form-check {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.form-check input {
+  margin-right: 0.75rem;
+}
+
+.form-check label {
+  font-size: 0.9rem;
+  color: var(--gray-dark);
+}
+
+.form-check a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.form-check a:hover {
+  text-decoration: underline;
+}
+
+/* Button Styles */
+.auth-btn {
+  width: 100%;
+  padding: 0.875rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+}
+
+/* Form Footer */
+.form-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--gray);
+}
+
+.form-footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Error Messages */
+.error-message {
+  color: var(--danger);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  height: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .auth-container.split-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .auth-hero {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .auth-hero p {
+    max-width: 100%;
+  }
+  
+  .auth-content {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .role-selection {
+    flex-direction: column;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .auth-form h2 {
+    font-size: 1.75rem;
+  }
+}

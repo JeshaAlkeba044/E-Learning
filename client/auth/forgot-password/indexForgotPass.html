@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password - E-Learning</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../shared/auth-styles.css">
+</head>
+<body>
+  <header class="auth-header">
+    <a class="logo" href="../../index.html">E-Learning</a>
+    <a href="../../index.html" class="btn btn-primary back-btn">Back Home</a>
+  </header>
+
+  <div class="auth-container">
+    <div class="auth-hero">
+      <h1>Reset Password</h1>
+      <p>Enter your registered email below.</p>
+      <p>We'll help you recover access to your account.</p>
+    </div>
+
+    <div class="auth-content">
+      <form id="forgotPasswordForm" class="auth-form">
+        <h2>Forgot Password</h2>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" placeholder="Enter your email" required>
+          <div id="emailError" class="error-message"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-btn">Send Reset Link</button>
+
+        <div class="form-footer">
+          <p><a href="../login/indexLogin.html">Back to Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../shared/auth-validation.js"></script>
+  <script type="module" src="forgot-password.js"></script>
+</body>
+</html>

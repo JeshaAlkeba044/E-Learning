@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning Platform | Belajar Keterampilan Digital</title>
+    <!-- <link rel="stylesheet" href="assets/css/styles.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- Header dengan Navigasi -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-graduation-cap"></i> 
+                    <span>EduPlus</span>
+                </a>
+                
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#courses">Kursus</a></li>
+                        <li><a href="#features">Fitur</a></li>
+                        <li><a href="#testimonials">Testimoni</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="auth/login/indexLogin.html" class="btn btn-outline">Masuk</a>
+                    <a href="auth/register/indexRegister.html" class="btn btn-primary">Daftar</a>
+                </div>
+
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Tingkatkan Keterampilan Digital Anda</h1>
+                    <p>Belajar dari para ahli dengan kurikulum terstruktur dan proyek nyata untuk karir masa depan Anda.</p>
+                    <div class="hero-cta">
+                        <a href="#courses" class="btn btn-primary btn-lg">Jelajahi Kursus</a>
+                        <a href="#features" class="btn btn-outline btn-lg">Pelajari Lebih Lanjut</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="assets/img/cat-2.jpg" alt="Belajar Online" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses -->
+    <section id="courses" class="featured-courses">
+        <div class="container">
+            <div class="section-header">
+                <h2>Kursus Populer</h2>
+                <p>Pilih dari berbagai kursus berkualitas tinggi yang diajarkan oleh para profesional industri.</p>
+            </div>
+            
+            <div class="course-grid">
+                <!-- Course 1 -->
+                <div class="course-card">
+                    <div class="course-badge">Terpopuler</div>
+                    <div class="course-image">
+                        <img src="assets/img/cat-1.jpg" alt="Web Development" loading="lazy">
+                    </div>
+                    <div class="course-content">
+                        <div class="course-category">Teknologi</div>
+                        <h3>Web Development Modern</h3>
+                        <div class="course-meta">
+                            <span><i class="fas fa-user"></i> John Doe</span>
+                            <span><i class="fas fa-star"></i> 4.9 (128)</span>
+                        </div>
+                        <p>Pelajari HTML, CSS, JavaScript, dan framework modern untuk menjadi web developer profesional.</p>
+                        <div class="course-footer">
+                            <span class="price">Rp 299.000</span>
+                            <a href="auth/login/indexLogin.html" class="btn btn-enroll">Daftar Sekarang</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 2 -->
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="assets/img/UI UX Design Illustration.jpg" alt="UI/UX Design" loading="lazy">
+                    </div>
+                    <div class="course-content">
+                        <div class="course-category">Desain</div>
+                        <h3>UI/UX Design Fundamental</h3>
+                        <div class="course-meta">
+                            <span><i class="fas fa-user"></i> Jane Smith</span>
+                            <span><i class="fas fa-star"></i> 4.8 (95)</span>
+                        </div>
+                        <p>Kuasi prinsip desain antarmuka dan pengalaman pengguna dengan Figma dan Adobe XD.</p>
+                        <div class="course-footer">
+                            <span class="price">Rp 249.000</span>
+                            <a href="auth/login/indexLogin.html" class="btn btn-enroll">Daftar Sekarang</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 3 -->
+                <div class="course-card">
+                    <div class="course-badge">Baru</div>
+                    <div class="course-image">
+                        <img src="assets/img/Design Thinking.jpg" alt="Data Science" loading="lazy">
+                    </div>
+                    <div class="course-content">
+                        <div class="course-category">Data</div>
+                        <h3>Data Science untuk Pemula</h3>
+                        <div class="course-meta">
+                            <span><i class="fas fa-user"></i> Michael Brown</span>
+                            <span><i class="fas fa-star"></i> 4.7 (76)</span>
+                        </div>
+                        <p>Pengantar ilmu data dengan Python, Pandas, dan visualisasi data dasar.</p>
+                        <div class="course-footer">
+                            <span class="price">Rp 349.000</span>
+                            <a href="auth/login/indexLogin.html" class="btn btn-enroll">Daftar Sekarang</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="auth/login/indexLogin.html" class="btn btn-outline btn-lg">Lihat Semua Kursus</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Mengapa Memilih Kami?</h2>
+                <p>Platform pembelajaran online terbaik dengan berbagai keunggulan.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Konten Berkualitas</h3>
+                    <p>Materi kursus terus diperbarui sesuai perkembangan teknologi terbaru.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Instruktur Berpengalaman</h3>
+                    <p>Belajar langsung dari praktisi industri dengan pengalaman nyata.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3>Sertifikat Penyelesaian</h3>
+                    <p>Dapatkan sertifikat resmi setelah menyelesaikan kursus.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Diskusi Langsung</h3>
+                    <p>Konsultasi dengan mentor melalui forum diskusi khusus.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Proyek Nyata</h3>
+                    <p>Praktik langsung dengan studi kasus dunia nyata.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Akses Fleksibel</h3>
+                    <p>Belajar kapan saja dan di mana saja melalui perangkat apapun.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Apa Kata Mereka?</h2>
+                <p>Testimoni dari siswa yang telah bergabung dengan kami.</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p>"Kursus web developmentnya lengkap dan mudah dipahami. Saya bisa membuat website pertama hanya dalam 2 minggu!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="assets/img/team-1.jpg" alt="Andi Wijaya" loading="lazy">
+                        <div>
+                            <h4>Andi Wijaya</h4>
+                            <span>Frontend Developer</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p>"Materi UI/UX design sangat aplikatif. Saya langsung bisa menerapkan di pekerjaan freelance saya."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="assets/img/team-2.jpg" alt="Siti Rahma" loading="lazy">
+                        <div>
+                            <h4>Siti Rahma</h4>
+                            <span>UI Designer</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p>"Platformnya sangat user friendly. Saya bisa belajar data science sambil bekerja full-time."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="assets/img/team-3.jpg" alt="Budi Santoso" loading="lazy">
+                        <div>
+                            <h4>Budi Santoso</h4>
+                            <span>Data Analyst</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Siap Memulai Perjalanan Belajar Anda?</h2>
+                <p>Bergabunglah dengan ribuan siswa lainnya dan raih keterampilan baru hari ini.</p>
+                <div class="cta-buttons">
+                    <a href="auth/register/indexRegister2.html" class="btn btn-primary btn-lg">Daftar Sekarang</a>
+                    <a href="auth/login/indexLogin.html" class="btn btn-outline btn-lg">Lihat Kursus</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-graduation-cap"></i> 
+                        <span>EduPlus</span>
+                    </a>
+                    <p>Platform pembelajaran online terbaik untuk mengembangkan keterampilan digital Anda.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Kursus</h3>
+                    <ul>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">UI/UX Design</a></li>
+                        <li><a href="#">Data Science</a></li>
+                        <li><a href="#">Mobile Development</a></li>
+                        <li><a href="#">Digital Marketing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Perusahaan</h3>
+                    <ul>
+                        <li><a href="#">Tentang Kami</a></li>
+                        <li><a href="#">Karir</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Mitra</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h3>Hubungi Kami</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> hello@eduplus.com</li>
+                        <li><i class="fas fa-phone"></i> +62 123 4567 890</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Bandung, Indonesia</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 EduPlus. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mainNav = document.querySelector('.main-nav');
+        
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on nav links
+        document.querySelectorAll('.main-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

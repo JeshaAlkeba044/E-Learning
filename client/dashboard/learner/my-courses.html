@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kursus Saya - EduPlus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ========== VARIABLES ========== */
+        :root {
+            /* Colors */
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3f37c9;
+            --secondary: #f72585;
+            --accent: #4cc9f0;
+            --success: #38b000;
+            --warning: #ffaa00;
+            --danger: #ef233c;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --white: #ffffff;
+            --black: #000000;
+            --sidebar-bg: #2b2d42;
+            --sidebar-active: #3a3d5d;
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        /* ========== BASE STYLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+            overflow-x: hidden;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            color: var(--white);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: var(--space-xl) 0;
+        }
+
+        .sidebar-header {
+            padding: 0 var(--space-lg);
+            margin-bottom: var(--space-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-logo i {
+            margin-right: var(--space-sm);
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-nav a {
+            padding: var(--space-sm) var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            transition: var(--transition-fast);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .sidebar-nav a:hover, 
+        .sidebar-nav a.active {
+            background-color: var(--sidebar-active);
+            color: var(--white);
+        }
+
+        .sidebar-nav a i {
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-nav a.active {
+            border-left: 3px solid var(--accent);
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            padding: var(--space-xl) 0;
+            width: 100%;
+        }
+
+        /* Header */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            padding: 0 var(--space-md);
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition-fast);
+        }
+
+        .notification-bell:hover {
+            color: var(--primary);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: var(--white);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+        }
+
+        .profile-name {
+            font-weight: 500;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: var(--white);
+            min-width: 200px;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-md);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        .profile-dropdown a {
+            padding: var(--space-sm) var(--space-md);
+            display: block;
+            color: var(--dark);
+            transition: var(--transition-fast);
+        }
+
+        .profile-dropdown a:hover {
+            background-color: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .user-profile:hover .profile-dropdown {
+            display: block;
+        }
+
+        /* Course Tabs */
+        .course-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: var(--space-xl);
+        }
+
+        .tab-btn {
+            padding: var(--space-sm) var(--space-lg);
+            cursor: pointer;
+            position: relative;
+            color: var(--gray);
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        /* Course List */
+        .course-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .course-item {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-normal);
+        }
+
+        .course-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .course-badge {
+            position: absolute;
+            top: var(--space-md);
+            left: var(--space-md);
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .course-thumbnail {
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .course-item:hover .course-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .course-details {
+            padding: var(--space-lg);
+        }
+
+        .course-category {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            margin-bottom: var(--space-sm);
+            color: var(--dark);
+        }
+
+        .course-instructor {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .progress-container {
+            margin-bottom: var(--space-md);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-xs);
+            font-size: 0.9rem;
+        }
+
+        .progress-percent {
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: var(--light-gray);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success);
+            border-radius: 3px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .course-meta i {
+            margin-right: var(--space-xs);
+        }
+
+        .course-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .btn-continue {
+            flex: 1;
+            padding: var(--space-sm);
+            background-color: var(--primary);
+            color: var(--white);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+
+        .btn-continue:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-more {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            background-color: var(--light-gray);
+            color: var(--gray);
+            transition: var(--transition-fast);
+        }
+
+        .btn-more:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: var(--space-xl) 0;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--light-gray);
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            margin-bottom: var(--space-sm);
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: var(--space-lg);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-explore {
+            padding: var(--space-sm) var(--space-lg);
+            background-color: var(--primary);
+            color: var(--white);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+
+        .btn-explore:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* ========== DARK MODE ========== */
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .sidebar {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .main-content {
+            background-color: #121212;
+        }
+
+        .dark-mode .course-item,
+        .dark-mode .profile-dropdown {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .course-title {
+            color: #ffffff;
+        }
+
+        .dark-mode .course-category,
+        .dark-mode .course-instructor,
+        .dark-mode .course-meta {
+            color: #b0b0b0;
+        }
+
+        .dark-mode .profile-dropdown a {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .profile-dropdown a:hover {
+            background-color: #333;
+        }
+
+        .dark-mode .btn-more {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+
+        /* ========== RESPONSIVE STYLES ========== */
+        @media (max-width: 992px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -240px;
+                height: 100vh;
+                z-index: 1000;
+                transition: var(--transition-normal);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                padding-top: 80px;
+            }
+
+            .menu-toggle {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 30px;
+                height: 21px;
+                cursor: pointer;
+                z-index: 1001;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+            }
+
+            .menu-toggle span {
+                display: block;
+                height: 3px;
+                width: 100%;
+                background: var(--primary);
+                border-radius: 3px;
+                transition: var(--transition-normal);
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .course-list {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .course-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: var(--space-xs);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .course-list {
+                grid-template-columns: 1fr;
+            }
+
+            .user-actions {
+                gap: var(--space-sm);
+            }
+
+            .profile-name {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduPlus</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="my-courses.html" class="active">
+                <i class="fas fa-book-open"></i>
+                <span>Kursus Saya</span>
+            </a>
+            <a href="progress.html">
+                <i class="fas fa-chart-line"></i>
+                <span>Progress Belajar</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <div class="main-header">
+            <div class="page-title">
+                <h1>Kursus Saya</h1>
+                <p>Kelola semua kursus yang Anda ikuti</p>
+            </div>
+            
+            <div class="user-actions">
+                
+                <div class="user-profile">
+                    <img src="../assets/images/profile-placeholder.jpg" alt="Profile" class="profile-pic">
+                    <span class="profile-name">John Doe</span>
+                    
+                    <div class="profile-dropdown">
+                        <a href="profile.html">
+                            <i class="fas fa-user"></i> Profil Saya
+                        </a>
+                        <a href="../auth/login/indexLogin.html">
+                            <i class="fas fa-sign-out-alt"></i> Keluar
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Course Content -->
+        <div class="container">
+            <!-- Course Tabs -->
+            <div class="course-tabs">
+                <div class="tab-btn active" data-tab="all">Semua Kursus</div>
+                <div class="tab-btn" data-tab="in-progress">Dalam Proses</div>
+                <div class="tab-btn" data-tab="completed">Selesai</div>
+                <div class="tab-btn" data-tab="saved">Tersimpan</div>
+            </div>
+            
+            <!-- Course List -->
+            <div class="course-list">
+                <!-- Course 1 -->
+                <div class="course-item" data-course="in-progress">
+                    <div class="course-thumbnail">
+                        <img src="../img/UI UX Design Illustration.jpg" alt="UI/UX Design">
+                        <div class="course-badge">Aktif</div>
+                    </div>
+                    
+                    <div class="course-details">
+                        <div class="course-category">Desain</div>
+                        <h3 class="course-title">UI/UX Design Fundamental</h3>
+                        <p class="course-instructor">Oleh Jane Smith</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span class="progress-percent">75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="course-meta">
+                            <span><i class="fas fa-book"></i> 6/8 Modul</span>
+                            <span><i class="fas fa-clock"></i> 15/20 Jam</span>
+                        </div>
+                        
+                        <div class="course-actions">
+                            <a href="course-detail.html" class="btn-continue">Lanjutkan</a>
+                            <button class="btn-more">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course 2 -->
+                <div class="course-item" data-course="in-progress">
+                    <div class="course-thumbnail">
+                        <img src="../img/Free Vector _ Space icons.jpg" alt="Web Development">
+                    </div>
+                    
+                    <div class="course-details">
+                        <div class="course-category">Pemrograman</div>
+                        <h3 class="course-title">Web Development Modern</h3>
+                        <p class="course-instructor">Oleh John Doe</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span class="progress-percent">45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="course-meta">
+                            <span><i class="fas fa-book"></i> 5/12 Modul</span>
+                            <span><i class="fas fa-clock"></i> 8/30 Jam</span>
+                        </div>
+                        
+                        <div class="course-actions">
+                            <a href="course-detail.html" class="btn-continue">Lanjutkan</a>
+                            <button class="btn-more">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course 3 -->
+                <div class="course-item" data-course="completed">
+                    <div class="course-thumbnail">
+                        <img src="../img/course-datascience.jpg" alt="Data Science">
+                        <div class="course-badge">Selesai</div>
+                    </div>
+                    
+                    <div class="course-details">
+                        <div class="course-category">Data Science</div>
+                        <h3 class="course-title">Data Science untuk Pemula</h3>
+                        <p class="course-instructor">Oleh Michael Brown</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span class="progress-percent">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="course-meta">
+                            <span><i class="fas fa-book"></i> 10/10 Modul</span>
+                            <span><i class="fas fa-clock"></i> 40/40 Jam</span>
+                        </div>
+                        
+                        <div class="course-actions">
+                            <a href="course-detail.html" class="btn-continue">Lihat Sertifikat</a>
+                            <button class="btn-more">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course 4 -->
+                <div class="course-item" data-course="saved">
+                    <div class="course-thumbnail">
+                        <img src="../img/course-digitalmarketing.jpg" alt="Digital Marketing">
+                        <div class="course-badge">Tersimpan</div>
+                    </div>
+                    
+                    <div class="course-details">
+                        <div class="course-category">Marketing</div>
+                        <h3 class="course-title">Digital Marketing Mastery</h3>
+                        <p class="course-instructor">Oleh Sarah Johnson</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span class="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="course-meta">
+                            <span><i class="fas fa-book"></i> 0/8 Modul</span>
+                            <span><i class="fas fa-clock"></i> 0/25 Jam</span>
+                        </div>
+                        
+                        <div class="course-actions">
+                            <a href="course-detail.html" class="btn-continue">Mulai Belajar</a>
+                            <button class="btn-more">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Empty State Example (hidden by default) -->
+                <div class="empty-state" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Anda belum memiliki kursus</h3>
+                    <p>Temukan kursus menarik untuk mulai belajar dan tingkatkan keterampilan Anda</p>
+                    <a href="../course.html" class="btn-explore">Jelajahi Kursus</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            sidebar.classList.toggle('active');
+        });
+
+        // Tab Functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const courseItems = document.querySelectorAll('.course-item');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active tab
+                tabBtns.forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const tab = btn.dataset.tab;
+                
+                // Filter courses
+                if (tab === 'all') {
+                    courseItems.forEach(item => item.style.display = 'block');
+                    document.querySelector('.empty-state').style.display = 'none';
+                } else {
+                    let hasItems = false;
+                    courseItems.forEach(item => {
+                        if (item.dataset.course === tab) {
+                            item.style.display = 'block';
+                            hasItems = true;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                    
+                    // Show empty state if no items
+                    document.querySelector('.empty-state').style.display = hasItems ? 'none' : 'flex';
+                }
+            });
+        });
+
+        // More Options Dropdown
+        document.querySelectorAll('.btn-more').forEach(btn => {
+            const dropdown = document.createElement('div');
+            dropdown.className = 'more-dropdown';
+            dropdown.innerHTML = `
+                <a href="#"><i class="fas fa-bookmark"></i> Simpan</a>
+                <a href="#"><i class="fas fa-share"></i> Bagikan</a>
+                <a href="#" class="danger"><i class="fas fa-trash"></i> Hapus</a>
+            `;
+            
+            btn.parentElement.appendChild(dropdown);
+            
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.more-dropdown').forEach(d => {
+                    if (d !== dropdown) d.style.display = 'none';
+                });
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+        
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.more-dropdown').forEach(d => {
+                d.style.display = 'none';
+            });
+        });
+
+        // Close sidebar when clicking on nav links (mobile)
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    menuToggle.classList.remove('active');
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
