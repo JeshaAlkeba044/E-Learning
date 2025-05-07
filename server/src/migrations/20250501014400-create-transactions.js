@@ -5,9 +5,9 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('transactions', {
       id_transaction: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: Sequelize.UUIDV4,
       },
       transaction_date: {
         type: Sequelize.DATE,
@@ -28,7 +28,7 @@ module.exports = {
         defaultValue: 'pending',
       },
       id_user: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: 'users',
@@ -38,7 +38,7 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       id_course: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: 'courses',

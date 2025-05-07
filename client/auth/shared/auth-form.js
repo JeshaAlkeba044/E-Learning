@@ -1,11 +1,9 @@
-export async function handleAuthForm(data, endpoint, redirectUrl) {
+export async function handleAuthForm(data, idForm, endpoint, redirectUrl_1, redirectUrl_2, redirectUrl_3) {
     
+    const form = document.getElementById(idForm);
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-  
-      console.log('Data to send:', data); // Debugging
-      
+            
       try {
         const response = await fetch(`http://localhost:3000/api/auth/${endpoint}`, {
           method: 'POST',
@@ -25,11 +23,21 @@ export async function handleAuthForm(data, endpoint, redirectUrl) {
           localStorage.setItem('token', result.token);
           localStorage.setItem('user', JSON.stringify(result.user));
 
-        }
-        
-        console.log(`${endpoint} success:`, result); //debug
+          const userData = JSON.stringify(result.user);
 
-        window.location.href = redirectUrl;
+          if(result.user.role === 'tutor'){
+            window.location.href = redirectUrl_1;
+            return
+          }else if(result.user.role === 'learner'){
+            window.location.href = redirectUrl_2;
+            return
+          }else{
+            window.location.href = redirectUrl_3;
+            return
+          }
+        }
+
+        window.location.href = redirectUrl_1;
         
       } catch (error) {
         console.error(`${endpoint} error:`, error.message);

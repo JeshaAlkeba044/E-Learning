@@ -5,9 +5,9 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('materials', {
       id_material: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: Sequelize.UUIDV4,
       },
       title: {
         type: Sequelize.STRING,
@@ -30,7 +30,7 @@ module.exports = {
         allowNull: false,
       },
       id_course: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: 'courses',

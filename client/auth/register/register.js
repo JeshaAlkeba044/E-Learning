@@ -111,9 +111,9 @@ import {
 
         // Redirect based on role
         if (role === 'tutor') {
-          handleAuthForm(formData, 'register', '../../dashboard/tutor/manage_course.html');
+          handleAuthForm(formData, 'registerForm', 'register', '../../dashboard/tutor/manage_course.html');
         } else {
-          handleAuthForm(formData, 'register', '../../dashboard/learner/course.html');
+          handleAuthForm(formData, 'registerForm', 'register', '../../dashboard/learner/course.html');
         }
       }
     });

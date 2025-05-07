@@ -5,9 +5,9 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('users', {
       id_user: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: Sequelize.UUIDV4,
       },
       firstName: {
         type: Sequelize.STRING,
@@ -36,13 +36,11 @@ module.exports = {
       },
       specialization: {
         type: Sequelize.STRING,
-        allowNull: false
       },
       YoE: {
         type: Sequelize.STRING,
-        allowNull: false
       },
-      linkPort: {
+      linkPorto: {
         type: Sequelize.STRING,
       },
       role: {
@@ -54,6 +52,7 @@ module.exports = {
         type: Sequelize.ENUM,
         allowNull: false,
         defaultValue: 'none',
+        values: ['subscribed', 'verified', 'none']
       },
       registration_date: {
         type: Sequelize.DATE,
