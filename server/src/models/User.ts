@@ -8,10 +8,9 @@ export class User extends Model {
   @Column({
     type: DataType.UUID,
     primaryKey: true,
-    autoIncrement: true,
     defaultValue: v4(),
   })
-  id_user!: number;
+  id_user!: string;
 
   @Column({
     type: DataType.STRING,
@@ -87,7 +86,6 @@ export class User extends Model {
     type: DataType.DATE,
     allowNull: false,
     defaultValue: DataType.NOW,
-    field: 'created_at',
   })
   registration_date!: Date;
 

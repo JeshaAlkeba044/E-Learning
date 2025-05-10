@@ -1,14 +1,15 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { Course } from './Course';
+import { v4 } from 'uuid';
 
 @Table({ tableName: 'materials' })
 export class Material extends Model {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: v4(),
   })
-  id_material!: number;
+  id_material!: string;
 
   @Column({
     type: DataType.STRING,
@@ -43,10 +44,10 @@ export class Material extends Model {
   // Relasi: Material dimiliki oleh 1 Course
   @ForeignKey(() => Course)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  id_course!: number;
+  id_course!: string;
 
   @BelongsTo(() => Course)
   course!: Course;

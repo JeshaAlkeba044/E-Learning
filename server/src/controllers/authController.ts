@@ -9,26 +9,19 @@ import { decrypt, encrypt, hashEmail } from '../utils/cryptoUtil';
 // Register dengan OTP
 export const register = async (req: Request, res: Response) => {
   const { firstName, lastName, email, password, role, specialization, experience, bio, portofolio } = req.body;
-
+  
+  console.log('Request body:', req.body); // debug
   // Encrypt data
   const emailHashed = hashEmail(email);
   const firstNameEncrypted = encrypt(firstName);
   const lastNameEncrypted = encrypt(lastName);
   const roleEncrypted = encrypt(role);
-  const specializationEncrypted = encrypt(specialization);
-  const experienceEncrypted = encrypt(experience);
-  const bioEncrypted = encrypt(bio);
-  const portofolioEncrypted = encrypt(portofolio);
+  const specializationEncrypted = specialization !== undefined? encrypt(specialization) : null;
+  const experienceEncrypted = experience !== undefined? encrypt(experience) : null;
+  const bioEncrypted = bio !== undefined? encrypt(bio) : null;
+  const portofolioEncrypted = portofolio !== undefined? encrypt(portofolio) : null;
 
-  console.log('Request body:', req.body); // debug
   try {
-    // Validasi email
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(email)) {
-    //     res.status(400).json({ message: 'Invalid email format' });
-    //     return 
-    // }
-
     // Cek apakah email sudah terdaftar
     const existingUser = await User.findOne({ where: { email:emailHashed } });
     if (existingUser) {
@@ -112,35 +105,37 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Cek apakah email sudah diverifikasi
-    if (user.statusUser !== 'none') {
-        res.status(403).json({ message: 'Email not verified. Please check your email for OTP.' });
-        return 
-    }
+    // if (user.statusUser !== 'none') {
+    //     res.status(403).json({ message: 'Email not verified. Please check your email for OTP.' });
+    //     return 
+    // }
 
     // Generate token
-    // const token = generateToken(user);
+    const token = generateToken(user);
 
     console.log("ID user: ", user.id_user,
       "\nFirst Name: ", decrypt(user.firstName),
       "\nLast Name: ", decrypt(user.lastName),
       "\nEmail: ", hashEmail(user.email),
-      "\nSpecialization: ", decrypt(user.specialization),
-      "\nRole: ", user.role); // di database perlu membuat 2 kolom yaitu hashed_email dan encrypt_email
+      "\nSpecialization: ", user.specialization !== null ? decrypt(user.specialization) : null,
+      "\nRole: ", user.role,
+      "\nToken: ", token
+    ); // di database perlu membuat 2 kolom yaitu hashed_email dan encrypt_email
 
 
     res.status(200).json({
       message: 'Login successful',
-      // token,
+      token,
       user: {
         id: user.id_user,
         firstName: decrypt(user.firstName),
         lastName: decrypt(user.lastName),
         email: hashEmail(user.email),
-        role: user.role,
-        specialization: user.specialization,
-        YoE: user.YoE,
-        bio: user.bio,
-        portofolio: user.linkPorto,
+        role: decrypt(user.role),
+        specialization: user.specialization !== null? decrypt(user.specialization) : null,
+        YoE: user.YoE !== null ? decrypt(user.YoE) : null,
+        bio: user.bio !== null ? decrypt(user.bio) : null,
+        portofolio: user.linkPorto !== null ? decrypt(user.linkPorto) : null,
       },
     });
   } catch (error) {

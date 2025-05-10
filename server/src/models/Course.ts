@@ -2,15 +2,16 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany } from '
 import { User } from './User';
 import { Material } from './Material';
 import { Transaction } from './Transaction';
+import { v4 } from 'uuid';
 
 @Table({ tableName: 'courses' })
 export class Course extends Model {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: v4(),
   })
-  id_course!: number;
+  id_course!: string;
 
   @Column({
     type: DataType.STRING,
@@ -52,10 +53,10 @@ export class Course extends Model {
   // Relasi: Course dimiliki oleh 1 User (instructor)
   @ForeignKey(() => User)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  id_user!: number;
+  id_user!: string;
 
   @BelongsTo(() => User)
   instructor!: User;

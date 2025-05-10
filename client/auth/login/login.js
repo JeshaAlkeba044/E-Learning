@@ -46,12 +46,7 @@ import {
           password: password
         }
 
-        // Redirect based on role
-        if (role === 'tutor') {
-          handleAuthForm(dataForm, 'login', '../../dashboard/tutor/manage_course.html');
-        } else {
-          handleAuthForm(dataForm, 'login', '../../dashboard/learner/course.html');
-        }
+        handleAuthForm(dataForm, 'loginForm', 'login', '../../dashboard/tutor/manage_course.html', '../../dashboard/learner/course.html');
       }
     });
   });
