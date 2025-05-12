@@ -688,6 +688,20 @@
             </div>
 
             <div class="form-group">
+              <label for="linkPorto" class="form-label"
+                >Link Portofolio/ LinkedIn</label
+              >
+              <input type="text" id="linkPorto" class="form-control" value="" />
+            </div>
+
+            <div class="form-group">
+              <label for="bio" class="form-label">Bio</label>
+              <textarea id="bio" class="form-control">
+Frontend Developer | UI/UX Enthusiast | Passionate about creating beautiful and functional user experiences</textarea
+              >
+            </div>
+
+            <div class="form-group">
               <label class="form-label">Profile Photo</label>
               <div class="file-upload">
                 <img
@@ -742,6 +756,8 @@
         const firstNameInput = document.getElementById("firstName");
         const lastNameInput = document.getElementById("lastName");
         const emailInput = document.getElementById("email");
+        const bioInput = document.getElementById("bio");
+        const linkPortoInput = document.getElementById("linkPorto");
         const logoutLink = document.querySelector('a[href*="indexLogin.html"]');
 
         // Token dari localStorage
@@ -784,6 +800,8 @@
           firstNameInput.value = user.firstName || "";
           lastNameInput.value = user.lastName || "";
           emailInput.value = user.email || "";
+          bioInput.value = user.bio || "";
+          linkPortoInput.value = user.portofolio || "";
 
           sidebarName.textContent = `${user.firstName || ""} ${
             user.lastName || ""
@@ -816,6 +834,8 @@
             const formData = {
               firstName: firstNameInput.value,
               lastName: lastNameInput.value,
+              bio: bioInput.value,
+              portofolio: linkPortoInput.value,
             };
 
             const response = await fetch(
@@ -842,6 +862,8 @@
                 ...userData,
                 firstName: result.user.firstName,
                 lastName: result.user.lastName,
+                bio: result.user.bio,
+                portofolio: result.user.portofolio,
               };
               localStorage.setItem("user", JSON.stringify(updatedUser));
             }

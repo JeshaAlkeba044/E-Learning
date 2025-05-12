@@ -8,9 +8,19 @@ document.addEventListener('DOMContentLoaded', function() {
   const otpError = document.getElementById('otpError');
   const resendLink = document.getElementById('resendOtp');
   
-  form.addEventListener('submit', function(e) {
+  // Ambil email dari localStorage atau URL
+  const email = localStorage.getItem('resetEmail') || new URLSearchParams(window.location.search).get('email');
+  
+  if (!email) {
+    window.location.href = '../forgot-password/indexForgotPass.html';
+    return;
+  }
+
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
     const otp = document.getElementById('otp').value;
+
+    console.log('email:', email); //debugging
     
     // Reset error
     hideError(otpError);
@@ -21,14 +31,64 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     
-    // In a real app, you would verify the OTP with your backend
-    // For demo, we'll just redirect to reset password page
-    window.location.href = 'indexResetPass.html';
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/verify-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          otp: otp
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'OTP verification failed');
+      }
+
+      // Jika dari forgot password, redirect ke reset password
+      const source = localStorage.getItem('otpSource');
+
+      if (source === 'forgot-password') {
+        window.location.href = 'indexResetPass.html';
+      } else {
+        alert('Email verified successfully! You can now login.');
+
+        // Clear localStorage
+        localStorage.removeItem('otpSource');
+        localStorage.removeItem('resetEmail');
+
+        window.location.href = '../login/indexLogin.html';
+      }
+
+    } catch (error) {
+      showError(otpError, error.message);
+    }
   });
   
   // Resend OTP functionality
-  resendLink.addEventListener('click', function(e) {
+  resendLink.addEventListener('click', async function(e) {
     e.preventDefault();
-    alert('A new OTP code has been sent to your email.');
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to resend OTP');
+      }
+
+      alert('A new OTP code has been sent to your email.');
+    } catch (error) {
+      alert(error.message);
+    }
   });
 });

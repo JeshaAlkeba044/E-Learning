@@ -123,6 +123,8 @@
     </div>
   </div>
 
+  <script type="module" src="reset-password.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Password toggle functionality
@@ -179,12 +181,6 @@
           isValid = false;
         }
         
-        if (isValid) {
-          // In a real app, you would send the new password to your backend
-          // For demo, we'll show a success message and redirect to login
-          alert('Password has been reset successfully!');
-          window.location.href = '/auth/login';
-        }
       });
       
       // Password validation functions

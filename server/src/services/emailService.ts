@@ -10,15 +10,15 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendOTPEmail = async (email: string, otp: string) => {
-  const mailOptions = {
-    from: 'richiewidjaya276@gmail.com',
-    to: email,
-    subject: 'OTP for E-Learning Verification',
-    text: `Your OTP is: ${otp}. Valid for 5 minutes.`,
-  };
+  // const mailOptions = {
+  //   from: 'richiewidjaya276@gmail.com',
+  //   to: email,
+  //   subject: 'OTP for E-Learning Verification',
+  //   text: `Your OTP is: ${otp}. Valid for 5 minutes.`,
+  // };
 
   try {
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
     console.log(`OTP sent to ${email}: ${otp}`); // Log untuk testing
   } catch (error) {
     console.error('Error sending OTP:', error);
