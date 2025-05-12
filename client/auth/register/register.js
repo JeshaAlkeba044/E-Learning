@@ -113,7 +113,7 @@ import {
         if (role === 'tutor') {
           handleAuthForm(formData, 'registerForm', 'register', '../../dashboard/tutor/manage_course.html');
         } else {
-          handleAuthForm(formData, 'registerForm', 'register', '../../dashboard/learner/course.html');
+          handleAuthForm(formData, 'registerForm', 'register', '../../dashboard/learner/LearnerDashboard.html');
         }
       }
     });

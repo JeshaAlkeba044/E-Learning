@@ -21,6 +21,12 @@ export class Course extends Model {
 
   @Column({
     type: DataType.STRING,
+    allowNull: false,
+  })
+  category!: string;
+
+  @Column({
+    type: DataType.STRING,
   })
   thumbnail_path!: string;
 
@@ -44,6 +50,13 @@ export class Course extends Model {
   created_at!: Date;
 
   @Column({
+    type: DataType.DATE,
+    allowNull: false,
+    defaultValue: DataType.NOW,
+  })
+  updated_at!: Date;
+
+  @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: true,
@@ -59,13 +72,13 @@ export class Course extends Model {
   id_user!: string;
 
   @BelongsTo(() => User)
-  instructor!: User;
+  instructor_Id!: User;
 
   // Relasi: 1 Course memiliki banyak Material
   @HasMany(() => Material)
-  materials!: Material[];
+  materials_id!: Material[];
 
   // Relasi: 1 Course dimiliki oleh banyak Transaction
   @HasMany(() => Transaction)
-  transactions!: Transaction[];
+  transactions_id!: Transaction[];
 }

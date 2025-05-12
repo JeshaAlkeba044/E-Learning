@@ -46,7 +46,7 @@ import {
           password: password
         }
 
-        handleAuthForm(dataForm, 'loginForm', 'login', '../../dashboard/tutor/manage_course.html', '../../dashboard/learner/course.html');
+        handleAuthForm(dataForm, 'loginForm', 'login', '../../dashboard/tutor/manage_course.html', '../../dashboard/learner/LearnerDashboard.html');
       }
     });
   });
