@@ -21,7 +21,7 @@
 
 /* Pages */
 @import url('pages/_auth.css');
-@import url('pages/_admin.css');
+/* @import url('pages/_admin.css'); */
 @import url('pages/_tutor.css');
 @import url('pages/_learner.css');
 @import url('pages/_courses.css');

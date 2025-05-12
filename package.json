@@ -15,16 +15,27 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "backend": "tsx ./server/src/app.ts",
+    "dev": "vite",
+    "migrate-create": "npx sequelize-cli migration:generate --name ",
+    "migrate-up": "npx sequelize db:migrate",
+    "migrate-down": "npx sequelize db:migrate:undo:all",
+    "build": "tsc && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@types/express": "^5.0.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
     "express": "^5.1.0",
     "mysql2": "^3.14.1",
     "pg": "^8.15.6",
     "sequelize": "^6.37.7",
     "sequelize-cli": "^6.6.3",
     "sequelize-typescript": "^2.1.6",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "uuid": "^11.1.0"
   }
 }

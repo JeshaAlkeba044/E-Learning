@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Home - Admin</title>
-    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <link rel="stylesheet" href="../../assets/css/pages/_admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
 </head>
 <body>
     <header>
         <div class="header-container">
-            <div class="logo"><a href="homeAdmin.html" style="color: #4361ee; text-decoration: none;">Admin Panel</a></div>
-            <nav class="navbar">
-                <div>
-                    <a href=""></a>
-                    <a href=""></a>
-                    <a href=""></a>
-                </div>
-            </nav>
-            <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
+            <div class="logo"><a href="homeAdmin.html">Admin Panel</a></div>
+            <div class="admin-welcome">
+                Welcome, <span class="admin-name" id="adminName">Admin</span>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button>
         </div>
     </header>
 
@@ -24,22 +22,113 @@
         <section class="admin-dashboard">
             <h2 class="section-title">Admin Dashboard</h2>
             <div class="dashboard-options">
-                <a href="verify_tutor.html" class="dashboard-card orange">
-                    <h3>Verifikasi Tutor</h3>
-                    <p>Tinjau dan setujui permintaan tutor baru.</p>
-                </a>
-                <a href="remove_tutor.html" class="dashboard-card red">
-                    <h3>Hapus Tutor</h3>
-                    <p>Kelola akun tutor dan hapus yang melanggar kebijakan.</p>
-                </a>
-                <a href="verify_trans.html" class="dashboard-card green">
-                    <h3>Verifikasi Transaksi</h3>
-                    <p>Konfirmasi pembayaran dan histori transaksi pengguna.</p>
-                </a>
+                <a href="verify_trans.html" class="dashboard-card">Verifikasi Transaksi</a>
+                <a href="list_tutor.html" class="dashboard-card">List Tutor</a>
+                <a href="verify_tutor.html" class="dashboard-card">Verifikasi Tutor</a>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <div class="stats-header">
+                <h2>Statistik Transaksi</h2>
+                <div class="stats-filters">
+                    <div class="filter-group">
+                        <label for="yearFilter">Tahun</label>
+                        <select id="yearFilter">
+                            <option value="all">Semua Tahun</option>
+                            <!-- Years will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="monthFilter">Bulan</label>
+                        <select id="monthFilter">
+                            <option value="all">Semua Bulan</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
+                    <button class="refresh-btn" id="refreshData">
+                        Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>Total Transaksi</h3>
+                    <div class="value" id="totalTransactions">0</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Pendapatan</h3>
+                    <div class="value" id="totalRevenue">Rp 0</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Rata-rata per Bulan</h3>
+                    <div class="value" id="avgMonthly">Rp 0</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Bulan Terbaik</h3>
+                    <div class="value" id="bestMonth">-</div>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-box">
+                    <h3>Pendapatan Bulanan</h3>
+                    <canvas id="revenueChart"></canvas>
+                    <div id="revenueChartLoading" class="loading">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <h3>Jumlah Transaksi</h3>
+                    <canvas id="transactionsChart"></canvas>
+                    <div id="transactionsChartLoading" class="loading hidden">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="transactions-table-container">
+                <h3>Detail Transaksi Bulanan</h3>
+                <div id="tableLoading" class="loading">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div id="tableError" class="error-message">
+                    Gagal memuat data transaksi. Silakan coba lagi nanti.
+                </div>
+                <table class="transactions-table" id="transactionsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Bulan</th>
+                            <th>Jumlah Transaksi</th>
+                            <th>Total Pendapatan</th>
+                            <th>Rata-rata per Transaksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
             </div>
         </section>
     </main>
-    
 
     <footer>
         <div class="footer-content">
@@ -62,5 +151,386 @@
             &copy; 2025 Admin Panel. All rights reserved.
         </div>
     </footer>
+
+    <script>
+        // This is where you would fetch admin name from your API
+        // Example of how you might implement this:
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace this with your actual API call
+            // fetch('/api/admin/profile')
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         document.getElementById('adminName').textContent = data.name;
+            //     })
+            //     .catch(error => console.error('Error fetching admin data:', error));
+            
+            // For demonstration, we'll just set a placeholder name
+            // Remove this when you implement the actual API call
+            document.getElementById('adminName').textContent = "Admin";
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get admin name
+            document.getElementById('adminName').textContent = "Admin";
+
+            // Chart instances
+            let revenueChart = null;
+            let transactionsChart = null;
+            
+            // Initialize and load data
+            fetchTransactionStats();
+            
+            // Event listeners
+            document.getElementById('yearFilter').addEventListener('change', fetchTransactionStats);
+            document.getElementById('monthFilter').addEventListener('change', fetchTransactionStats);
+            document.getElementById('refreshData').addEventListener('click', fetchTransactionStats);
+            
+            // Fetch transaction statistics from API
+            async function fetchTransactionStats() {
+                try {
+                    // Show loading states
+                    document.getElementById('revenueChartLoading').classList.remove('hidden');
+                    document.getElementById('transactionsChartLoading').classList.remove('hidden');
+                    document.getElementById('tableLoading').style.display = 'flex';
+                    document.getElementById('transactionsTable').style.display = 'none';
+                    document.getElementById('tableError').style.display = 'none';
+
+                    // Get filter values
+                    const yearFilter = document.getElementById('yearFilter').value;
+                    const monthFilter = document.getElementById('monthFilter').value;
+
+                    // In a real implementation, you would call your API
+                    // const response = await fetch(`/api/transactions/monthly-stats?year=${yearFilter}&month=${monthFilter}`);
+                    // const data = await response.json();
+                    
+                    // For demo, we'll simulate API response
+                    setTimeout(() => {
+                        const data = simulateApiResponse();
+                        
+                        // Filter data based on selected filters
+                        let filteredData = data;
+                        if (yearFilter !== 'all') {
+                            filteredData = filteredData.filter(item => {
+                                const itemYear = new Date(item.month).getFullYear().toString();
+                                return itemYear === yearFilter;
+                            });
+                        }
+                        
+                        if (monthFilter !== 'all') {
+                            filteredData = filteredData.filter(item => {
+                                const itemMonth = (new Date(item.month).getMonth() + 1).toString();
+                                return itemMonth === monthFilter;
+                            });
+                        }
+                        
+                        // Process and display data
+                        processTransactionData(filteredData);
+                        
+                        // Hide loading states
+                        document.getElementById('revenueChartLoading').classList.add('hidden');
+                        document.getElementById('transactionsChartLoading').classList.add('hidden');
+                        document.getElementById('tableLoading').style.display = 'none';
+                        document.getElementById('transactionsTable').style.display = 'table';
+                    }, 1000); // Simulate API delay
+                    
+                } catch (error) {
+                    console.error('Error fetching transaction stats:', error);
+                    document.getElementById('revenueChartLoading').classList.add('hidden');
+                    document.getElementById('transactionsChartLoading').classList.add('hidden');
+                    document.getElementById('tableLoading').style.display = 'none';
+                    document.getElementById('tableError').style.display = 'block';
+                }
+            }
+
+            // Process and display transaction data
+            function processTransactionData(data) {
+                // Extract chart data
+                const months = data.map(item => formatMonth(new Date(item.month)));
+                const revenues = data.map(item => item.total_amount);
+                const transactionCounts = data.map(item => item.transactions.length);
+                
+                // Update summary cards
+                const totalTransactions = transactionCounts.reduce((sum, count) => sum + count, 0);
+                const totalRevenue = revenues.reduce((sum, amount) => sum + amount, 0);
+                const avgMonthly = data.length > 0 ? totalRevenue / data.length : 0;
+                
+                let bestMonthIndex = 0;
+                let bestMonthAmount = 0;
+                revenues.forEach((amount, index) => {
+                    if (amount > bestMonthAmount) {
+                        bestMonthAmount = amount;
+                        bestMonthIndex = index;
+                    }
+                });
+                
+                document.getElementById('totalTransactions').textContent = totalTransactions.toLocaleString();
+                document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+                document.getElementById('avgMonthly').textContent = formatCurrency(avgMonthly);
+                document.getElementById('bestMonth').textContent = data.length > 0 ? months[bestMonthIndex] : '-';
+                
+                // Update charts
+                updateRevenueChart(months, revenues);
+                updateTransactionsChart(months, transactionCounts);
+                
+                // Update table
+                updateTransactionsTable(data);
+                
+                // Populate year filter if not already done
+                populateYearFilter(data);
+            }
+            
+            // Update revenue chart
+            function updateRevenueChart(months, revenues) {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                
+                if (revenueChart) {
+                    revenueChart.destroy();
+                }
+                
+                revenueChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Pendapatan Bulanan',
+                            data: revenues,
+                            backgroundColor: 'rgba(77, 182, 172, 0.2)',
+                            borderColor: '#4db6ac',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointBackgroundColor: '#4db6ac',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#4db6ac',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#e0e0e0'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return formatCurrency(context.raw);
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#b0b0b0'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#b0b0b0',
+                                    callback: function(value) {
+                                        return formatCurrency(value, true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Update transactions chart
+            function updateTransactionsChart(months, counts) {
+                const ctx = document.getElementById('transactionsChart').getContext('2d');
+                
+                if (transactionsChart) {
+                    transactionsChart.destroy();
+                }
+                
+                transactionsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Jumlah Transaksi',
+                            data: counts,
+                            backgroundColor: 'rgba(244, 67, 54, 0.7)',
+                            borderColor: '#f44336',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#e0e0e0'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#b0b0b0'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#b0b0b0',
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Update transactions table
+            function updateTransactionsTable(data) {
+                const tbody = document.getElementById('transactionsTableBody');
+                tbody.innerHTML = '';
+                
+                data.forEach(monthData => {
+                    const row = document.createElement('tr');
+                    
+                    const monthCell = document.createElement('td');
+                    monthCell.textContent = formatMonth(new Date(monthData.month));
+                    
+                    const countCell = document.createElement('td');
+                    countCell.textContent = monthData.transactions.length.toLocaleString();
+                    
+                    const revenueCell = document.createElement('td');
+                    revenueCell.textContent = formatCurrency(monthData.total_amount);
+                    
+                    const avgCell = document.createElement('td');
+                    const avgAmount = monthData.transactions.length > 0 
+                        ? monthData.total_amount / monthData.transactions.length 
+                        : 0;
+                    avgCell.textContent = formatCurrency(avgAmount);
+                    
+                    row.appendChild(monthCell);
+                    row.appendChild(countCell);
+                    row.appendChild(revenueCell);
+                    row.appendChild(avgCell);
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // If no data
+                if (data.length === 0) {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.textContent = 'Tidak ada data untuk filter yang dipilih';
+                    cell.colSpan = 4;
+                    cell.style.textAlign = 'center';
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
+                }
+            }
+            
+            // Populate year filter dropdown
+            function populateYearFilter(data) {
+                const yearFilter = document.getElementById('yearFilter');
+                
+                // Only populate if not already done
+                if (yearFilter.options.length <= 1) {
+                    const years = new Set();
+                    
+                    data.forEach(item => {
+                        const year = new Date(item.month).getFullYear();
+                        years.add(year);
+                    });
+                    
+                    const sortedYears = Array.from(years).sort((a, b) => b - a); // Descending order
+                    
+                    sortedYears.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        yearFilter.appendChild(option);
+                    });
+                }
+            }
+            
+            // Format month
+            function formatMonth(date) {
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                              'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                return `${months[date.getMonth()]} ${date.getFullYear()}`;
+            }
+            
+            // Format currency
+            function formatCurrency(amount, abbreviated = false) {
+                if (abbreviated && amount >= 1000000) {
+                    return `Rp ${(amount / 1000000).toFixed(1)}Jt`;
+                } else if (abbreviated && amount >= 1000) {
+                    return `Rp ${(amount / 1000).toFixed(1)}Rb`;
+                }
+                
+                return `Rp ${amount.toLocaleString('id-ID')}`;
+            }
+            
+            // Simulate API response (for demo only)
+            function simulateApiResponse() {
+                // Generate data for the last 12 months
+                const data = [];
+                const currentDate = new Date();
+                
+                for (let i = 11; i >= 0; i--) {
+                    const month = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+                    
+                    // Generate random transaction count (5-30)
+                    const transactionCount = Math.floor(Math.random() * 26) + 5;
+                    
+                    // Generate transactions
+                    const transactions = [];
+                    let totalAmount = 0;
+                    
+                    for (let j = 0; j < transactionCount; j++) {
+                        // Random amount between 100,000 and 1,000,000
+                        const amount = Math.floor(Math.random() * 900000) + 100000;
+                        totalAmount += amount;
+                        
+                        transactions.push({
+                            id: `TRX-${month.getFullYear()}${month.getMonth() + 1}-${j + 1}`,
+                            amount: amount,
+                            transaction_date: new Date(
+                                month.getFullYear(), 
+                                month.getMonth(), 
+                                Math.floor(Math.random() * 28) + 1
+                            )
+                        });
+                    }
+                    
+                    data.push({
+                        month: month,
+                        total_amount: totalAmount,
+                        transactions: transactions
+                    });
+                }
+                
+                return data;
+            }
+        });
+    </script>
 </body>
 </html>

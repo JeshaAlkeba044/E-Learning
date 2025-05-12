@@ -7,7 +7,7 @@ import { v4 } from 'uuid';
 @Table({ tableName: 'courses' })
 export class Course extends Model {
   @Column({
-    type: DataType.UUID,
+    type: DataType.UUIDV4,
     primaryKey: true,
     defaultValue: v4(),
   })

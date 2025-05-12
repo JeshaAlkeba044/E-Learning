@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
+    
 <head>
     <meta charset="UTF-8">
-    <title>Verifikasi Tutor</title>
+    <title>Remove Tutor</title>
     <link rel="stylesheet" href="../../assets/css/pages/_listTutor.css">
 </head>
 
@@ -12,9 +13,9 @@
             <div class="logo"><a href="homeAdmin.html" style="color: #4361ee; text-decoration: none;">Admin Panel</a></div>
             <nav class="navbar">
                 <div>
-                    <a class="active" href="verify_tutor.html">Verifikasi Tutor</a>
+                    <a href="verify_tutor.html">Verifikasi Tutor</a>
                     <a href="list_tutor.html">List Tutor</a>
-                    <a href="verify_trans.html">Verifikasi Transaksi</a>
+                    <a class="active" href="verify_trans.html">Verifikasi Transaksi</a>
                 </div>
             </nav>
             <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
@@ -23,7 +24,7 @@
 
     <main>
         <section class="verification-section">
-            <h2 class="section-title">Verifikasi Tutor Baru</h2>
+            <h2 class="section-title">List Tutor</h2>
 
             <div class="trans-list" id="tutorList">
                 <!-- Loader -->
@@ -57,22 +58,17 @@
     </footer>
 
     <script>
-    async function fetchUnverifiedTutors() {
+    async function fetchTutors() {
         try {
-            const res = await fetch('https://localhost:3000/unverifiedTutors'); // Ganti endpoint sesuai backend
+            const res = await fetch('https://localhost:3000/allTutors'); // Pastikan endpoint sudah benar
             const tutors = await res.json();
 
             const container = document.getElementById('tutorList');
-            container.innerHTML = ''; // Kosongkan dulu kontainer
-
-            if (tutors.length === 0) {
-                container.innerHTML = "<p>Tidak ada tutor yang menunggu verifikasi.</p>";
-                return;
-            }
+            container.innerHTML = ''; // Kosongkan container sebelum render ulang
 
             tutors.forEach(tutor => {
                 const tutorCard = document.createElement('div');
-                tutorCard.className = 'tutor-card orange';
+                tutorCard.className = 'tutor-card red';
 
                 const fullName = `${tutor.firstName} ${tutor.lastName}`;
                 const joinDate = new Date(tutor.registration_date).toLocaleDateString('id-ID', {
@@ -90,7 +86,7 @@
                         <div class="tutor-info">
                             <span><div class="icon icon-time"></div> Bergabung: ${joinDate}</span>
                         </div>
-                        <button class="enroll-btn" onclick="verifyTutor('${tutor.id_user}')">Verifikasi</button>
+                        <button class="enroll-btn" onclick="deleteTutor('${tutor.id_user}')">Hapus Tutor</button>
                     </div>
                 `;
 
@@ -101,29 +97,28 @@
         }
     }
 
-    async function verifyTutor(id) {
-        const confirmVerify = confirm("Apakah kamu yakin ingin memverifikasi tutor ini?");
-        if (!confirmVerify) return;
+    async function deleteTutor(id) {
+        const confirmDelete = confirm("Apakah kamu yakin ingin menghapus tutor ini?");
+        if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`https://localhost:3000/verifyTutor/${id}`, {
-                method: 'PATCH' // atau 'POST', tergantung implementasi backend
+            const res = await fetch(`https://localhost:3000/deleteTutors/${id}`, {
+                method: 'DELETE'
             });
-
             if (res.ok) {
-                alert('Tutor berhasil diverifikasi!');
-                fetchUnverifiedTutors(); // Refresh list
+                alert('Tutor berhasil dihapus!');
+                fetchTutors(); // Refresh list
             } else {
-                alert('Gagal memverifikasi tutor.');
+                alert('Gagal menghapus tutor.');
             }
         } catch (error) {
-            console.error('Error saat memverifikasi tutor:', error);
+            console.error('Error saat menghapus tutor:', error);
             alert('Terjadi kesalahan.');
         }
     }
 
-    // Load saat halaman selesai dimuat
-    document.addEventListener('DOMContentLoaded', fetchUnverifiedTutors);
-    </script>
+    // Jalankan saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', fetchTutors);
+</script>
 </body>
 </html>
