@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { User } from '../models/User';
 import { Transaction } from '../models/Transaction';
 import { Course } from '../models/Course';
+import { decrypt, encrypt, hashEmail } from '../utils/cryptoUtil';
 
 // Ambil semua tutor (user dengan role 'tutor')
 export const getTutors = async (req: Request, res: Response) => {
@@ -164,3 +165,49 @@ export const getMonthlyTransactionStats = async (req: Request, res: Response) =>
   }
 };
 
+
+export const getDashboardSummary = async (req: Request, res: Response) => {
+  try {
+    // 1. Hitung total kursus aktif
+    const totalCourses = await Course.count({
+      where: { is_active: true },
+    });
+
+    // 2. Hitung total pengguna dengan role "learner"
+    const allUsers = await User.findAll({
+      attributes: ['role'], // ambil field yang dibutuhkan aja, biar hemat resource
+    });
+
+    const totalLearners = allUsers.filter(user => decrypt(user.role) === 'learner').length;
+
+    // 3. Hitung total transaksi 'completed' bulan ini
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const totalTransactions = await Transaction.count({
+      where: {
+        transaction_date: {
+          [Op.gte]: startOfMonth,
+          [Op.lt]: endOfMonth,
+        },
+        status: 'completed',
+      },
+    });
+
+    // 4. Kirimkan data ringkasan dashboard
+    res.json({
+      success: true,
+      data: {
+        totalCourses,
+        totalLearners,
+        totalTransactions,
+      },
+    });
+
+  } catch (error) {
+    const err = error as Error;
+    console.error('Error fetching dashboard summary:', err.message);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};

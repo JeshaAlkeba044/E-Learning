@@ -1,124 +1,77 @@
 <!DOCTYPE html>
 <html lang="id">
-    
 <head>
     <meta charset="UTF-8">
-    <title>Remove Tutor</title>
-    <link rel="stylesheet" href="../../assets/css/pages/_listTutor.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Transaksi | EduPlus</title>
+    <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css">
+
 </head>
-
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo"><a href="homeAdmin.html" style="color: #4361ee; text-decoration: none;">Admin Panel</a></div>
-            <nav class="navbar">
-                <div>
-                    <a href="verify_tutor.html">Verifikasi Tutor</a>
-                    <a href="list_tutor.html">List Tutor</a>
-                    <a class="active" href="verify_trans.html">Verifikasi Transaksi</a>
-                </div>
-            </nav>
-            <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
+    <div class="sidebar">
+        <div class="logo-container">
+            <span class="logo-text">EduPlus</span>
         </div>
-    </header>
+        
+        <a href="homeAdmin.html" class="menu-item">
+            <div class="menu-icon">🏠</div>
+            <span>Dashboard</span>
+        </a>
+        
+        <a href="verify_trans.html" class="menu-item">
+            <div class="menu-icon">💳</div>
+            <span>Verifikasi Transaksi</span>
+        </a>
 
-    <main>
-        <section class="verification-section">
-            <h2 class="section-title">List Tutor</h2>
+        <a href="list_tutor.html" class="menu-item">
+            <div class="menu-icon">👨‍🏫</div>
+            <span>List Tutor</span>
+        </a>
+        
+        <a href="pengaturan.html" class="menu-item">
+            <div class="menu-icon">⚙️</div>
+            <span>Pengaturan</span>
+        </a>
 
-            <div class="trans-list" id="tutorList">
-                <!-- Loader -->
-                <div class="loading" id="loadingIndicator">
-                    <div class="spinner"></div>
-                </div>
+        <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button>
+
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="welcome-text">
+                <h1>List Tutor</h1>
             </div>
-        </section>
-    </main>
+            <div class="user-profile">
+                <img src="../../assets/img/pisi.jpeg" alt="Admin Avatar" class="admin-avatar" />
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>Admin Panel</h3>
-                <ul>
-                    <li><a href="#">Tentang Kami</a></li>
-                    <li><a href="#">Kontak</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Bantuan</h3>
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Kebijakan</a></li>
-                </ul>
             </div>
         </div>
-        <div class="copyright">
-            &copy; 2025 Admin Panel. All rights reserved.
+
+        <div class="section-title">
+            <h2>Daftar Tutor</h2>
         </div>
-    </footer>
+
+        <div class="trans-list" id="transactionContainer">
+            <!-- Loader -->
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/listTutor.js"></script>
 
     <script>
-    async function fetchTutors() {
-        try {
-            const res = await fetch('https://localhost:3000/allTutors'); // Pastikan endpoint sudah benar
-            const tutors = await res.json();
+    const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
 
-            const container = document.getElementById('tutorList');
-            container.innerHTML = ''; // Kosongkan container sebelum render ulang
+    const menuItems = document.querySelectorAll('.menu-item');
 
-            tutors.forEach(tutor => {
-                const tutorCard = document.createElement('div');
-                tutorCard.className = 'tutor-card red';
-
-                const fullName = `${tutor.firstName} ${tutor.lastName}`;
-                const joinDate = new Date(tutor.registration_date).toLocaleDateString('id-ID', {
-                    year: 'numeric', month: 'long', day: 'numeric'
-                });
-
-                tutorCard.innerHTML = `
-                    <div class="tutor-content">
-                        <h3>${fullName}</h3>
-                        <p class="tutor-email">Email: ${tutor.email}</p>
-                        ${tutor.specialization ? `<p><strong>Spesialisasi:</strong> ${tutor.specialization}</p>` : ''}
-                        ${tutor.bio ? `<p><strong>Bio:</strong> ${tutor.bio}</p>` : ''}
-                        ${tutor.YoE ? `<p><strong>Pengalaman:</strong> ${tutor.YoE} tahun</p>` : ''}
-                        ${tutor.linkPorto ? `<p><a href="${tutor.linkPorto}" target="_blank">Lihat Portofolio</a></p>` : ''}
-                        <div class="tutor-info">
-                            <span><div class="icon icon-time"></div> Bergabung: ${joinDate}</span>
-                        </div>
-                        <button class="enroll-btn" onclick="deleteTutor('${tutor.id_user}')">Hapus Tutor</button>
-                    </div>
-                `;
-
-                container.appendChild(tutorCard);
-            });
-        } catch (error) {
-            console.error('Gagal memuat data tutor:', error);
+    menuItems.forEach(item => {
+        if (item.getAttribute("href") === path) {
+        item.classList.add('active');
         }
-    }
-
-    async function deleteTutor(id) {
-        const confirmDelete = confirm("Apakah kamu yakin ingin menghapus tutor ini?");
-        if (!confirmDelete) return;
-
-        try {
-            const res = await fetch(`https://localhost:3000/deleteTutors/${id}`, {
-                method: 'DELETE'
-            });
-            if (res.ok) {
-                alert('Tutor berhasil dihapus!');
-                fetchTutors(); // Refresh list
-            } else {
-                alert('Gagal menghapus tutor.');
-            }
-        } catch (error) {
-            console.error('Error saat menghapus tutor:', error);
-            alert('Terjadi kesalahan.');
-        }
-    }
-
-    // Jalankan saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', fetchTutors);
-</script>
+    });
+    </script>
 </body>
 </html>

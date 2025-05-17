@@ -1,0 +1,333 @@
+/* ---------------------------------- */
+/* RESET & BASE STYLES               */
+/* ---------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f9;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+}
+
+/* ---------------------------------- */
+/* SIDEBAR                           */
+/* ---------------------------------- */
+.sidebar {
+    width: 280px;
+    background-color: #1a1e2e;
+    color: white;
+    padding: 20px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-container {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 15px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Menu Items */
+.menu-item {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: white;
+    text-decoration: none;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item.active {
+    background-color: rgba(79, 94, 234, 0.7);
+    border-left: 4px solid #4f5eea;
+}
+
+.menu-item.active.dashboard {
+    background-color: rgba(72, 133, 237, 0.7);
+    border-left: 4px solid #4885ed;
+}
+
+.menu-item.active.users {
+    background-color: rgba(66, 165, 245, 0.7);
+    border-left: 4px solid #42a5f5;
+}
+
+.menu-item.active.settings {
+    background-color: rgba(41, 182, 246, 0.7);
+    border-left: 4px solid #29b6f6;
+}
+
+.menu-icon {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Admin Profile */
+.admin-profile {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Logout Button */
+.logout-btn {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    transition: background-color 0.3s;
+    margin-top: auto;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn::before {
+    content: "🚪";
+    margin-right: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+/* ---------------------------------- */
+/* MAIN CONTENT                       */
+/* ---------------------------------- */
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 20px;
+    width: calc(100% - 280px);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.welcome-text {
+    color: #333;
+}
+
+.welcome-text h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.welcome-text p {
+    color: #666;
+    font-size: 14px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+}
+
+.admin-text {
+    margin-right: 15px;
+    font-weight: 500;
+}
+
+/* ---------------------------------- */
+/* TRANSACTION SECTION                */
+/* ---------------------------------- */
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    font-size: 20px;
+    color: #333;
+}
+
+.view-all {
+    color: #4f5eea;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.trans-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.trans-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    border-left: 4px solid #e0e0e0;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.trans-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.trans-card.yellow {
+    border-left-color: #ffb74d;
+}
+
+.trans-card.green {
+    border-left-color: #4caf50;
+}
+
+.trans-content h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.trans-content p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.newLearner {
+    color: #555;
+}
+
+.bill {
+    font-weight: 500;
+    color: #333;
+}
+
+.payment-method {
+    color: #666;
+    font-size: 13px;
+}
+
+.payment-time {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    color: #777;
+    font-size: 13px;
+}
+
+.icon-time {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: #ddd;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.action-buttons {
+    display: flex;
+    margin-top: 15px;
+}
+
+.enroll-btn {
+    background-color: #4f5eea;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.enroll-btn:hover {
+    background-color: #3a49d8;
+}
+
+/* ---------------------------------- */
+/* LOADING & EMPTY STATES             */
+/* ---------------------------------- */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(79, 94, 234, 0.3);
+    border-radius: 50%;
+    border-top-color: #4f5eea;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.empty-state h3 {
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.empty-state p {
+    color: #777;
+}
