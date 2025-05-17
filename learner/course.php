@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
+    <?php
+      session_start();
+      if (!isset($_SESSION['user_id'])) {
+          header("Location: ");
+      }
+      // echo '<pre>';
+      // print_r($_SESSION);
+      // echo '</pre>';
+    ?>
+
     <header>
         <div class="header-container">
             <div class="logo">E-Learning</div>
@@ -18,6 +28,7 @@
                   <a href="#contact">Contact</a>
               </div>
           </nav>
+          <button class="login-btn" onclick="window.location.href='../logout.php'">Logout</button>
         </div> 
     </header>
 

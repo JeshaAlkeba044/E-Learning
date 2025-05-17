@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <?php
+        session_start();
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: ");
+        }
+
+        if (isset($_SESSION['user_id'])) {
+            header("Location: learner/course.php");
+        }
+    ?>
     <header>
         <div class="header-container">
             <div class="logo">E-Learning</div>
@@ -18,7 +28,7 @@
                 </div>
             </nav>
 
-            <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+            <button class="login-btn" onclick="window.location.href='login.php'">Login</button>
         </div>
     </header>
 
@@ -229,7 +239,7 @@
                 e.preventDefault();
                 const isLoggedIn = confirm('You need to login to enroll in courses. Go to login page?');
                 if (isLoggedIn) {
-                    window.location.href = 'login.html';
+                    window.location.href = 'login.php';
                 }
             });
         });

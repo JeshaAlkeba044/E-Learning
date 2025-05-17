@@ -10,7 +10,7 @@
 <body>
     <header class="header">
         <a class="logo">E-Learning</a>
-        <a href="index.html" class="back-btn">Back Home</a>
+        <a href="index.php" class="back-btn">Back Home</a>
     </header>
     
     <div class="login-container">
@@ -21,29 +21,79 @@
         </div>
         
         <div class="login-right">
-            <form id="loginForm" class="login-form">
+            <form id="loginForm" class="login-form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method = "post">
                 <h2>Login</h2>
                 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Enter your email" required>
+                    <input type="email" id="email" name = "email" placeholder="Enter your email" required>
                     <div id="emailError" class="error-message"></div>
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
                     <div id="passwordError" class="error-message"></div>
                 </div>
+
+                <div class="form-group">
+                    <a href="forgotPassword.php">Forgot Password?</a>
+                </div>
                 
-                <button type="submit" class="login-btn">Login</button>
+                <button type="submit" class="login-btn" name = "login">Login</button>
                 
                 <div class="form-footer">
-                    <p>Don't have an account? <a href="register.html">Create account</a></p>
+                    <p>Don't have an account? <a href="register.php">Create account</a></p>
                 </div>
             </form>
         </div>
     </div>
+
+    <?php
+        require_once('connection.php');
+        session_start();
+        if (isset($_SESSION['user_id'])) {
+            header("Location: learner/course.php");
+            exit;
+        }
+        // echo '<pre>';
+        // print_r($_SESSION);
+        // echo '</pre>';
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (isset($_POST['login'])) {
+                $email = $_POST['email'];
+                $password = $_POST['password'];
+                    
+                $sql = "select * from users where email = '$email'";
+                $result = $conn->query($sql);
+                if ($result) {
+                    if ($result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
+                        if (password_verify($password, $row['password'])) {
+                            $_SESSION['user_id'] = $row['user_id'];
+                            setcookie('name', $row['name'], time() + (3600 * 5), "");
+                            setcookie('uid', $row['user_id'], time() + (3600 * 5), "");
+                            if ($row['role'] === 'Learner') {
+                                header("Location: learner/course.php");
+                            } else if($row['role'] === 'Tutor'){
+                                header("Location: tutor/manage_course.html");
+                            } else if($row['role'] === 'Admin'){
+                                header("Location: admin/home_admin.html");
+                            } else{
+                                echo "<script>alert('Role tidak dikenali');</script>";
+                            }
+                        } else{                                           
+                            echo "<script>alert('Password tidak cocok');</script>";
+                        }
+                    } else {
+                        echo "<script>alert('Email tidak ditemukan');</script>";
+                    }
+                } else {
+                    echo "<script>alert('Terjadi kesalahan dalam eksekusi SQL: " . $conn->error . "');</script>";
+                }
+            }
+        }
+    ?>
 
     <!-- <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
