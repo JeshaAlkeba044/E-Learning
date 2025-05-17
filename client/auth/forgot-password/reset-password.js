@@ -9,7 +9,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const newPasswordError = document.getElementById('newPasswordError');
   const confirmPasswordError = document.getElementById('confirmPasswordError');
   
-  form.addEventListener('submit', function(e) {
+  // Ambil email dari localStorage
+  const email = localStorage.getItem('resetEmail');
+  
+  if (!email) {
+    window.location.href = 'indexForgotPass.html';
+    return;
+  }
+
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
@@ -33,10 +41,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     if (isValid) {
-      // In a real app, you would send the new password to your backend
-      // For demo, we'll show a success message and redirect to login
-      alert('Password has been reset successfully!');
-      window.location.href = '/auth/login';
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/reset-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            newPassword: newPassword
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Password reset failed');
+        }
+
+        // Hapus email dari localStorage setelah reset berhasil
+        localStorage.removeItem('resetEmail');
+        
+        alert('Password has been reset successfully!');
+        window.location.href = '../login/indexLogin.html';
+      } catch (error) {
+        showError(newPasswordError, error.message);
+      }
     }
   });
 });

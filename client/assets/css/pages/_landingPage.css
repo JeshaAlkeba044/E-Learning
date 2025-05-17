@@ -398,6 +398,10 @@
     padding-top: var(--space-md);
     border-top: 1px solid var(--light-gray);
   }
+
+  .course-footer a{
+    z-index: 10;
+  }
   
   .price {
     font-weight: 700;

@@ -16,17 +16,23 @@ export class Material extends Model {
     allowNull: false,
   })
   title!: string;
+  
+  @Column({
+    type: DataType.STRING,
+  })
+  topic!: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
   content!: string;
-
+  
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
+    allowNull: false,
   })
-  video_link!: string;
+  duration!: number;
 
   @Column({
     type: DataType.BOOLEAN,

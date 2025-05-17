@@ -1,61 +1,51 @@
 'use strict';
 
+const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  up: async (queryInterface, Sequelize) => {
+    const hashedPassword = await bcrypt.hash('password123', 10);
+
     await queryInterface.bulkInsert('users', [
       {
-        id_user: Sequelize.UUIDV4(),
-        firstName: 'Admin',
-        lastName: 'User',
-        email: 'admin@example.com',
-        password: '$2b$10$examplehashedpassword', // Ganti dengan bcrypt hash valid
-        phone_number: null,
-        photo_path: null,
-        bio: null,
-        specialization: 'Management',
-        YoE: '10',
-        linkPorto: null,
-        role: 'admin',
-        statusUser: 'none',
-        registration_date: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        id_user: Sequelize.UUIDV4(),
-        firstName: 'Instructor',
-        lastName: 'One',
-        email: 'instructor1@example.com',
-        password: '$2b$10$examplehashedpassword',
-        phone_number: null,
-        photo_path: null,
-        bio: null,
-        specialization: 'Software Engineering',
-        YoE: '5',
-        linkPorto: null,
+        id_user: uuidv4(),
+        firstName: 'John',
+        lastName: 'Doe',
+        hashEmail: 'hashed_john@example.com',
+        encryptedEmail: 'encrypted_john@example.com',
+        password: hashedPassword,
+        phone_number: '081234567890',
+        photo_path: '/photos/john.jpg',
+        bio: 'Experienced Math tutor with a passion for teaching.',
+        specialization: 'Mathematics',
+        YoE: '5 years',
+        linkPorto: 'https://portfolio.johndoe.com',
         role: 'tutor',
-        statusUser: 'none',
+        statusUser: 'verified',
         registration_date: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       },
       {
-        id_user: Sequelize.UUIDV4(),
-        firstName: 'Student',
-        lastName: 'One',
-        email: 'student1@example.com',
-        password: '$2b$10$examplehashedpassword',
-        phone_number: null,
-        photo_path: null,
-        bio: null,
-        specialization: 'Frontend Development',
-        YoE: '0',
-        linkPorto: null,
+        id_user: uuidv4(),
+        firstName: 'Jane',
+        lastName: 'Smith',
+        hashEmail: 'hashed_jane@example.com',
+        encryptedEmail: 'encrypted_jane@example.com',
+        password: hashedPassword,
+        phone_number: '089876543210',
+        photo_path: '/photos/jane.jpg',
+        bio: 'Aspiring software developer looking for learning opportunities.',
+        specialization: '',
+        YoE: '',
+        linkPorto: '',
         role: 'learner',
         statusUser: 'none',
         registration_date: new Date(),
-        updated_at: new Date(),
-      },
-    ]);
+        updated_at: new Date()
+      }
+    ], {});
   },
 
   async down (queryInterface, Sequelize) {

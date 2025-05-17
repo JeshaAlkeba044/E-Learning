@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes';
 import {sequelize} from './models';
 
+
 const app = express();
 
 // Konfigurasi CORS

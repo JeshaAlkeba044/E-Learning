@@ -23,6 +23,7 @@ export const generateOTP = (email: string): string => {
 export const verifyOTP = (email: string, otp: string): boolean => {
   const storedOtp = otpStorage[email];
   if (!storedOtp || storedOtp.otp !== otp || storedOtp.expiresAt < Date.now()) {
+    console.log('Gagal OTP', storedOtp, otp);
     return false;
   }
   delete otpStorage[email]; // Hapus OTP setelah digunakan

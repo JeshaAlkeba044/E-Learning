@@ -29,7 +29,14 @@ export class User extends Model {
     allowNull: false,
     unique: true,
   })
-  email!: string;
+  hashEmail!: string;
+  
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique: true,
+  })
+  encryptedEmail!: string;
 
   @Column({
     type: DataType.STRING,
@@ -105,3 +112,6 @@ export class User extends Model {
   @HasMany(() => Transaction)
   transactions!: Transaction[];
 }
+
+
+
