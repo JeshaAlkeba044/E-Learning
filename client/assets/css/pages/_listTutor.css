@@ -1,4 +1,6 @@
-/* Reset and Base Styles */
+/* =========================
+   RESET & BASE STYLES
+   ========================= */
 * {
     margin: 0;
     padding: 0;
@@ -15,7 +17,16 @@ body {
     flex-direction: column;
 }
 
-/* Header Styles */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+
+/* =========================
+   HEADER STYLES
+   ========================= */
 header {
     background-color: #1e1e1e;
     padding: 1rem 0;
@@ -38,7 +49,6 @@ header {
     font-size: 1.5rem;
     font-weight: 700;
     color: white !important;
-    text-decoration: none;
 }
 
 .navbar {
@@ -89,13 +99,10 @@ header {
     background-color: #3651d4;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-}
 
-/* Main Content Styles */
+/* =========================
+   MAIN CONTENT STYLES
+   ========================= */
 main {
     flex: 1;
     max-width: 1200px;
@@ -113,7 +120,10 @@ main {
     margin-left: 0;
 }
 
-/* TRANS CARD SECTION */
+
+/* =========================
+   TRANS CARD SECTION
+   ========================= */
 .trans-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -196,8 +206,13 @@ main {
     margin-right: 4px;
 }
 
+
+/* =========================
+   BUTTON STYLES
+   ========================= */
 .enroll-btn,
-.reject-btn {
+.reject-btn,
+.delete-btn {
     width: 100%;
     padding: 0.6rem 1.2rem;
     border-radius: 4px;
@@ -205,7 +220,7 @@ main {
     font-weight: 600;
     border: none;
     margin-top: 0.5rem;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .enroll-btn {
@@ -226,6 +241,22 @@ main {
     background-color: #dc2626;
 }
 
+.delete-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(255, 77, 77, 0.3);
+}
+
+.delete-btn:hover {
+    background-color: #e60000;
+    transform: translateY(-2px);
+}
+
+.delete-btn:active {
+    transform: scale(0.95);
+}
+
 .action-buttons {
     display: flex;
     gap: 0.5rem;
@@ -235,7 +266,10 @@ main {
     flex: 1;
 }
 
-/* TUTOR CARD SECTION */
+
+/* =========================
+   TUTOR CARD SECTION
+   ========================= */
 .tutor-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -282,8 +316,12 @@ main {
     margin-top: 0.5rem;
 }
 
-/* Empty & Loading */
-.empty-state, .loading {
+
+/* =========================
+   EMPTY & LOADING STYLES
+   ========================= */
+.empty-state,
+.loading {
     text-align: center;
     padding: 3rem 1rem;
     background-color: #1e1e1e;
@@ -306,7 +344,10 @@ main {
     }
 }
 
-/* Footer Styles */
+
+/* =========================
+   FOOTER STYLES
+   ========================= */
 footer {
     background-color: #1e1e1e;
     padding: 2rem 2rem 1rem;
@@ -352,7 +393,12 @@ footer {
     padding-left: 0.3rem;
 }
 
-.copyright {
+
+/* =========================
+   COPYRIGHT
+   ========================= */
+
+copyright {
     text-align: center;
     margin-top: 2rem;
     padding-top: 1rem;
@@ -364,7 +410,10 @@ footer {
     margin-right: auto;
 }
 
-/* Responsive Styles */
+
+/* =========================
+   RESPONSIVE STYLES
+   ========================= */
 @media screen and (max-width: 768px) {
     .header-container {
         flex-direction: column;

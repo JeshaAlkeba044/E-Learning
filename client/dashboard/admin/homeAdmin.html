@@ -46,7 +46,7 @@
 
             <div class="welcome-text">
                 <h1>Selamat Datang, Admin!</h1>
-                <p>Pantau aktivitas platform Learn Now Anda hari ini</p>
+                <p>Pantau aktivitas platform EduPlus Anda hari ini</p>
             </div>
             <div class="admin-profile">
                 <img src="../../assets/img/pisi.jpeg" alt="Admin Avatar" class="admin-avatar" />
@@ -78,13 +78,12 @@
 
         <!-- Active Verifications -->
         <!-- Updated Verifikasi Tutor Section -->
-<div class="verification-section">
+    <div class="verification-section">
     <div class="section-header">
         <h2 class="section-title"> Verifikasi Tutor Terbaru</h2>
-        <a href="#" class="view-all">Lihat Semua</a>
     </div>
     <div class="verification-list">
-        <div class="verification-card">
+        <!-- <div class="verification-card">
             <img src="/api/placeholder/80/80" alt="Tutor 1" class="verification-image" />
             <div class="verification-info">
                 <h3 class="verification-name">Ahmad Fauzi</h3>
@@ -107,7 +106,7 @@
                 <p class="verification-subject">Pemrograman Web</p>
             </div>
             <button class="verify-btn">Verifikasi</button>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -215,7 +214,9 @@
         </section>
     </div>
 
-    <script src="../../assets/js/homeAdmin.js"></script>
+    <script src="../../assets/js/admin/getStatistic.js"></script>
+    <script src="../../assets/js/admin/getDashBoard.js"></script>
+    <script src="../../assets/js/admin/getUnverifiedTutor.js"></script>
 
     <script>
     const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
@@ -227,6 +228,7 @@
         item.classList.add('active');
         }
     });
+    
     </script>
 
 </body>

@@ -2,14 +2,19 @@ import { Request, Response } from 'express';
 import { User } from '../models/User';
 import { Transaction } from '../models/Transaction';
 import { Course } from '../models/Course';
-import { decrypt, encrypt, hashEmail } from '../utils/cryptoUtil';
+import { decrypt, encrypt } from '../utils/cryptoUtil';
+import { Op } from 'sequelize';
+import dayjs from 'dayjs'; 
 
-// Ambil semua tutor (user dengan role 'tutor')
 export const getTutors = async (req: Request, res: Response) => {
   try {
-    const tutors = await User.findAll({
-      where: { role: 'tutor' },
+    const users = await User.findAll({
       attributes: { exclude: ['password'] },
+    });
+
+    const tutors = users.filter(user => {
+      const decryptedRole = decrypt(user.role);
+      return decryptedRole === 'tutor';
     });
 
     res.status(200).json(tutors);
@@ -19,7 +24,6 @@ export const getTutors = async (req: Request, res: Response) => {
   }
 };
 
-// Hapus user berdasarkan id (khusus tutor)
 export const deleteTutor = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -58,17 +62,26 @@ export const verifyTutor = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getUnverifiedTutors = async (req: Request, res: Response) => {
   try {
-    const unverifiedTutors = await User.findAll({
+    const users = await User.findAll({
       where: {
-        role: 'tutor',
         is_verified: 'none'
       },
       attributes: {
-        exclude: ['password'] // Optional: sembunyikan kolom sensitif
+        exclude: ['password'] 
       }
     });
+
+    const unverifiedTutors = users.filter((user: any) => {
+      const decryptedRole = decrypt(user.role);
+      return decryptedRole === 'tutor';
+    });
+
+    if (unverifiedTutors.length === 0) {
+      res.status(200).json({ message: 'Tidak ada tutor yang perlu diverifikasi', data: [] });
+    }
 
     res.status(200).json(unverifiedTutors);
   } catch (error) {
@@ -116,8 +129,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
   }
 };
 
-import { Op } from 'sequelize';
-import dayjs from 'dayjs'; // install dulu: npm install dayjs
+
 
 export const getMonthlyTransactionStats = async (req: Request, res: Response) => {
   try {

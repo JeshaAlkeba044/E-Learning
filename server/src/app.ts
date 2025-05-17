@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes';
+import adminRoutes from './routes/adminRoutes'; // Pastikan Anda sudah mengimpor adminRoutes
 import {sequelize} from './models';
 
 
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/admin', adminRoutes); // 
 
 const PORT = process.env.PORT || 3000;
 
