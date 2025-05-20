@@ -12,10 +12,25 @@ export const getTutors = async (req: Request, res: Response) => {
       attributes: { exclude: ['password'] },
     });
 
-    const tutors = users.filter(user => {
-      const decryptedRole = decrypt(user.role);
-      return decryptedRole === 'tutor';
-    });
+    const tutors: any[] = [];
+
+    for (const user of users) {
+      const decryptedRole = await decrypt(user.role);
+      if (decryptedRole === 'tutor') {
+        const decryptedEmail = await decrypt(user.encryptedEmail);
+        const decryptedFirstName = await decrypt(user.firstName);
+        const decryptedLastName = await decrypt(user.lastName);
+
+        const tutorData = {
+          ...user.toJSON(),
+          email: decryptedEmail,
+          firstName: decryptedFirstName,
+          lastName: decryptedLastName,
+        };
+
+        tutors.push(tutorData);
+      }
+    }
 
     res.status(200).json(tutors);
   } catch (error) {
@@ -24,11 +39,12 @@ export const getTutors = async (req: Request, res: Response) => {
   }
 };
 
+
 export const deleteTutor = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const deletedUser = await User.destroy({ where: { id_user: id, role: 'tutor' } });
+    const deletedUser = await User.destroy({ where: { id_user: id }});
 
     if (deletedUser > 0) {
       res.status(200).json({ message: 'Tutor deleted successfully' });
@@ -47,7 +63,7 @@ export const verifyTutor = async (req: Request, res: Response) => {
 
   try {
     const [updated] = await User.update(
-      { is_verified: "verified" }, //default none
+      { is_verified: "verified" }, 
       { where: { id_user: id, role: 'tutor' } }
     );
 
@@ -67,7 +83,7 @@ export const getUnverifiedTutors = async (req: Request, res: Response) => {
   try {
     const users = await User.findAll({
       where: {
-        is_verified: 'none'
+        statusUser: 'none'
       },
       attributes: {
         exclude: ['password'] 
@@ -79,11 +95,10 @@ export const getUnverifiedTutors = async (req: Request, res: Response) => {
       return decryptedRole === 'tutor';
     });
 
-    if (unverifiedTutors.length === 0) {
-      res.status(200).json({ message: 'Tidak ada tutor yang perlu diverifikasi', data: [] });
-    }
-
-    res.status(200).json(unverifiedTutors);
+    res.status(200).json({
+      message: unverifiedTutors.length === 0 ? 'Tidak ada tutor yang perlu diverifikasi' : undefined,
+      data: unverifiedTutors
+    });
   } catch (error) {
     console.error('Error fetching unverified tutors:', error);
     res.status(500).json({ message: 'Error fetching unverified tutors', error });
@@ -91,45 +106,68 @@ export const getUnverifiedTutors = async (req: Request, res: Response) => {
 };
 
 
+
 // GET 
 export const getPendingTransactions = async (req: Request, res: Response) => {
   try {
-    const transactions = await Transaction.findAll({
+    const pendingTransactions = await Transaction.findAll({
       where: { status: 'pending' },
-      include: ['user', 'course'],
+      include: [
+        {
+          model: User,
+          attributes: ['firstName', 'lastName']
+        },
+        {
+          model: Course,
+          attributes: ['title']
+        }
+      ],
       order: [['transaction_date', 'DESC']]
     });
 
-    res.status(200).json({ success: true, data: transactions });
+    const formattedTransactions = pendingTransactions.map(trx => ({
+      id_transaction: trx.id_transaction,
+      transaction_date: trx.transaction_date,
+      amount: trx.amount,
+      payment_method: trx.payment_method,
+      status: trx.status,
+      user: {
+        name: `${trx.user?.firstName || ''} ${trx.user?.lastName || ''}`.trim()
+      },
+      course: {
+        title: trx.course?.title || '-'
+      }
+    }));
+
+    res.json({ success: true, data: formattedTransactions });
+    return;
   } catch (error) {
     console.error('Error fetching transactions:', error);
-    res.status(500).json({ success: false, message: 'Error fetching transactions', error });
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mengambil data transaksi' });
   }
 };
-
 
 // Verifikasi status pembayaran transaksi
 export const verifyPayment = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const transactionId = req.params.id;
 
   try {
-    const [updated] = await Transaction.update(
-      { status: 'paid' }, // default pending
-      { where: { id_transaction: id } }
-    );
+    const transaction = await Transaction.findByPk(transactionId);
 
-    if (updated > 0) {
-      res.status(200).json({ message: 'Payment status updated successfully' });
-    } else {
-      res.status(404).json({ message: 'Transaction not found' });
+    if (!transaction) {
+      res.status(404).json({ success: false, message: 'Transaksi tidak ditemukan' });
+      return;
     }
+
+    transaction.status = 'verified';
+    await transaction.save();
+
+    res.json({ success: true, message: 'Transaksi berhasil diverifikasi' });
   } catch (error) {
-    console.error('Error verifying payment:', error);
-    res.status(500).json({ message: 'Error verifying payment', error });
+    console.error('Error verifying transaction:', error);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan saat memverifikasi transaksi' });
   }
 };
-
-
 
 export const getMonthlyTransactionStats = async (req: Request, res: Response) => {
   try {
@@ -180,19 +218,16 @@ export const getMonthlyTransactionStats = async (req: Request, res: Response) =>
 
 export const getDashboardSummary = async (req: Request, res: Response) => {
   try {
-    // 1. Hitung total kursus aktif
     const totalCourses = await Course.count({
       where: { is_active: true },
     });
 
-    // 2. Hitung total pengguna dengan role "learner"
     const allUsers = await User.findAll({
-      attributes: ['role'], // ambil field yang dibutuhkan aja, biar hemat resource
+      attributes: ['role']
     });
 
     const totalLearners = allUsers.filter(user => decrypt(user.role) === 'learner').length;
 
-    // 3. Hitung total transaksi 'completed' bulan ini
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
@@ -207,7 +242,6 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
       },
     });
 
-    // 4. Kirimkan data ringkasan dashboard
     res.json({
       success: true,
       data: {

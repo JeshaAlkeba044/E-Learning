@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 router.get("/pendingPayment", getPendingTransactions); 
-router.put("/payment/:id/verify", verifyPayment);      
+router.put("/payment/:id", verifyPayment);      
 router.get("/allTutors", getTutors);                   
 router.delete("/deleteTutors/:id", deleteTutor);       
 router.get("/transactionMonthtly", getMonthlyTransactionStats); 

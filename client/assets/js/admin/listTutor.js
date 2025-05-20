@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingIndicator.style.display = 'block';
 
         try {
-        const response = await fetch('http://localhost:3000/api/getTutors');
+        const response = await fetch('http://localhost:3000/admin/allTutors');
         if (!response.ok) throw new Error('Fetch gagal');
 
         const tutors = await response.json();
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tutors.length === 0) {
             container.innerHTML = `
             <div class="empty-state">
-                <h3>Data Kosong</h3>
+                <h3>Empty Data</h3>
                 <p>Belum ada tutor yang terdaftar.</p>
             </div>
             `;
@@ -25,11 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tutors.forEach(tutor => {
             const card = document.createElement('div');
+            const name = (tutor.firstName || '') + ' ' + (tutor.lastName || '');
             card.classList.add('tutor-card');
             card.innerHTML = `
-            <h3>${tutor.name || 'Tanpa Nama'}</h3>
+            <img src="../../img/${tutor.photo_path}" alt="${tutor.name}" class="tutor-image" />
+            <h3>${name.trim() || 'Tanpa Nama'}</h3>
             <p>Email: ${tutor.email || '-'}</p>
-            <p>Role: Tutor</p>
+            <p>Nomor Telepon: ${tutor.phoneNumber || '-'}</p>
+            <p>Bio: ${tutor.bio || '-'}</p>
+            <p>Specilization: ${tutor.specialization || '-'}</p>
+            <p>YoE: ${tutor.YoE || '-'}</p>
+            <p>Link Porto: ${tutor.linkPorto || '-'}</p>
             <button class="delete-btn" data-id="${tutor.id}">🗑️ Hapus</button>
             `;
             container.appendChild(card);
