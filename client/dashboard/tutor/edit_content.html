@@ -1,0 +1,2402 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Konten Kursus - EduPlus</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* ========== VARIABLES ========== */
+      :root {
+        /* Colors */
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --primary-dark: #3f37c9;
+        --secondary: #f72585;
+        --accent: #4cc9f0;
+        --success: #38b000;
+        --warning: #ffaa00;
+        --danger: #ef233c;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --white: #ffffff;
+        --black: #000000;
+        --sidebar-bg: #2b2d42;
+        --sidebar-active: #3a3d5d;
+
+        /* Spacing */
+        --space-xs: 0.25rem;
+        --space-sm: 0.5rem;
+        --space-md: 1rem;
+        --space-lg: 1.5rem;
+        --space-xl: 2rem;
+
+        /* Border Radius */
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+
+        /* Shadows */
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+        --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+        /* Transitions */
+        --transition-fast: 0.2s ease;
+        --transition-normal: 0.3s ease;
+        --transition-slow: 0.5s ease;
+      }
+
+      /* ========== BASE STYLES ========== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+        background-color: var(--light);
+        overflow-x: hidden;
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: 100vh;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-md);
+      }
+
+      /* ========== SIDEBAR ========== */
+      .sidebar {
+        background-color: var(--sidebar-bg);
+        color: var(--white);
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        padding: var(--space-xl) 0;
+      }
+
+      .sidebar-header {
+        padding: 0 var(--space-lg);
+        margin-bottom: var(--space-xl);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .sidebar-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+      }
+
+      .sidebar-logo i {
+        margin-right: var(--space-sm);
+        font-size: 1.8rem;
+        color: var(--accent);
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-nav a {
+        padding: var(--space-sm) var(--space-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        transition: var(--transition-fast);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background-color: var(--sidebar-active);
+        color: var(--white);
+      }
+
+      .sidebar-nav a i {
+        width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-nav a.active {
+        border-left: 3px solid var(--accent);
+      }
+
+      /* ========== MAIN CONTENT ========== */
+      .main-content {
+        padding: var(--space-xl) 0;
+        width: 100%;
+      }
+
+      /* Header */
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-xl);
+        padding: 0 var(--space-md);
+      }
+
+      .page-title h1 {
+        font-size: 1.8rem;
+        margin-bottom: var(--space-sm);
+        color: var(--dark);
+      }
+
+      .page-title p {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-light);
+      }
+
+      .profile-name {
+        font-weight: 500;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background-color: var(--white);
+        min-width: 200px;
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--radius-md);
+        z-index: 100;
+        display: none;
+        overflow: hidden;
+      }
+
+      .profile-dropdown a {
+        padding: var(--space-sm) var(--space-md);
+        display: block;
+        color: var(--dark);
+        transition: var(--transition-fast);
+      }
+
+      .profile-dropdown a:hover {
+        background-color: var(--light-gray);
+        color: var(--primary);
+      }
+
+      .user-profile:hover .profile-dropdown {
+        display: block;
+      }
+
+      /* Content Editor */
+      .editor-container {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+      }
+
+      .editor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-md) var(--space-lg);
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      .editor-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+
+      .editor-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      .editor-tab {
+        padding: var(--space-md) var(--space-lg);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: var(--transition-fast);
+      }
+
+      .editor-tab.active {
+        border-bottom-color: var(--primary);
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .editor-body {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        min-height: 600px;
+      }
+
+      .editor-sidebar {
+        border-right: 1px solid var(--light-gray);
+        padding: var(--space-md);
+        overflow-y: auto;
+      }
+
+      .module-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+
+      .module-item {
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .module-item:hover {
+        background-color: var(--light);
+      }
+
+      .module-item.active {
+        background-color: var(--primary-light);
+        color: var(--white);
+      }
+
+      .module-item .drag-handle {
+        cursor: move;
+        opacity: 0.5;
+      }
+
+      .add-module {
+        margin-top: var(--space-md);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        color: var(--primary);
+        cursor: pointer;
+      }
+
+      .editor-content {
+        padding: var(--space-lg);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .content-toolbar {
+        display: flex;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-md);
+        flex-wrap: wrap;
+      }
+
+      .toolbar-btn {
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-sm);
+        background-color: var(--light-gray);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        font-size: 0.9rem;
+      }
+
+      .toolbar-btn:hover {
+        background-color: var(--gray);
+        color: var(--white);
+      }
+
+      .content-area {
+        flex: 1;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
+        margin-bottom: var(--space-md);
+      }
+
+      .content-preview {
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
+        margin-bottom: var(--space-md);
+        min-height: 200px;
+      }
+
+      .editor-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-md);
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--light-gray);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-sm);
+        padding: var(--space-md) var(--space-lg);
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        border: none;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      /* Block Styles */
+      .content-block {
+        margin-bottom: var(--space-md);
+        padding: var(--space-md);
+        border: 1px dashed var(--light-gray);
+        border-radius: var(--radius-md);
+        position: relative;
+      }
+
+      .block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-sm);
+      }
+
+      .block-type {
+        font-size: 0.8rem;
+        background-color: var(--light-gray);
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-sm);
+      }
+
+      .block-actions {
+        display: flex;
+        gap: var(--space-xs);
+      }
+
+      .block-action {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: var(--light-gray);
+      }
+
+      .block-action:hover {
+        background-color: var(--gray);
+        color: var(--white);
+      }
+
+      .text-block {
+        min-height: 100px;
+      }
+
+      .image-block img {
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--radius-sm);
+      }
+
+      .video-block {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+      }
+
+      .video-block iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .btn-success {
+        background-color: var(--success);
+      }
+
+      .btn-success:hover {
+        background-color: #2d9500;
+      }
+
+      /* Preview Styles (to match course_detail.html) */
+      .preview-content {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: var(--space-xl);
+      }
+
+      .preview-content h2 {
+        font-size: 1.8rem;
+        margin-bottom: var(--space-sm);
+      }
+
+      .preview-content h3 {
+        font-size: 1.3rem;
+        margin-bottom: var(--space-sm);
+      }
+
+      .preview-content p {
+        margin-bottom: var(--space-md);
+        line-height: 1.7;
+      }
+
+      .preview-video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+        margin-bottom: var(--space-xl);
+        border-radius: var(--radius-md);
+        background-color: var(--black);
+      }
+
+      .preview-video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .preview-resources-section {
+        background-color: var(--light);
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
+        margin-top: var(--space-xl);
+      }
+
+      .preview-resource-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        padding: var(--space-sm) 0;
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      .preview-resource-item:last-child {
+        border-bottom: none;
+      }
+
+      .preview-resource-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        background-color: var(--primary-light);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .preview-resource-info {
+        flex: 1;
+      }
+
+      .preview-resource-info h4 {
+        font-size: 0.95rem;
+        margin-bottom: var(--space-xs);
+      }
+
+      .preview-resource-info p {
+        color: var(--gray);
+        font-size: 0.8rem;
+      }
+
+      .preview-download-btn {
+        color: var(--primary);
+        font-size: 1.2rem;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        body {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: -240px;
+          height: 100vh;
+          z-index: 1000;
+          transition: var(--transition-normal);
+        }
+
+        .sidebar.active {
+          left: 0;
+        }
+
+        .main-content {
+          padding-top: 80px;
+        }
+
+        .menu-toggle {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          width: 30px;
+          height: 21px;
+          cursor: pointer;
+          z-index: 1001;
+          position: fixed;
+          top: 20px;
+          left: 20px;
+        }
+
+        .menu-toggle span {
+          display: block;
+          height: 3px;
+          width: 100%;
+          background: var(--primary);
+          border-radius: 3px;
+          transition: var(--transition-normal);
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+          transform: translateY(9px) rotate(45deg);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+          opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+          transform: translateY(-9px) rotate(-45deg);
+        }
+
+        .editor-body {
+          grid-template-columns: 1fr;
+        }
+
+        .editor-sidebar {
+          border-right: none;
+          border-bottom: 1px solid var(--light-gray);
+        }
+      }
+
+      /* ========== MODAL STYLES ========== */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: var(--white);
+        margin: 5% auto;
+        padding: var(--space-lg);
+        border-radius: var(--radius-lg);
+        width: 90%;
+        max-width: 600px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-md);
+        padding-bottom: var(--space-md);
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      .modal-header h3 {
+        margin: 0;
+      }
+
+      .close-modal {
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .close-modal:hover {
+        color: var(--danger);
+      }
+
+      .modal-body {
+        margin-bottom: var(--space-lg);
+      }
+
+      .upload-area {
+        border: 2px dashed var(--gray);
+        border-radius: var(--radius-md);
+        padding: var(--space-xl);
+        text-align: center;
+        margin-bottom: var(--space-md);
+        transition: var(--transition-fast);
+      }
+
+      .upload-area:hover {
+        border-color: var(--primary);
+      }
+
+      .upload-area i {
+        font-size: 3rem;
+        color: var(--primary-light);
+        margin-bottom: var(--space-sm);
+      }
+
+      .preview-container {
+        margin-bottom: var(--space-md);
+        text-align: center;
+      }
+
+      #previewImage {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-md);
+      }
+
+      .preview-actions {
+        display: flex;
+        gap: var(--space-sm);
+        justify-content: center;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-sm);
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--light-gray);
+      }
+
+      .btn-danger {
+        background-color: var(--danger);
+        color: var(--white);
+      }
+
+      .btn-danger:hover {
+        background-color: #d11a2a;
+      }
+
+      /* Drag and drop styles */
+      .upload-area.highlight {
+        border-color: var(--primary);
+        background-color: rgba(67, 97, 238, 0.05);
+      }
+
+      @media (max-width: 768px) {
+        .editor-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-md);
+        }
+      }
+
+      @media (max-width: 576px) {
+        .editor-tabs {
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+
+        .editor-footer {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .profile-name {
+          display: none;
+        }
+      }
+
+      /* Module settings styles */
+      .module-settings {
+        padding: var(--space-md);
+        border-top: 1px solid var(--light-gray);
+        margin-top: var(--space-md);
+      }
+
+      .module-settings label {
+        display: block;
+        margin-bottom: var(--space-xs);
+        font-weight: 500;
+      }
+
+      .module-settings input,
+      .module-settings textarea {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius-sm);
+        margin-bottom: var(--space-md);
+      }
+
+      .module-settings .duration-input {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .module-settings .duration-input input {
+        width: 60px;
+        text-align: center;
+      }
+
+      .delete-module-btn {
+        background-color: var(--danger);
+        color: white;
+        border: none;
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        margin-top: var(--space-md);
+      }
+
+      .delete-module-btn:hover {
+        background-color: #d11a2a;
+      }
+
+      /* Settings tab content */
+      .settings-content {
+        padding: var(--space-lg);
+        display: none; /* Initially hidden */
+      }
+
+      .settings-content.active {
+        display: block;
+      }
+
+      /* Module duration indicator */
+      .module-duration {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-left: auto;
+      }
+
+      /* Module topic indicator */
+      .module-topic {
+        font-size: 0.85rem;
+        color: var(--primary);
+        margin-top: var(--space-xs);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-graduation-cap"></i>
+          <span>EduPlus</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard_tutor.html">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="manage_course.html" class="active">
+          <i class="fas fa-book-open"></i>
+          <span>Kelola Kursus</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <div class="main-header">
+        <div class="page-title">
+          <h1>Edit Konten Kursus</h1>
+          <p id="module-title">Memuat...</p>
+        </div>
+
+        <div class="user-actions">
+          <div class="user-profile">
+            <img
+              src="https://randomuser.me/api/portraits/men/32.jpg"
+              alt="Profile"
+              class="profile-pic"
+            />
+            <span class="profile-name">Tutor</span>
+
+            <div class="profile-dropdown">
+              <a href="settings/profile.html">
+                <i class="fas fa-user"></i> Profil Saya
+              </a>
+              <a href="../../auth/login/indexLogin.html">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+              </a>
+            </div>
+          </div>
+
+          <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor Container -->
+      <div class="container">
+        <div class="editor-container">
+          <div class="editor-header">
+            <div class="editor-title">Editor Konten</div>
+            <div>
+              <button class="btn btn-outline" id="preview-btn">
+                <i class="fas fa-eye"></i> Pratinjau
+              </button>
+              <button class="btn btn-primary" id="save-btn">
+                <i class="fas fa-save"></i> Simpan Perubahan
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-tabs">
+            <div class="editor-tab active" data-tab="content">Konten</div>
+            <div class="editor-tab" data-tab="settings">Pengaturan</div>
+          </div>
+
+          <div class="editor-body">
+            <!-- Sidebar with modules -->
+            <div class="editor-sidebar">
+              <h3>Daftar Modul</h3>
+              <div class="module-list" id="module-list">
+                <!-- Modules will be loaded here -->
+              </div>
+              <div class="add-module" id="add-module">
+                <i class="fas fa-plus"></i>
+                <span>Tambah Modul</span>
+              </div>
+            </div>
+
+            <!-- Main content editor -->
+            <div class="editor-content">
+              <!-- Content tab -->
+              <div class="content-tab">
+                <div class="content-toolbar">
+                  <div class="toolbar-btn" data-type="text">
+                    <i class="fas fa-paragraph"></i> Teks
+                  </div>
+                  <div class="toolbar-btn" data-type="image">
+                    <i class="fas fa-image"></i> Gambar
+                  </div>
+                  <div class="toolbar-btn" data-type="video">
+                    <i class="fas fa-video"></i> Video
+                  </div>
+                  <div class="toolbar-btn" data-type="heading">
+                    <i class="fas fa-heading"></i> Judul
+                  </div>
+                  <div class="toolbar-btn" data-type="quiz">
+                    <i class="fas fa-question-circle"></i> Kuis
+                  </div>
+                </div>
+
+                <div class="content-area" id="content-area">
+                  <!-- Content blocks will be added here -->
+                </div>
+
+                <div class="content-preview" id="content-preview">
+                  <h3>Pratinjau Konten</h3>
+                  <p>Konten yang telah Anda buat akan muncul di sini...</p>
+                </div>
+              </div>
+
+              <!-- Settings tab -->
+              <div class="settings-content" id="settings-content">
+                <h3>Pengaturan Modul</h3>
+                <div class="module-settings" id="module-settings">
+                  <div class="form-group">
+                    <label for="module-title">Judul Modul</label>
+                    <input
+                      type="text"
+                      id="module-title-input"
+                      class="module-title-input"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="module-topic">Topik Modul</label>
+                    <input
+                      type="text"
+                      id="module-topic-input"
+                      class="module-topic-input"
+                      placeholder="Masukkan topik modul"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label>Durasi Pembelajaran</label>
+                    <div class="duration-input">
+                      <input
+                        type="number"
+                        id="module-hours"
+                        min="0"
+                        value="0"
+                      />
+                      jam
+                      <input
+                        type="number"
+                        id="module-minutes"
+                        min="0"
+                        max="59"
+                        value="30"
+                      />
+                      menit
+                    </div>
+                  </div>
+
+                  <button class="delete-module-btn" id="delete-module-btn">
+                    <i class="fas fa-trash"></i> Hapus Modul Ini
+                  </button>
+                </div>
+              </div>
+
+              <div class="editor-footer">
+                <button class="btn btn-outline" id="cancel-btn">
+                  <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="btn btn-primary" id="save-footer-btn">
+                  <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Image Upload Modal -->
+    <div id="imageUploadModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Unggah Gambar</h3>
+          <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="upload-area" id="dropZone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Seret dan lepas gambar di sini atau</p>
+            <button class="btn btn-outline" id="selectImageBtn">
+              Pilih Gambar
+            </button>
+            <input
+              type="file"
+              id="imageInput"
+              accept="image/*"
+              style="display: none"
+            />
+          </div>
+          <div
+            class="preview-container"
+            id="imagePreview"
+            style="display: none"
+          >
+            <img id="previewImage" src="" alt="Preview" />
+            <div class="preview-actions">
+              <button class="btn btn-outline" id="changeImageBtn">
+                Ganti Gambar
+              </button>
+              <button class="btn btn-danger" id="removeImageBtn">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="imageAltText">Teks Alternatif</label>
+            <input
+              type="text"
+              id="imageAltText"
+              placeholder="Deskripsi gambar untuk aksesibilitas"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="cancelUploadBtn">Batal</button>
+          <button class="btn btn-primary" id="confirmUploadBtn" disabled>
+            Simpan Gambar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <!-- Include SortableJS for drag and drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize the editor
+        const editor = new CourseContentEditor();
+        editor.init();
+      });
+
+      class CourseContentEditor {
+        constructor() {
+          this.courseId = this.getCourseIdFromUrl();
+          this.currentMaterialId = null;
+          this.quillInstances = [];
+          this.sortable = null;
+          this.currentTab = "content";
+
+          // Bind methods to maintain proper 'this' context
+          this.saveMaterialContent = this.saveMaterialContent.bind(this);
+          this.loadMaterialContent = this.loadMaterialContent.bind(this);
+          this.saveModuleSettings = this.saveModuleSettings.bind(this);
+          this.deleteCurrentModule = this.deleteCurrentModule.bind(this);
+        }
+
+        init() {
+          this.setupEventListeners();
+          this.loadCourseContent();
+        }
+
+        getCourseIdFromUrl() {
+          const urlParams = new URLSearchParams(window.location.search);
+          return urlParams.get("course");
+        }
+
+        async loadCourseContent() {
+          if (!this.courseId) {
+            alert("Course ID not specified");
+            window.location.href = "manage_course.html";
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              `http://localhost:3000/api/learner/courses/${this.courseId}/materials`,
+
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+            const materials = await response.json();
+
+            console.log("\n\n\nLoaded materials:", materials, "\n\n\n"); // Debug log
+
+            if (!response.ok) {
+              throw new Error("Failed to load materials");
+            }
+
+            this.renderMaterialsList(materials);
+
+            if (materials.length > 0) {
+              this.currentMaterialId = materials[0].id_material;
+              this.loadMaterialContent(materials[0]);
+            }
+          } catch (error) {
+            console.error("Error loading course content:", error);
+            alert("Gagal memuat konten kursus");
+          }
+        }
+
+        renderMaterialsList(materials) {
+          const materialsList = document.getElementById("module-list");
+          materialsList.innerHTML = "";
+
+          materials.forEach((material) => {
+            const materialItem = document.createElement("div");
+            materialItem.className = "module-item";
+            materialItem.dataset.materialId = material.id_material;
+            // Calculate duration display
+            const hours = Math.floor(material.duration / 60);
+            const minutes = material.duration % 60;
+            const durationDisplay =
+              hours > 0 ? `${hours} jam ${minutes} menit` : `${minutes} menit`;
+
+            materialItem.innerHTML = `
+              <i class="fas fa-grip-lines drag-handle"></i>
+              <div style="flex: 1">
+                <span>${material.sequence_order}. ${material.title}</span>
+                ${
+                  material.topic
+                    ? `<div class="module-topic">${material.topic}</div>`
+                    : ""
+                }
+              </div>
+              <div class="module-duration">${durationDisplay}</div>
+            `;
+
+            materialItem.addEventListener("click", () => {
+              this.loadMaterialContent(material);
+            });
+
+            materialsList.appendChild(materialItem);
+          });
+
+          // Initialize drag and drop
+          this.initMaterialSortable();
+        }
+
+        initMaterialSortable() {
+          const materialsList = document.getElementById("module-list");
+
+          this.sortable = new Sortable(materialsList, {
+            animation: 150,
+            handle: ".drag-handle",
+            onEnd: async (evt) => {
+              const materialItems =
+                materialsList.querySelectorAll(".module-item");
+              const orderedIds = Array.from(materialItems).map(
+                (item) => item.dataset.materialId
+              );
+
+              try {
+                const token =
+                  localStorage.getItem("token") ||
+                  sessionStorage.getItem("token");
+                if (!token) {
+                  throw new Error("Authentication required");
+                }
+
+                const response = await fetch(
+                  `http://localhost:3000/api/tutor/courses/${this.courseId}/materials/reorder`,
+                  {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ orderedIds }),
+                  }
+                );
+
+                if (!response.ok) {
+                  throw new Error(await response.text());
+                }
+
+                const result = await response.json();
+                if (!result.success) {
+                  throw new Error("Failed to reorder materials");
+                }
+
+                // Update sequence numbers in the UI
+                materialItems.forEach((item, index) => {
+                  const title = item
+                    .querySelector("span")
+                    .textContent.replace(/^\d+\.\s/, "");
+                  item.querySelector("span").textContent = `${
+                    index + 1
+                  }. ${title}`;
+                });
+              } catch (error) {
+                console.error("Error reordering materials:", error);
+                alert("Gagal menyimpan urutan modul: " + error.message);
+                this.loadCourseContent(); // Reset to server state
+              }
+            },
+          });
+        }
+
+        async loadMaterialContent(material) {
+          console.log("Material from parameter:", material); // Debug log
+          if (!material?.id_material) {
+            console.error("Invalid material object:", material);
+            alert("Material tidak valid - silakan pilih modul lain");
+            return;
+          }
+
+          this.currentMaterialId = material.id_material;
+          console.log("Set currentMaterialId to:", this.currentMaterialId); // Debug log
+
+          document.getElementById("module-title").textContent = `${
+            material.title
+          } - ${material.topic || "No topic"}`;
+
+          // Update UI to show selected material
+          document.querySelectorAll(".module-item").forEach((item) => {
+            item.classList.remove("active");
+          });
+          document
+            .querySelector(
+              `.module-item[data-material-id="${material.id_material}"]`
+            )
+            ?.classList.add("active");
+
+          // Update module settings
+          document.getElementById("module-title-input").value = material.title;
+          document.getElementById("module-topic-input").value =
+            material.topic || "";
+
+          const hours = Math.floor(material.duration / 60);
+          const minutes = material.duration % 60;
+          document.getElementById("module-hours").value = hours;
+          document.getElementById("module-minutes").value = minutes;
+
+          // Clear and render content
+          const contentArea = document.getElementById("content-area");
+          contentArea.innerHTML = "";
+
+          if (material.content?.blocks) {
+            material.content.blocks.forEach((block) => {
+              this.renderContentBlock(block);
+            });
+          }
+        }
+
+        renderContentBlock(block) {
+          const contentArea = document.getElementById("content-area");
+          let blockHtml = "";
+
+          switch (block.type) {
+            case "text":
+              blockHtml = `
+                <div class="content-block text-block" data-block-id="${
+                  block.id
+                }">
+                  <div class="block-header">
+                    <span class="block-type">Teks</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="quill-editor">${block.content || ""}</div>
+                </div>
+              `;
+              break;
+            case "image":
+              blockHtml = `
+                <div class="content-block image-block" data-block-id="${
+                  block.id
+                }">
+                  <div class="block-header">
+                    <span class="block-type">Gambar</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <img src="${
+                    block.content || "https://via.placeholder.com/800x400"
+                  }" alt="${block.metadata?.alt || ""}">
+                  <button class="change-image-btn">Ganti Gambar</button>
+                </div>
+              `;
+              break;
+            case "video":
+              blockHtml = `
+                <div class="content-block video-block" data-block-id="${
+                  block.id
+                }">
+                  <div class="block-header">
+                    <span class="block-type">Video</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="video-container">
+                    <iframe src="${this.getVideoEmbedUrl(
+                      block.content
+                    )}" allowfullscreen></iframe>
+                  </div>
+                  <input type="text" class="video-url-input" value="${
+                    block.content || ""
+                  }" placeholder="Masukkan URL video">
+                </div>
+              `;
+              break;
+            case "heading":
+              blockHtml = `
+                <div class="content-block heading-block" data-block-id="${
+                  block.id
+                }">
+                  <div class="block-header">
+                    <span class="block-type">Judul</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="text" class="heading-input" value="${
+                    block.content || ""
+                  }" placeholder="Masukkan judul">
+                </div>
+              `;
+              break;
+          }
+
+          contentArea.insertAdjacentHTML("beforeend", blockHtml);
+
+          // Initialize Quill for text blocks
+          if (block.type === "text") {
+            const editorContainer = contentArea.querySelector(
+              `[data-block-id="${block.id}"] .quill-editor`
+            );
+            const quill = new Quill(editorContainer, {
+              theme: "snow",
+              modules: {
+                toolbar: [
+                  [{ header: [1, 2, 3, false] }],
+                  ["bold", "italic", "underline", "strike"],
+                  [{ color: [] }, { background: [] }],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link", "image", "video"],
+                  ["clean"],
+                ],
+              },
+            });
+
+            if (block.content) {
+              quill.root.innerHTML = block.content;
+            }
+
+            this.quillInstances.push({ id: block.id, instance: quill });
+          }
+
+          // Set up event listeners for the new block
+          this.setupBlockEventListeners(block.id);
+        }
+
+        getVideoEmbedUrl(url) {
+          if (!url) return "";
+
+          // Simple YouTube embed URL conversion
+          if (url.includes("youtube.com") || url.includes("youtu.be")) {
+            const videoId = url.match(
+              /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+            );
+            if (videoId && videoId[1]) {
+              return `https://www.youtube.com/embed/${videoId[1]}`;
+            }
+          }
+
+          return url;
+        }
+
+        setupBlockEventListeners(blockId) {
+          const blockElement = document.querySelector(
+            `[data-block-id="${blockId}"]`
+          );
+
+          // Delete block
+          const deleteBtn = blockElement
+            .querySelector(".block-actions .fa-trash")
+            ?.closest(".block-action");
+          if (deleteBtn) {
+            deleteBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (confirm("Apakah Anda yakin ingin menghapus blok ini?")) {
+                blockElement.remove();
+                this.saveMaterialContent();
+              }
+            });
+          }
+
+          // Move block up
+          const moveUpBtn = blockElement
+            .querySelector(".block-actions .fa-arrow-up")
+            ?.closest(".block-action");
+          if (moveUpBtn) {
+            moveUpBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (blockElement.previousElementSibling) {
+                blockElement.parentNode.insertBefore(
+                  blockElement,
+                  blockElement.previousElementSibling
+                );
+                this.saveMaterialContent();
+              }
+            });
+          }
+
+          // Move block down
+          const moveDownBtn = blockElement
+            .querySelector(".block-actions .fa-arrow-down")
+            ?.closest(".block-action");
+          if (moveDownBtn) {
+            moveDownBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (blockElement.nextElementSibling) {
+                blockElement.parentNode.insertBefore(
+                  blockElement.nextElementSibling,
+                  blockElement
+                );
+                this.saveMaterialContent();
+              }
+            });
+          }
+
+          // Handle image block specific events
+          if (blockElement.classList.contains("image-block")) {
+            blockElement
+              .querySelector(".change-image-btn")
+              .addEventListener("click", () => {
+                this.handleImageUpload(blockId);
+              });
+          }
+
+          // Handle video block specific events
+          if (blockElement.classList.contains("video-block")) {
+            const videoUrlInput =
+              blockElement.querySelector(".video-url-input");
+            if (videoUrlInput) {
+              videoUrlInput.addEventListener("change", (e) => {
+                const iframe = blockElement.querySelector("iframe");
+                if (iframe) {
+                  iframe.src = this.getVideoEmbedUrl(e.target.value);
+                  this.saveMaterialContent();
+                }
+              });
+            }
+          }
+
+          // Handle heading block specific events
+          if (blockElement.classList.contains("heading-block")) {
+            blockElement
+              .querySelector(".heading-input")
+              .addEventListener("input", () => {
+                this.saveMaterialContent();
+              });
+          }
+        }
+
+        async handleImageUpload(blockId) {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = "image/*";
+
+          input.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+              const formData = new FormData();
+              formData.append("image", file);
+
+              const response = await fetch("http://localhost:3000/api/upload", {
+                method: "POST",
+                body: formData,
+              }); // API INI TIDAK ADA !!!!!!!!!!!!!!!!!!
+              // HARUS DIBUAT DI TUTOR !!!!!!!!!
+
+              const result = await response.json();
+
+              if (result.url) {
+                const blockElement = document.querySelector(
+                  `[data-block-id="${blockId}"]`
+                );
+                blockElement.querySelector("img").src = result.url;
+                this.saveMaterialContent();
+              }
+            } catch (error) {
+              console.error("Error uploading image:", error);
+              alert("Gagal mengunggah gambar");
+            }
+          });
+
+          input.click();
+        }
+
+        async addNewMaterial() {
+          const title = prompt("Masukkan judul modul baru:");
+          if (!title) return;
+
+          try {
+            // Get the token from localStorage or sessionStorage
+            const token =
+              localStorage.getItem("token") || sessionStorage.getItem("token");
+            if (!token) {
+              alert("Anda harus login terlebih dahulu");
+              window.location.href = "/auth/login/indexLogin.html";
+              return;
+            }
+
+            const response = await fetch(
+              `http://localhost:3000/api/tutor/courses/${this.courseId}/materials`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  title,
+                  topic: "",
+                  sequence_order:
+                    document.querySelectorAll(".module-item").length + 1,
+                }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(await response.text());
+            }
+
+            const newMaterial = await response.json();
+            this.loadCourseContent(); // Refresh the materials list
+          } catch (error) {
+            console.error("Error adding new material:", error);
+            alert("Gagal menambahkan modul baru: " + error.message);
+          }
+        }
+
+        async saveMaterialContent() {
+          if (!this.currentMaterialId) return;
+
+          try {
+            const token =
+              localStorage.getItem("token") || sessionStorage.getItem("token");
+            if (!token) {
+              throw new Error("Authentication required");
+            }
+
+            const contentArea = document.getElementById("content-area");
+            const blocks = Array.from(contentArea.children).map(
+              (blockElement) => {
+                const blockId =
+                  blockElement.dataset.blockId || this.generateId();
+                const blockType = blockElement.classList.contains("text-block")
+                  ? "text"
+                  : blockElement.classList.contains("image-block")
+                  ? "image"
+                  : blockElement.classList.contains("video-block")
+                  ? "video"
+                  : blockElement.classList.contains("heading-block")
+                  ? "heading"
+                  : "";
+
+                let content = "";
+                let metadata = {};
+
+                // Handle each block type
+                switch (blockType) {
+                  case "text":
+                    const quill = this.quillInstances.find(
+                      (q) => q.id === blockId
+                    )?.instance;
+                    content = quill ? quill.root.innerHTML : "";
+                    break;
+                  case "image":
+                    content = blockElement.querySelector("img")?.src || "";
+                    metadata = {
+                      alt: blockElement.querySelector("img")?.alt || "",
+                    };
+                    break;
+                  case "video":
+                    content =
+                      blockElement.querySelector(".video-url-input")?.value ||
+                      "";
+                    break;
+                  case "heading":
+                    content =
+                      blockElement.querySelector(".heading-input")?.value || "";
+                    break;
+                }
+
+                return { id: blockId, type: blockType, content, metadata };
+              }
+            );
+
+            // Validate we have at least one block
+            if (blocks.length === 0) {
+              throw new Error("No content blocks to save");
+            }
+
+            const response = await fetch(
+              `http://localhost:3000/api/tutor/materials/${this.currentMaterialId}/content`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ content: { blocks } }),
+              }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+              throw new Error(result.error || "Failed to save content");
+            }
+
+            this.showSaveSuccess();
+            this.updatePreview();
+          } catch (error) {
+            console.error("Error saving material content:", error);
+            alert(`Gagal menyimpan konten: ${error.message}`);
+          }
+        }
+
+        showSaveSuccess() {
+          const saveButton = document.getElementById("save-footer-btn");
+          const originalText = saveButton.innerHTML;
+          saveButton.innerHTML = '<i class="fas fa-check"></i> Tersimpan';
+          saveButton.classList.add("btn-success");
+
+          setTimeout(() => {
+            saveButton.innerHTML = originalText;
+            saveButton.classList.remove("btn-success");
+          }, 2000);
+        }
+
+        updatePreview() {
+          const contentArea = document.getElementById("content-area");
+          const previewArea = document.getElementById("content-preview");
+
+          // Create preview container
+          const previewContainer = document.createElement("div");
+          previewContainer.className = "preview-content";
+
+          // Process each block
+          Array.from(contentArea.children).forEach((blockElement) => {
+            const blockType = blockElement.classList.contains("text-block")
+              ? "text"
+              : blockElement.classList.contains("image-block")
+              ? "image"
+              : blockElement.classList.contains("video-block")
+              ? "video"
+              : blockElement.classList.contains("heading-block")
+              ? "heading"
+              : "";
+
+            let blockHtml = "";
+
+            switch (blockType) {
+              case "text":
+                const quill = this.quillInstances.find(
+                  (q) => q.id === blockElement.dataset.blockId
+                )?.instance;
+                if (quill) {
+                  blockHtml = quill.root.innerHTML;
+                }
+                break;
+
+              case "image":
+                const imgSrc = blockElement.querySelector("img").src;
+                blockHtml = `
+                  <div class="image-block">
+                    <img src="${imgSrc}" style="max-width: 100%; border-radius: var(--radius-md); margin-bottom: var(--space-md);">
+                  </div>
+                `;
+                break;
+
+              case "video":
+                const videoUrl =
+                  blockElement.querySelector(".video-url-input").value;
+                const embedUrl = this.getVideoEmbedUrl(videoUrl);
+                blockHtml = `
+                  <div class="preview-video-container">
+                    <iframe src="${embedUrl}" allowfullscreen></iframe>
+                  </div>
+                `;
+                break;
+
+              case "heading":
+                const headingText =
+                  blockElement.querySelector(".heading-input").value;
+                blockHtml = `<h3>${headingText}</h3>`;
+                break;
+            }
+
+            if (blockHtml) {
+              previewContainer.insertAdjacentHTML("beforeend", blockHtml);
+            }
+          });
+
+          // Add resources section (if needed)
+          // previewContainer.insertAdjacentHTML("beforeend", `
+          //   <div class="preview-resources-section">
+          //     <h3><i class="fas fa-paperclip"></i> Materi Pendukung</h3>
+          //     <div class="preview-resource-item">
+          //       <div class="preview-resource-icon">
+          //         <i class="fas fa-file-pdf"></i>
+          //       </div>
+          //       <div class="preview-resource-info">
+          //         <h4>Slide Presentasi</h4>
+          //         <p>PDF • 2.4 MB</p>
+          //       </div>
+          //       <a href="#" class="preview-download-btn">
+          //         <i class="fas fa-download"></i>
+          //       </a>
+          //     </div>
+          //   </div>
+          // `);
+
+          // Update preview area
+          previewArea.innerHTML = "";
+          previewArea.appendChild(previewContainer);
+        }
+
+        generateId() {
+          return "block-" + Math.random().toString(36).substr(2, 9);
+        }
+
+        async saveModuleSettings() {
+          if (!this.currentMaterialId) return;
+
+          try {
+            const token =
+              localStorage.getItem("token") || sessionStorage.getItem("token");
+            if (!token) {
+              throw new Error("Authentication required");
+            }
+
+            const title = document.getElementById("module-title-input").value;
+            const topic = document.getElementById("module-topic-input").value;
+            const hours =
+              parseInt(document.getElementById("module-hours").value) || 0;
+            const minutes =
+              parseInt(document.getElementById("module-minutes").value) || 0;
+            const duration = hours * 60 + minutes;
+
+            const response = await fetch(
+              `http://localhost:3000/api/tutor/materials/${this.currentMaterialId}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  title,
+                  topic,
+                  duration,
+                }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(await response.text());
+            }
+
+            // Update the module in the list
+            this.loadCourseContent();
+            this.showSaveSuccess();
+          } catch (error) {
+            console.error("Error saving module settings:", error);
+            alert(`Gagal menyimpan pengaturan: ${error.message}`);
+          }
+        }
+
+        async deleteCurrentModule() {
+          if (
+            !this.currentMaterialId ||
+            !confirm(
+              "Apakah Anda yakin ingin menghapus modul ini? Semua konten dalam modul ini akan hilang."
+            )
+          ) {
+            return;
+          }
+
+          try {
+            const token =
+              localStorage.getItem("token") || sessionStorage.getItem("token");
+            if (!token) {
+              throw new Error("Authentication required");
+            }
+
+            const response = await fetch(
+              `http://localhost:3000/api/tutor/materials/${this.currentMaterialId}`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(await response.text());
+            }
+
+            // Reload the course content
+            this.loadCourseContent();
+            // Clear the content area
+            document.getElementById("content-area").innerHTML = "";
+            // Reset current material ID
+            this.currentMaterialId = null;
+          } catch (error) {
+            console.error("Error deleting module:", error);
+            alert(`Gagal menghapus modul: ${error.message}`);
+          }
+        }
+
+        setupEventListeners() {
+          // Mobile Menu Toggle
+          const menuToggle = document.querySelector(".menu-toggle");
+          const sidebar = document.querySelector(".sidebar");
+
+          menuToggle.addEventListener("click", () => {
+            menuToggle.classList.toggle("active");
+            sidebar.classList.toggle("active");
+          });
+
+          // Tab switching
+          document.querySelectorAll(".editor-tab").forEach((tab) => {
+            tab.addEventListener("click", () => {
+              const tabName = tab.dataset.tab;
+              this.switchTab(tabName);
+            });
+          });
+
+          // Save buttons
+          document.getElementById("save-btn").addEventListener("click", () => {
+            if (this.currentTab === "content") {
+              this.saveMaterialContent();
+            } else {
+              this.saveModuleSettings();
+            }
+          });
+
+          document
+            .getElementById("save-footer-btn")
+            .addEventListener("click", () => {
+              if (this.currentTab === "content") {
+                this.saveMaterialContent();
+              } else {
+                this.saveModuleSettings();
+              }
+            });
+
+          // Delete module button
+          document
+            .getElementById("delete-module-btn")
+            .addEventListener("click", () => {
+              this.deleteCurrentModule();
+            });
+
+          // Preview button
+          document
+            .getElementById("preview-btn")
+            .addEventListener("click", () => {
+              this.updatePreview();
+            });
+
+          // Cancel button
+          document
+            .getElementById("cancel-btn")
+            .addEventListener("click", () => {
+              if (
+                confirm("Perubahan yang belum disimpan akan hilang. Lanjutkan?")
+              ) {
+                window.location.href = `manage_course.html?course=${this.courseId}`;
+              }
+            });
+
+          // Add module button
+          document
+            .getElementById("add-module")
+            .addEventListener("click", () => {
+              this.addNewMaterial();
+            });
+
+          // Toolbar buttons for adding new blocks
+          document.querySelectorAll(".toolbar-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const type = btn.dataset.type;
+              this.addNewContentBlock(type);
+            });
+          });
+
+          // Auto-save every 30 seconds
+          setInterval(() => {
+            if (this.currentTab === "content") {
+              this.saveMaterialContent();
+            }
+          }, 30000);
+
+          // Close sidebar when clicking on nav links (mobile)
+          document.querySelectorAll(".sidebar-nav a").forEach((link) => {
+            link.addEventListener("click", () => {
+              if (window.innerWidth <= 992) {
+                menuToggle.classList.remove("active");
+                sidebar.classList.remove("active");
+              }
+            });
+          });
+        }
+
+        switchTab(tabName) {
+          this.currentTab = tabName;
+
+          // Update tab UI
+          document.querySelectorAll(".editor-tab").forEach((tab) => {
+            tab.classList.toggle("active", tab.dataset.tab === tabName);
+          });
+
+          // Show/hide content
+          if (tabName === "content") {
+            document.querySelector(".content-tab").style.display = "block";
+            document.getElementById("settings-content").style.display = "none";
+          } else {
+            document.querySelector(".content-tab").style.display = "none";
+            document.getElementById("settings-content").style.display = "block";
+          }
+        }
+
+        addNewContentBlock(type) {
+          const blockId = this.generateId();
+          let blockHtml = "";
+
+          switch (type) {
+            case "text":
+              blockHtml = `
+                <div class="content-block text-block" data-block-id="${blockId}">
+                  <div class="block-header">
+                    <span class="block-type">Teks</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="quill-editor"></div>
+                </div>
+              `;
+              break;
+            case "image":
+              blockHtml = `
+                <div class="content-block image-block" data-block-id="${blockId}">
+                  <div class="block-header">
+                    <span class="block-type">Gambar</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <img src="https://via.placeholder.com/800x400" alt="Placeholder image">
+                  <button class="change-image-btn">Ganti Gambar</button>
+                </div>
+              `;
+              break;
+            case "video":
+              blockHtml = `
+                <div class="content-block video-block" data-block-id="${blockId}">
+                  <div class="block-header">
+                    <span class="block-type">Video</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="video-container">
+                    <iframe src="" allowfullscreen></iframe>
+                  </div>
+                  <input type="text" class="video-url-input" placeholder="Masukkan URL video">
+                </div>
+              `;
+              break;
+            case "heading":
+              blockHtml = `
+                <div class="content-block heading-block" data-block-id="${blockId}">
+                  <div class="block-header">
+                    <span class="block-type">Judul</span>
+                    <div class="block-actions">
+                      <div class="block-action" title="Pindahkan ke atas">
+                        <i class="fas fa-arrow-up"></i>
+                      </div>
+                      <div class="block-action" title="Pindahkan ke bawah">
+                        <i class="fas fa-arrow-down"></i>
+                      </div>
+                      <div class="block-action" title="Hapus">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="text" class="heading-input" placeholder="Masukkan judul">
+                </div>
+              `;
+              break;
+          }
+
+          const contentArea = document.getElementById("content-area");
+          contentArea.insertAdjacentHTML("beforeend", blockHtml);
+
+          // Initialize Quill for text blocks
+          if (type === "text") {
+            const editorContainer = contentArea.querySelector(
+              `[data-block-id="${blockId}"] .quill-editor`
+            );
+            const quill = new Quill(editorContainer, {
+              theme: "snow",
+              modules: {
+                toolbar: [
+                  [{ header: [1, 2, 3, false] }],
+                  ["bold", "italic", "underline", "strike"],
+                  [{ color: [] }, { background: [] }],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link", "image", "video"],
+                  ["clean"],
+                ],
+              },
+              placeholder: "Tulis konten Anda di sini...",
+            });
+
+            this.quillInstances.push({ id: blockId, instance: quill });
+          }
+
+          // Set up event listeners for the new block
+          this.setupBlockEventListeners(blockId);
+
+          // Scroll to the new block
+          contentArea
+            .querySelector(`[data-block-id="${blockId}"]`)
+            .scrollIntoView({ behavior: "smooth" });
+
+          // Auto-save
+          this.saveMaterialContent();
+        }
+
+        // Di dalam class CourseContentEditor, tambahkan method baru:
+
+        handleImageUpload(blockId) {
+          this.currentImageBlockId = blockId;
+          const modal = document.getElementById("imageUploadModal");
+          const dropZone = document.getElementById("dropZone");
+          const imageInput = document.getElementById("imageInput");
+          const previewContainer = document.getElementById("imagePreview");
+          const previewImage = document.getElementById("previewImage");
+          const selectImageBtn = document.getElementById("selectImageBtn");
+          const changeImageBtn = document.getElementById("changeImageBtn");
+          const removeImageBtn = document.getElementById("removeImageBtn");
+          const confirmUploadBtn = document.getElementById("confirmUploadBtn");
+          const cancelUploadBtn = document.getElementById("cancelUploadBtn");
+          const closeModal = document.querySelector(".close-modal");
+          const imageAltText = document.getElementById("imageAltText");
+
+          // Reset modal state
+          previewContainer.style.display = "none";
+          dropZone.style.display = "block";
+          confirmUploadBtn.disabled = true;
+          imageAltText.value = "";
+
+          // Get current image data if editing existing image
+          const currentBlock = document.querySelector(
+            `[data-block-id="${blockId}"]`
+          );
+          if (currentBlock) {
+            const currentImage = currentBlock.querySelector("img");
+            if (
+              currentImage &&
+              currentImage.src &&
+              !currentImage.src.includes("placeholder")
+            ) {
+              previewImage.src = currentImage.src;
+              imageAltText.value = currentImage.alt || "";
+              previewContainer.style.display = "block";
+              dropZone.style.display = "none";
+              confirmUploadBtn.disabled = false;
+            }
+          }
+
+          // Show modal
+          modal.style.display = "block";
+
+          // Drag and drop handlers
+          ["dragenter", "dragover", "dragleave", "drop"].forEach(
+            (eventName) => {
+              dropZone.addEventListener(eventName, preventDefaults, false);
+            }
+          );
+
+          function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+
+          ["dragenter", "dragover"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, highlight, false);
+          });
+
+          ["dragleave", "drop"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+          });
+
+          function highlight() {
+            dropZone.classList.add("highlight");
+          }
+
+          function unhighlight() {
+            dropZone.classList.remove("highlight");
+          }
+
+          dropZone.addEventListener("drop", handleDrop, false);
+
+          function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0 && files[0].type.startsWith("image/")) {
+              handleImageFile(files[0]);
+            }
+          }
+
+          // File input handler
+          selectImageBtn.addEventListener("click", () => {
+            imageInput.click();
+          });
+
+          imageInput.addEventListener("change", (e) => {
+            if (
+              e.target.files.length > 0 &&
+              e.target.files[0].type.startsWith("image/")
+            ) {
+              handleImageFile(e.target.files[0]);
+            }
+          });
+
+          // Change image button
+          changeImageBtn.addEventListener("click", () => {
+            previewContainer.style.display = "none";
+            dropZone.style.display = "block";
+            imageInput.click();
+          });
+
+          // Remove image button
+          removeImageBtn.addEventListener("click", async () => {
+            const block = document.querySelector(
+              `[data-block-id="${blockId}"]`
+            );
+            if (block) {
+              const img = block.querySelector("img");
+              if (img && img.src) {
+                try {
+                  // Extract filename from URL
+                  const filename = img.src.split("/").pop();
+
+                  // Call delete endpoint
+                  const response = await fetch(`/api/upload/${filename}`, {
+                    method: "DELETE",
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  });
+
+                  if (!response.ok) {
+                    throw new Error("Failed to delete image");
+                  }
+
+                  // Reset image to placeholder
+                  img.src = "https://via.placeholder.com/800x400";
+                  img.alt = "";
+
+                  // Close modal
+                  modal.style.display = "none";
+
+                  // Save changes
+                  this.saveMaterialContent();
+                } catch (error) {
+                  console.error("Error deleting image:", error);
+                  alert("Gagal menghapus gambar");
+                }
+              }
+            }
+          });
+
+          // Confirm upload button
+          confirmUploadBtn.addEventListener("click", async () => {
+            if (!this.uploadedImageUrl) {
+              alert("Silakan unggah gambar terlebih dahulu");
+              return;
+            }
+
+            const block = document.querySelector(
+              `[data-block-id="${blockId}"]`
+            );
+            if (block) {
+              const img = block.querySelector("img");
+              if (img) {
+                img.src = this.uploadedImageUrl;
+                img.alt = imageAltText.value;
+              }
+            }
+
+            modal.style.display = "none";
+            this.saveMaterialContent();
+          });
+
+          // Cancel and close handlers
+          cancelUploadBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+          });
+
+          closeModal.addEventListener("click", () => {
+            modal.style.display = "none";
+          });
+
+          // Handle image file selection
+          const handleImageFile = (file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              previewImage.src = e.target.result;
+              previewContainer.style.display = "block";
+              dropZone.style.display = "none";
+
+              // Upload the file to server
+              this.uploadImageFile(file);
+            };
+            reader.readAsDataURL(file);
+          };
+        }
+
+        async uploadImageFile(file) {
+          const formData = new FormData();
+          formData.append("image", file);
+
+          try {
+            const response = await fetch("/api/upload", {
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error(await response.text());
+            }
+
+            const result = await response.json();
+            this.uploadedImageUrl = result.url;
+            document.getElementById("confirmUploadBtn").disabled = false;
+          } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("Gagal mengunggah gambar");
+            document.getElementById("previewImage").src = "";
+            document.getElementById("imagePreview").style.display = "none";
+            document.getElementById("dropZone").style.display = "block";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

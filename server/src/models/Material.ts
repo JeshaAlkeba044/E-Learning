@@ -2,7 +2,7 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize
 import { Course } from './Course';
 import { v4 } from 'uuid';
 
-@Table({ tableName: 'materials' })
+@Table({ tableName: 'materials' , timestamps: true, createdAt: 'created_at', updatedAt: 'updated_at'})
 export class Material extends Model {
   @Column({
     type: DataType.UUIDV4,
@@ -23,10 +23,10 @@ export class Material extends Model {
   topic!: string;
 
   @Column({
-    type: DataType.TEXT,
+    type: DataType.JSON, 
     allowNull: false,
   })
-  content!: string;
+  content!: any; 
   
   @Column({
     type: DataType.INTEGER,
@@ -42,12 +42,18 @@ export class Material extends Model {
   is_free!: boolean;
 
   @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+  is_locked!: boolean;
+
+  @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
   sequence_order!: number;
 
-  // Relasi: Material dimiliki oleh 1 Course
   @ForeignKey(() => Course)
   @Column({
     type: DataType.UUID,

@@ -4,7 +4,7 @@ import { Material } from './Material';
 import { Transaction } from './Transaction';
 import { v4 } from 'uuid';
 
-@Table({ tableName: 'courses' })
+@Table({ tableName: 'courses' , timestamps: true, createdAt: 'created_at', updatedAt: 'updated_at' })
 export class Course extends Model {
   @Column({
     type: DataType.UUIDV4,
@@ -43,9 +43,24 @@ export class Course extends Model {
   price!: number;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    defaultValue: 'beginner',
+  })
+  level!: string; // beginner, intermediate, advanced
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  total_duration!: number; // in minutes
+
+  @Column({
     type: DataType.DATE,
     allowNull: false,
     defaultValue: DataType.NOW,
+    field: 'created_at',
   })
   created_at!: Date;
 
@@ -53,6 +68,7 @@ export class Course extends Model {
     type: DataType.DATE,
     allowNull: false,
     defaultValue: DataType.NOW,
+    field: 'updated_at',
   })
   updated_at!: Date;
 
@@ -63,7 +79,6 @@ export class Course extends Model {
   })
   is_active!: boolean;
 
-  // Relasi: Course dimiliki oleh 1 User (instructor)
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
@@ -74,11 +89,9 @@ export class Course extends Model {
   @BelongsTo(() => User)
   instructor_Id!: User;
 
-  // Relasi: 1 Course memiliki banyak Material
   @HasMany(() => Material)
   materials_id!: Material[];
 
-  // Relasi: 1 Course dimiliki oleh banyak Transaction
   @HasMany(() => Transaction)
   transactions_id!: Transaction[];
 }

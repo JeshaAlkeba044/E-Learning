@@ -3,8 +3,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('courses', {
-      id_course: {
+    await queryInterface.createTable('materials', {
+      id_material: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
@@ -13,33 +13,37 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      thumbnail_path: {
+      topic: {
         type: Sequelize.STRING,
       },
-      description: {
-        type: Sequelize.TEXT,
-      },
-      price: {
-        type: Sequelize.FLOAT,
+      content: {
+        type: Sequelize.JSON,
         allowNull: false,
-        defaultValue: 0,
       },
-      created_at: {
-        type: Sequelize.DATE,
+      duration: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
-      is_active: {
+      is_free: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: false,
       },
-      id_user: {
+      is_locked: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      sequence_order: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      id_course: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id_user',
+          model: 'courses',
+          key: 'id_course',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -58,6 +62,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('courses');
+    await queryInterface.dropTable('materials');
   }
 };

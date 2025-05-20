@@ -1,963 +1,1072 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Daftar Kursus - EduPlus</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        /* ========== VARIABLES ========== */
-        :root {
-            /* Colors */
-            --primary: #4361ee;
-            --primary-light: #4895ef;
-            --primary-dark: #3f37c9;
-            --secondary: #f72585;
-            --accent: #4cc9f0;
-            --success: #38b000;
-            --warning: #ffaa00;
-            --danger: #ef233c;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --white: #ffffff;
-            --black: #000000;
-            --sidebar-bg: #2b2d42;
-            --sidebar-active: #3a3d5d;
-            
-            /* Spacing */
-            --space-xs: 0.25rem;
-            --space-sm: 0.5rem;
-            --space-md: 1rem;
-            --space-lg: 1.5rem;
-            --space-xl: 2rem;
-            
-            /* Border Radius */
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            
-            /* Shadows */
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
-            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
-            
-            /* Transitions */
-            --transition-fast: 0.2s ease;
-            --transition-normal: 0.3s ease;
-            --transition-slow: 0.5s ease;
-        }
+      /* ========== VARIABLES ========== */
+      :root {
+        /* Colors */
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --primary-dark: #3f37c9;
+        --secondary: #f72585;
+        --accent: #4cc9f0;
+        --success: #38b000;
+        --warning: #ffaa00;
+        --danger: #ef233c;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --white: #ffffff;
+        --black: #000000;
+        --sidebar-bg: #2b2d42;
+        --sidebar-active: #3a3d5d;
 
-        /* ========== BASE STYLES ========== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* Spacing */
+        --space-xs: 0.25rem;
+        --space-sm: 0.5rem;
+        --space-md: 1rem;
+        --space-lg: 1.5rem;
+        --space-xl: 2rem;
 
-        html {
-            scroll-behavior: smooth;
-        }
+        /* Border Radius */
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
 
+        /* Shadows */
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+        --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+        /* Transitions */
+        --transition-fast: 0.2s ease;
+        --transition-normal: 0.3s ease;
+        --transition-slow: 0.5s ease;
+      }
+
+      /* ========== BASE STYLES ========== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+        background-color: var(--light);
+        overflow-x: hidden;
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: 100vh;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-md);
+      }
+
+      /* ========== SIDEBAR ========== */
+      .sidebar {
+        background-color: var(--sidebar-bg);
+        color: var(--white);
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        padding: var(--space-xl) 0;
+      }
+
+      .sidebar-header {
+        padding: 0 var(--space-lg);
+        margin-bottom: var(--space-xl);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .sidebar-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+      }
+
+      .sidebar-logo i {
+        margin-right: var(--space-sm);
+        font-size: 1.8rem;
+        color: var(--accent);
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-nav a {
+        padding: var(--space-sm) var(--space-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        transition: var(--transition-fast);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background-color: var(--sidebar-active);
+        color: var(--white);
+      }
+
+      .sidebar-nav a i {
+        width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-nav a.active {
+        border-left: 3px solid var(--accent);
+      }
+
+      /* ========== MAIN CONTENT ========== */
+      .main-content {
+        padding: var(--space-xl) 0;
+        width: 100%;
+      }
+
+      /* Header */
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-xl);
+        padding: 0 var(--space-md);
+      }
+
+      .page-title h1 {
+        font-size: 1.8rem;
+        color: var(--dark);
+      }
+
+      .page-title p {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+      }
+
+      .notification-bell {
+        position: relative;
+        cursor: pointer;
+        color: var(--gray);
+        transition: var(--transition-fast);
+      }
+
+      .notification-bell:hover {
+        color: var(--primary);
+      }
+
+      .notification-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: var(--danger);
+        color: var(--white);
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-light);
+      }
+
+      .profile-name {
+        font-weight: 500;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background-color: var(--white);
+        min-width: 200px;
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--radius-md);
+        z-index: 100;
+        display: none;
+        overflow: hidden;
+      }
+
+      .profile-dropdown a {
+        padding: var(--space-sm) var(--space-md);
+        display: block;
+        color: var(--dark);
+        transition: var(--transition-fast);
+      }
+
+      .profile-dropdown a:hover {
+        background-color: var(--light-gray);
+        color: var(--primary);
+      }
+
+      .user-profile:hover .profile-dropdown {
+        display: block;
+      }
+
+      /* Course Filter */
+      .course-filter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-md);
+        margin-bottom: var(--space-xl);
+        align-items: center;
+      }
+
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .filter-label {
+        font-weight: 500;
+        color: var(--gray);
+      }
+
+      .filter-select {
+        padding: var(--space-sm) var(--space-md);
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius-md);
+        background-color: var(--white);
+        cursor: pointer;
+        transition: var(--transition-fast);
+      }
+
+      .filter-select:hover {
+        border-color: var(--primary-light);
+      }
+
+      .search-bar {
+        flex: 1;
+        max-width: 400px;
+        position: relative;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: var(--space-sm) var(--space-lg);
+        padding-left: 40px;
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius-md);
+        background-color: var(--white);
+        transition: var(--transition-fast);
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+      }
+
+      /* Course Grid */
+      .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: var(--space-lg);
+        margin-bottom: var(--space-xl);
+      }
+
+      .course-card {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-normal);
+      }
+
+      .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .course-badge {
+        position: absolute;
+        top: var(--space-md);
+        left: var(--space-md);
+        background-color: var(--secondary);
+        color: var(--white);
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 1;
+      }
+
+      .card-image {
+        height: 160px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition-slow);
+      }
+
+      .course-card:hover .card-image img {
+        transform: scale(1.05);
+      }
+
+      .card-content {
+        padding: var(--space-lg);
+      }
+
+      .card-category {
+        color: var(--primary);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: var(--space-xs);
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+        margin-bottom: var(--space-sm);
+        color: var(--dark);
+      }
+
+      .card-description {
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: var(--space-md);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .card-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: var(--space-md);
+      }
+
+      .card-meta i {
+        margin-right: var(--space-xs);
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--light-gray);
+      }
+
+      .card-price {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.1rem;
+      }
+
+      .enroll-btn {
+        padding: var(--space-sm) var(--space-md);
+        background-color: var(--success);
+        color: var(--white);
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        transition: var(--transition-fast);
+      }
+
+      .enroll-btn:hover {
+        background-color: #2e8b00;
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-sm);
+        margin-top: var(--space-xl);
+      }
+
+      .page-item {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition-fast);
+      }
+
+      .page-item:hover:not(.active, .disabled) {
+        background-color: var(--light-gray);
+      }
+
+      .page-item.active {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      .page-item.disabled {
+        color: var(--gray);
+        cursor: not-allowed;
+      }
+
+      /* Empty State */
+      .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: var(--space-xl) 0;
+      }
+
+      .empty-icon {
+        font-size: 3rem;
+        color: var(--light-gray);
+        margin-bottom: var(--space-md);
+      }
+
+      .empty-state h3 {
+        font-size: 1.2rem;
+        margin-bottom: var(--space-sm);
+        color: var(--dark);
+      }
+
+      .empty-state p {
+        color: var(--gray);
+        margin-bottom: var(--space-lg);
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* ========== DARK MODE ========== */
+      .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+
+      .dark-mode .sidebar {
+        background-color: #1e1e1e;
+      }
+
+      .dark-mode .main-content {
+        background-color: #121212;
+      }
+
+      .dark-mode .course-card,
+      .dark-mode .profile-dropdown,
+      .dark-mode .filter-select,
+      .dark-mode .search-input {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+      }
+
+      .dark-mode .card-title {
+        color: #ffffff;
+      }
+
+      .dark-mode .card-category,
+      .dark-mode .card-description,
+      .dark-mode .card-meta,
+      .dark-mode .filter-label {
+        color: #b0b0b0;
+      }
+
+      .dark-mode .profile-dropdown a {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .profile-dropdown a:hover {
+        background-color: #333;
+      }
+
+      .dark-mode .filter-select,
+      .dark-mode .search-input {
+        border-color: #333;
+      }
+
+      /* ========== RESPONSIVE STYLES ========== */
+      @media (max-width: 992px) {
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            background-color: var(--light);
-            overflow-x: hidden;
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            min-height: 100vh;
+          grid-template-columns: 1fr;
         }
 
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--space-md);
-        }
-
-        /* ========== SIDEBAR ========== */
         .sidebar {
-            background-color: var(--sidebar-bg);
-            color: var(--white);
-            height: 100vh;
-            position: sticky;
-            top: 0;
-            padding: var(--space-xl) 0;
+          position: fixed;
+          top: 0;
+          left: -240px;
+          height: 100vh;
+          z-index: 1000;
+          transition: var(--transition-normal);
         }
 
-        .sidebar-header {
-            padding: 0 var(--space-lg);
-            margin-bottom: var(--space-xl);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
+        .sidebar.active {
+          left: 0;
         }
 
-        .sidebar-logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--white);
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar-logo i {
-            margin-right: var(--space-sm);
-            font-size: 1.8rem;
-            color: var(--accent);
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-nav a {
-            padding: var(--space-sm) var(--space-lg);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            transition: var(--transition-fast);
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .sidebar-nav a:hover, 
-        .sidebar-nav a.active {
-            background-color: var(--sidebar-active);
-            color: var(--white);
-        }
-
-        .sidebar-nav a i {
-            width: 24px;
-            text-align: center;
-        }
-
-        .sidebar-nav a.active {
-            border-left: 3px solid var(--accent);
-        }
-
-        /* ========== MAIN CONTENT ========== */
         .main-content {
-            padding: var(--space-xl) 0;
-            width: 100%;
+          padding-top: 80px;
         }
 
-        /* Header */
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-xl);
-            padding: 0 var(--space-md);
+        .menu-toggle {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          width: 30px;
+          height: 21px;
+          cursor: pointer;
+          z-index: 1001;
+          position: fixed;
+          top: 20px;
+          left: 20px;
         }
 
-        .page-title h1 {
-            font-size: 1.8rem;
-            color: var(--dark);
+        .menu-toggle span {
+          display: block;
+          height: 3px;
+          width: 100%;
+          background: var(--primary);
+          border-radius: 3px;
+          transition: var(--transition-normal);
         }
 
-        .page-title p {
-            color: var(--gray);
-            font-size: 0.9rem;
+        .menu-toggle.active span:nth-child(1) {
+          transform: translateY(9px) rotate(45deg);
         }
 
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
+        .menu-toggle.active span:nth-child(2) {
+          opacity: 0;
         }
 
-        .notification-bell {
-            position: relative;
-            cursor: pointer;
-            color: var(--gray);
-            transition: var(--transition-fast);
+        .menu-toggle.active span:nth-child(3) {
+          transform: translateY(-9px) rotate(-45deg);
         }
+      }
 
-        .notification-bell:hover {
-            color: var(--primary);
-        }
-
-        .notification-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--danger);
-            color: var(--white);
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .profile-pic {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-light);
-        }
-
-        .profile-name {
-            font-weight: 500;
-        }
-
-        .profile-dropdown {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background-color: var(--white);
-            min-width: 200px;
-            box-shadow: var(--shadow-lg);
-            border-radius: var(--radius-md);
-            z-index: 100;
-            display: none;
-            overflow: hidden;
-        }
-
-        .profile-dropdown a {
-            padding: var(--space-sm) var(--space-md);
-            display: block;
-            color: var(--dark);
-            transition: var(--transition-fast);
-        }
-
-        .profile-dropdown a:hover {
-            background-color: var(--light-gray);
-            color: var(--primary);
-        }
-
-        .user-profile:hover .profile-dropdown {
-            display: block;
-        }
-
-        /* Course Filter */
+      @media (max-width: 768px) {
         .course-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-md);
-            margin-bottom: var(--space-xl);
-            align-items: center;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .filter-label {
-            font-weight: 500;
-            color: var(--gray);
-        }
-
-        .filter-select {
-            padding: var(--space-sm) var(--space-md);
-            border: 1px solid var(--light-gray);
-            border-radius: var(--radius-md);
-            background-color: var(--white);
-            cursor: pointer;
-            transition: var(--transition-fast);
-        }
-
-        .filter-select:hover {
-            border-color: var(--primary-light);
+          flex-direction: column;
+          align-items: stretch;
         }
 
         .search-bar {
-            flex: 1;
-            max-width: 400px;
-            position: relative;
+          max-width: 100%;
         }
 
-        .search-input {
-            width: 100%;
-            padding: var(--space-sm) var(--space-lg);
-            padding-left: 40px;
-            border: 1px solid var(--light-gray);
-            border-radius: var(--radius-md);
-            background-color: var(--white);
-            transition: var(--transition-fast);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
-
-        /* Course Grid */
         .course-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: var(--space-lg);
-            margin-bottom: var(--space-xl);
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .course-grid {
+          grid-template-columns: 1fr;
         }
 
-        .course-card {
-            background-color: var(--white);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition-normal);
+        .user-actions {
+          gap: var(--space-sm);
         }
 
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .course-badge {
-            position: absolute;
-            top: var(--space-md);
-            left: var(--space-md);
-            background-color: var(--secondary);
-            color: var(--white);
-            padding: var(--space-xs) var(--space-sm);
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 1;
-        }
-
-        .card-image {
-            height: 160px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition-slow);
-        }
-
-        .course-card:hover .card-image img {
-            transform: scale(1.05);
-        }
-
-        .card-content {
-            padding: var(--space-lg);
-        }
-
-        .card-category {
-            color: var(--primary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: var(--space-xs);
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            margin-bottom: var(--space-sm);
-            color: var(--dark);
-        }
-
-        .card-description {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: var(--space-md);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: var(--space-md);
-        }
-
-        .card-meta i {
-            margin-right: var(--space-xs);
+        .profile-name {
+          display: none;
         }
 
         .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: var(--space-md);
-            border-top: 1px solid var(--light-gray);
-        }
-
-        .card-price {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 1.1rem;
+          flex-direction: column;
+          gap: var(--space-sm);
+          align-items: flex-start;
         }
 
         .enroll-btn {
-            padding: var(--space-sm) var(--space-md);
-            background-color: var(--success);
-            color: var(--white);
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            transition: var(--transition-fast);
+          width: 100%;
+          text-align: center;
         }
-
-        .enroll-btn:hover {
-            background-color: #2e8b00;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: var(--space-sm);
-            margin-top: var(--space-xl);
-        }
-
-        .page-item {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: var(--transition-fast);
-        }
-
-        .page-item:hover:not(.active, .disabled) {
-            background-color: var(--light-gray);
-        }
-
-        .page-item.active {
-            background-color: var(--primary);
-            color: var(--white);
-        }
-
-        .page-item.disabled {
-            color: var(--gray);
-            cursor: not-allowed;
-        }
-
-        /* Empty State */
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: var(--space-xl) 0;
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            color: var(--light-gray);
-            margin-bottom: var(--space-md);
-        }
-
-        .empty-state h3 {
-            font-size: 1.2rem;
-            margin-bottom: var(--space-sm);
-            color: var(--dark);
-        }
-
-        .empty-state p {
-            color: var(--gray);
-            margin-bottom: var(--space-lg);
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* ========== DARK MODE ========== */
-        .dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-
-        .dark-mode .sidebar {
-            background-color: #1e1e1e;
-        }
-
-        .dark-mode .main-content {
-            background-color: #121212;
-        }
-
-        .dark-mode .course-card,
-        .dark-mode .profile-dropdown,
-        .dark-mode .filter-select,
-        .dark-mode .search-input {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-        }
-
-        .dark-mode .card-title {
-            color: #ffffff;
-        }
-
-        .dark-mode .card-category,
-        .dark-mode .card-description,
-        .dark-mode .card-meta,
-        .dark-mode .filter-label {
-            color: #b0b0b0;
-        }
-
-        .dark-mode .profile-dropdown a {
-            color: #e0e0e0;
-        }
-
-        .dark-mode .profile-dropdown a:hover {
-            background-color: #333;
-        }
-
-        .dark-mode .filter-select,
-        .dark-mode .search-input {
-            border-color: #333;
-        }
-
-        /* ========== RESPONSIVE STYLES ========== */
-        @media (max-width: 992px) {
-            body {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -240px;
-                height: 100vh;
-                z-index: 1000;
-                transition: var(--transition-normal);
-            }
-
-            .sidebar.active {
-                left: 0;
-            }
-
-            .main-content {
-                padding-top: 80px;
-            }
-
-            .menu-toggle {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                width: 30px;
-                height: 21px;
-                cursor: pointer;
-                z-index: 1001;
-                position: fixed;
-                top: 20px;
-                left: 20px;
-            }
-
-            .menu-toggle span {
-                display: block;
-                height: 3px;
-                width: 100%;
-                background: var(--primary);
-                border-radius: 3px;
-                transition: var(--transition-normal);
-            }
-
-            .menu-toggle.active span:nth-child(1) {
-                transform: translateY(9px) rotate(45deg);
-            }
-
-            .menu-toggle.active span:nth-child(2) {
-                opacity: 0;
-            }
-
-            .menu-toggle.active span:nth-child(3) {
-                transform: translateY(-9px) rotate(-45deg);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .course-filter {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-bar {
-                max-width: 100%;
-            }
-
-            .course-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .course-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .user-actions {
-                gap: var(--space-sm);
-            }
-
-            .profile-name {
-                display: none;
-            }
-
-            .card-footer {
-                flex-direction: column;
-                gap: var(--space-sm);
-                align-items: flex-start;
-            }
-
-            .enroll-btn {
-                width: 100%;
-                text-align: center;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>EduPlus</span>
-            </div>
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-graduation-cap"></i>
+          <span>EduPlus</span>
         </div>
-        
-        <nav class="sidebar-nav">
-            <a href="LearnerDashboard.html">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="my-courses.html">
-                <i class="fas fa-book-open"></i>
-                <span>My Courses</span>
-            </a>
-            <a href="progress.html">
-                <i class="fas fa-chart-line"></i>
-                <span>Learning Progress</span>
-            </a>
-        </nav>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="LearnerDashboard.html">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="my-courses.html">
+          <i class="fas fa-book-open"></i>
+          <span>My Courses</span>
+        </a>
+        <a href="progress.html">
+          <i class="fas fa-chart-line"></i>
+          <span>Learning Progress</span>
+        </a>
+      </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Header -->
-        <div class="main-header">
-            <div class="page-title">
-                <h1>Daftar Kursus</h1>
-                <p>Temukan kursus yang sesuai dengan minat dan kebutuhan Anda</p>
-            </div>
-            
-            <div class="user-actions">
-                <div class="user-profile">
-                    <img src="../assets/images/profile-placeholder.jpg" alt="Profile" class="profile-pic">
-                    <span class="profile-name">John Doe</span>
-                    
-                    <div class="profile-dropdown">
-                        <a href="settings/profile.html">
-                            <i class="fas fa-user"></i> Profil Saya
-                        </a>
-                        <a href="../auth/login/indexLogin.html">
-                            <i class="fas fa-sign-out-alt"></i> Keluar
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
+      <!-- Header -->
+      <div class="main-header">
+        <div class="page-title">
+          <h1>Daftar Kursus</h1>
+          <p>Temukan kursus yang sesuai dengan minat dan kebutuhan Anda</p>
         </div>
-        
-        <!-- Course Content -->
-        <div class="container">
-            <!-- Course Filter -->
-            <div class="course-filter">
-                <div class="filter-group">
-                    <span class="filter-label">Kategori:</span>
-                    <select class="filter-select">
-                        <option value="all">Semua Kategori</option>
-                        <option value="design">Desain</option>
-                        <option value="programming">Pemrograman</option>
-                        <option value="marketing">Marketing</option>
-                        <option value="business">Bisnis</option>
-                        <option value="data-science">Data Science</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <span class="filter-label">Tingkat:</span>
-                    <select class="filter-select">
-                        <option value="all">Semua Tingkat</option>
-                        <option value="beginner">Pemula</option>
-                        <option value="intermediate">Menengah</option>
-                        <option value="advanced">Lanjutan</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <span class="filter-label">Urutkan:</span>
-                    <select class="filter-select">
-                        <option value="popular">Paling Populer</option>
-                        <option value="newest">Terbaru</option>
-                        <option value="highest-rated">Rating Tertinggi</option>
-                        <option value="price-low">Harga: Rendah ke Tinggi</option>
-                        <option value="price-high">Harga: Tinggi ke Rendah</option>
-                    </select>
-                </div>
-                
-                <div class="search-bar">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Cari kursus...">
-                </div>
+
+        <div class="user-actions">
+          <div class="user-profile">
+            <img
+              src="../assets/images/profile-placeholder.jpg"
+              alt="Profile"
+              class="profile-pic"
+            />
+            <span class="profile-name">John Doe</span>
+
+            <div class="profile-dropdown">
+              <a href="settings/profile.html">
+                <i class="fas fa-user"></i> Profil Saya
+              </a>
+              <a href="../auth/login/indexLogin.html">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+              </a>
             </div>
-            
-            <!-- Course Grid -->
-            <div class="course-grid">
-                <!-- Course 1 -->
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="../img/UI UX Design Illustration.jpg" alt="UI/UX Design">
-                        <div class="course-badge">Baru</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="card-category">Desain</div>
-                        <h3 class="card-title">UI/UX Design Fundamental</h3>
-                        <p class="card-description">Pelajari dasar-dasar desain antarmuka dan pengalaman pengguna untuk membuat aplikasi yang menarik dan mudah digunakan.</p>
-                        
-                        <div class="card-meta">
-                            <span><i class="fas fa-clock"></i> 20 jam</span>
-                            <span><i class="fas fa-star"></i> 4.8 (120)</span>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <span class="card-price">Rp 150.000</span>
-                            <a href="#" class="enroll-btn">Daftar</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Course 2 -->
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="../img/Free Vector _ Space icons.jpg" alt="Web Development">
-                        <div class="course-badge">Populer</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="card-category">Pemrograman</div>
-                        <h3 class="card-title">Web Development Modern</h3>
-                        <p class="card-description">Kuasi teknologi terbaru dalam pengembangan web termasuk React, Node.js, dan database modern.</p>
-                        
-                        <div class="card-meta">
-                            <span><i class="fas fa-clock"></i> 30 jam</span>
-                            <span><i class="fas fa-star"></i> 4.9 (250)</span>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <span class="card-price">Rp 200.000</span>
-                            <a href="#" class="enroll-btn">Daftar</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Course 3 -->
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="../img/course-datascience.jpg" alt="Data Science">
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="card-category">Data Science</div>
-                        <h3 class="card-title">Data Science untuk Pemula</h3>
-                        <p class="card-description">Mulai perjalanan Anda dalam data science dengan Python, pandas, dan visualisasi data.</p>
-                        
-                        <div class="card-meta">
-                            <span><i class="fas fa-clock"></i> 40 jam</span>
-                            <span><i class="fas fa-star"></i> 4.7 (180)</span>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <span class="card-price">Rp 250.000</span>
-                            <a href="#" class="enroll-btn">Daftar</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Course 4 -->
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="../img/course-digitalmarketing.jpg" alt="Digital Marketing">
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="card-category">Marketing</div>
-                        <h3 class="card-title">Digital Marketing Mastery</h3>
-                        <p class="card-description">Pelajari strategi digital marketing terbaru termasuk SEO, media sosial, dan iklan berbayar.</p>
-                        
-                        <div class="card-meta">
-                            <span><i class="fas fa-clock"></i> 25 jam</span>
-                            <span><i class="fas fa-star"></i> 4.6 (150)</span>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <span class="card-price">Rp 175.000</span>
-                            <a href="#" class="enroll-btn">Daftar</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Course 5 -->
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="../img/course-business.jpg" alt="Business Strategy">
-                        <div class="course-badge">Diskon 30%</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="card-category">Bisnis</div>
-                        <h3 class="card-title">Strategi Bisnis Digital</h3>
-                        <p class="card-description">Kembangkan strategi bisnis yang efektif di era digital dengan studi kasus dari perusahaan sukses.</p>
-                        
-                        <div class="card-meta">
-                            <span><i class="fas fa-clock"></i> 15 jam</span>
-                            <span><i class="fas fa-star"></i> 4.5 (90)</span>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <span class="card-price"><s>Rp 300.000</s> Rp 210.000</span>
-                            <a href="#" class="enroll-btn">Daftar</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Course 6 -->
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="../img/course-mobile.jpg" alt="Mobile Development">
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="card-category">Pemrograman</div>
-                        <h3 class="card-title">Pengembangan Aplikasi Mobile</h3>
-                        <p class="card-description">Bangun aplikasi mobile cross-platform dengan Flutter dan Firebase.</p>
-                        
-                        <div class="card-meta">
-                            <span><i class="fas fa-clock"></i> 35 jam</span>
-                            <span><i class="fas fa-star"></i> 4.8 (200)</span>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <span class="card-price">Rp 275.000</span>
-                            <a href="#" class="enroll-btn">Daftar</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Pagination -->
-            <div class="pagination">
-                <div class="page-item disabled">
-                    <i class="fas fa-chevron-left"></i>
-                </div>
-                <div class="page-item active">1</div>
-                <div class="page-item">2</div>
-                <div class="page-item">3</div>
-                <div class="page-item">4</div>
-                <div class="page-item">5</div>
-                <div class="page-item">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-            </div>
+          </div>
+
+          <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
+      </div>
+
+      <!-- Course Content -->
+      <div class="container">
+        <!-- Course Filter -->
+        <div class="course-filter">
+          <div class="filter-group">
+            <span class="filter-label">Kategori:</span>
+            <select class="filter-select">
+              <option value="all">Semua Kategori</option>
+              <option value="design">Desain</option>
+              <option value="programming">Pemrograman</option>
+              <option value="marketing">Marketing</option>
+              <option value="business">Bisnis</option>
+              <option value="data-science">Data Science</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <span class="filter-label">Tingkat:</span>
+            <select class="filter-select">
+              <option value="all">Semua Tingkat</option>
+              <option value="beginner">Pemula</option>
+              <option value="intermediate">Menengah</option>
+              <option value="advanced">Lanjutan</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <span class="filter-label">Urutkan:</span>
+            <select class="filter-select">
+              <option value="popular">Paling Populer</option>
+              <option value="newest">Terbaru</option>
+              <option value="highest-rated">Rating Tertinggi</option>
+              <option value="price-low">Harga: Rendah ke Tinggi</option>
+              <option value="price-high">Harga: Tinggi ke Rendah</option>
+            </select>
+          </div>
+
+          <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Cari kursus..."
+            />
+          </div>
+        </div>
+
+        <!-- Course Grid -->
+        <div class="course-grid">
+          <!-- Course 1 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img
+                src="../img/UI UX Design Illustration.jpg"
+                alt="UI/UX Design"
+              />
+              <div class="course-badge">Baru</div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-category">Desain</div>
+              <h3 class="card-title">UI/UX Design Fundamental</h3>
+              <p class="card-description">
+                Pelajari dasar-dasar desain antarmuka dan pengalaman pengguna
+                untuk membuat aplikasi yang menarik dan mudah digunakan.
+              </p>
+
+              <div class="card-meta">
+                <span><i class="fas fa-clock"></i> 20 jam</span>
+                <span><i class="fas fa-star"></i> 4.8 (120)</span>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-price">Rp 150.000</span>
+                <a href="#" class="enroll-btn">Daftar</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 2 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img
+                src="../img/Free Vector _ Space icons.jpg"
+                alt="Web Development"
+              />
+              <div class="course-badge">Populer</div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-category">Pemrograman</div>
+              <h3 class="card-title">Web Development Modern</h3>
+              <p class="card-description">
+                Kuasi teknologi terbaru dalam pengembangan web termasuk React,
+                Node.js, dan database modern.
+              </p>
+
+              <div class="card-meta">
+                <span><i class="fas fa-clock"></i> 30 jam</span>
+                <span><i class="fas fa-star"></i> 4.9 (250)</span>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-price">Rp 200.000</span>
+                <a href="#" class="enroll-btn">Daftar</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 3 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img src="../img/course-datascience.jpg" alt="Data Science" />
+            </div>
+
+            <div class="card-content">
+              <div class="card-category">Data Science</div>
+              <h3 class="card-title">Data Science untuk Pemula</h3>
+              <p class="card-description">
+                Mulai perjalanan Anda dalam data science dengan Python, pandas,
+                dan visualisasi data.
+              </p>
+
+              <div class="card-meta">
+                <span><i class="fas fa-clock"></i> 40 jam</span>
+                <span><i class="fas fa-star"></i> 4.7 (180)</span>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-price">Rp 250.000</span>
+                <a href="#" class="enroll-btn">Daftar</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 4 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img
+                src="../img/course-digitalmarketing.jpg"
+                alt="Digital Marketing"
+              />
+            </div>
+
+            <div class="card-content">
+              <div class="card-category">Marketing</div>
+              <h3 class="card-title">Digital Marketing Mastery</h3>
+              <p class="card-description">
+                Pelajari strategi digital marketing terbaru termasuk SEO, media
+                sosial, dan iklan berbayar.
+              </p>
+
+              <div class="card-meta">
+                <span><i class="fas fa-clock"></i> 25 jam</span>
+                <span><i class="fas fa-star"></i> 4.6 (150)</span>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-price">Rp 175.000</span>
+                <a href="#" class="enroll-btn">Daftar</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 5 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img src="../img/course-business.jpg" alt="Business Strategy" />
+              <div class="course-badge">Diskon 30%</div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-category">Bisnis</div>
+              <h3 class="card-title">Strategi Bisnis Digital</h3>
+              <p class="card-description">
+                Kembangkan strategi bisnis yang efektif di era digital dengan
+                studi kasus dari perusahaan sukses.
+              </p>
+
+              <div class="card-meta">
+                <span><i class="fas fa-clock"></i> 15 jam</span>
+                <span><i class="fas fa-star"></i> 4.5 (90)</span>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-price"><s>Rp 300.000</s> Rp 210.000</span>
+                <a href="#" class="enroll-btn">Daftar</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 6 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img src="../img/course-mobile.jpg" alt="Mobile Development" />
+            </div>
+
+            <div class="card-content">
+              <div class="card-category">Pemrograman</div>
+              <h3 class="card-title">Pengembangan Aplikasi Mobile</h3>
+              <p class="card-description">
+                Bangun aplikasi mobile cross-platform dengan Flutter dan
+                Firebase.
+              </p>
+
+              <div class="card-meta">
+                <span><i class="fas fa-clock"></i> 35 jam</span>
+                <span><i class="fas fa-star"></i> 4.8 (200)</span>
+              </div>
+
+              <div class="card-footer">
+                <span class="card-price">Rp 275.000</span>
+                <a href="#" class="enroll-btn">Daftar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <div class="page-item disabled">
+            <i class="fas fa-chevron-left"></i>
+          </div>
+          <div class="page-item active">1</div>
+          <div class="page-item">2</div>
+          <div class="page-item">3</div>
+          <div class="page-item">4</div>
+          <div class="page-item">5</div>
+          <div class="page-item">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script>
-        // Mobile Menu Toggle
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            sidebar.classList.toggle('active');
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Load courses
+        await loadCourses();
+
+        // Filter functionality
+        document.querySelectorAll(".filter-select").forEach((select) => {
+          select.addEventListener("change", loadCourses);
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector(".search-input");
+        let searchTimeout;
+        searchInput.addEventListener("input", () => {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(loadCourses, 500);
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.querySelector(".menu-toggle");
+        const sidebar = document.querySelector(".sidebar");
+        menuToggle.addEventListener("click", () => {
+          menuToggle.classList.toggle("active");
+          sidebar.classList.toggle("active");
         });
 
         // Close sidebar when clicking on nav links (mobile)
-        document.querySelectorAll('.sidebar-nav a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 992) {
-                    menuToggle.classList.remove('active');
-                    sidebar.classList.remove('active');
-                }
-            });
-        });
-
-        // Course Filter Functionality (placeholder)
-        document.querySelectorAll('.filter-select').forEach(select => {
-            select.addEventListener('change', () => {
-                // In a real app, this would filter the courses
-                console.log('Filter changed:', select.value);
-            });
-        });
-
-        // Search Functionality (placeholder)
-        const searchInput = document.querySelector('.search-input');
-        searchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                // In a real app, this would search for courses
-                console.log('Searching for:', searchInput.value);
+        document.querySelectorAll(".sidebar-nav a").forEach((link) => {
+          link.addEventListener("click", () => {
+            if (window.innerWidth <= 992) {
+              menuToggle.classList.remove("active");
+              sidebar.classList.remove("active");
             }
+          });
         });
+      });
 
-        // Pagination Functionality (placeholder)
-        document.querySelectorAll('.page-item:not(.disabled)').forEach(item => {
-            item.addEventListener('click', () => {
-                if (!item.classList.contains('active')) {
-                    // In a real app, this would load the selected page
-                    console.log('Navigating to page:', item.textContent);
-                    
-                    // Update active page
-                    document.querySelector('.page-item.active').classList.remove('active');
-                    item.classList.add('active');
-                }
-            });
-        });
+      async function loadCourses() {
+        const category = document.querySelector(
+          ".filter-select:nth-of-type(1)"
+        ).value;
+        const level = document.querySelector(
+          ".filter-select:nth-of-type(2)"
+        ).value;
+        const sort = document.querySelector(
+          ".filter-select:nth-of-type(3)"
+        ).value;
+        const search = document.querySelector(".search-input").value;
+
+        try {
+          const params = new URLSearchParams();
+          if (category !== "all") params.append("category", category);
+          if (level !== "all") params.append("level", level);
+          if (sort !== "popular") params.append("sort", sort);
+          if (search) params.append("search", search);
+
+          const response = await fetch(`/api/learner/courses?${params.toString()}`);
+          if (!response.ok) throw new Error("Failed to load courses");
+
+          const courses = await response.json();
+          renderCourses(courses);
+        } catch (error) {
+          console.error(error);
+          alert("Failed to load courses");
+        }
+      }
+
+      function renderCourses(courses) {
+        const courseGrid = document.querySelector(".course-grid");
+
+        if (courses.length === 0) {
+          courseGrid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <h3>Tidak ada kursus yang ditemukan</h3>
+        <p>Coba ubah filter pencarian Anda</p>
+      </div>
+    `;
+          return;
+        }
+
+        courseGrid.innerHTML = courses
+          .map(
+            (course) => `
+    <div class="course-card">
+      <div class="card-image">
+        <img src="${
+          course.thumbnail_path || "../img/course-placeholder.jpg"
+        }" alt="${course.title}">
+        ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
+      </div>
+      
+      <div class="card-content">
+        <div class="card-category">${course.category}</div>
+        <h3 class="card-title">${course.title}</h3>
+        <p class="card-description">${course.description.substring(
+          0,
+          100
+        )}...</p>
+        
+        <div class="card-meta">
+          <span><i class="fas fa-clock"></i> ${Math.round(
+            course.total_duration / 60
+          )} jam</span>
+          <span><i class="fas fa-star"></i> 4.8 (120)</span>
+        </div>
+        
+        <div class="card-footer">
+          <span class="card-price">Rp ${course.price.toLocaleString()}</span>
+          <a href="course_detail.html?id=${
+            course.id_course
+          }" class="enroll-btn">Daftar</a>
+        </div>
+      </div>
+    </div>
+  `
+          )
+          .join("");
+      }
     </script>
-</body>
+  </body>
 </html>

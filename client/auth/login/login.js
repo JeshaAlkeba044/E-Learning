@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Form validation and submission
   setupFormSubmit('loginForm', 'login', {
-    tutor: '../../dashboard/tutor/manage_course.html',
+    tutor: '../../dashboard/tutor/dashboard_tutor.html',
     learner: '../../dashboard/learner/LearnerDashboard.html',
     default: '../../index.html'
   });

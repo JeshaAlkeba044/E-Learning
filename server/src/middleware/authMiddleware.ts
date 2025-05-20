@@ -5,6 +5,8 @@ import { User } from '../models/User';
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
+
+    console.log('Token:', token); // debugging line
     
     if (!token) {
       res.status(401).json({ message: 'No token provided' });
@@ -33,6 +35,8 @@ export const authorize = (roles: string[]) => {
       res.status(401).json({ message: 'Not authenticated' });
       return; 
     }
+
+    console.log('User role:', req.user.role); // debugging line
 
     if (!roles.includes(req.user.role)) {
       res.status(403).json({ message: 'Unauthorized' });
