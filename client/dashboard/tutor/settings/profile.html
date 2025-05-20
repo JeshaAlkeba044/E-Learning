@@ -611,7 +611,7 @@
         <div class="profile-sidebar">
           <div class="profile-card">
             <img
-              src="../../../assets/images/profile-placeholder.jpg"
+              src="../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png"
               alt="Profile"
               class="profile-avatar"
               id="sidebar-avatar"
@@ -626,7 +626,7 @@
               <span>Profile Information</span>
             </a>
             <a
-              href="../LearnerDashboard.html"
+              href="../dashboard_tutor.html"
               class="settings-link dropdown-item"
             >
               <i class="fas fa-book"></i>
@@ -705,7 +705,7 @@ Frontend Developer | UI/UX Enthusiast | Passionate about creating beautiful and 
               <label class="form-label">Profile Photo</label>
               <div class="file-upload">
                 <img
-                  src="../../../assets/images/profile-placeholder.jpg"
+                  src="../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png"
                   alt="Preview"
                   class="file-preview"
                   id="profilePreview"
@@ -808,92 +808,184 @@ Frontend Developer | UI/UX Enthusiast | Passionate about creating beautiful and 
           }`.trim();
           sidebarEmail.textContent = user.email || "";
 
-          // Jika ada foto profil, bisa ditambahkan logika untuk menampilkannya
-          // profilePreview.src = user.profilePhoto || '../../../assets/images/profile-placeholder.jpg';
-          // sidebarAvatar.src = user.profilePhoto || '../../../assets/images/profile-placeholder.jpg';
+          // Update profile photo if exists
+          if (user.profilePhoto) {
+            profilePreview.src = user.profilePhoto;
+            sidebarAvatar.src = user.profilePhoto;
+          } else {
+            // Use relative path to placeholder image
+            profilePreview.src = "../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png";
+            sidebarAvatar.src = "../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png";
+          }
         }
 
-        // Preview Profile Photo
-        profilePhoto.addEventListener("change", function (e) {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-              profilePreview.src = event.target.result;
-              sidebarAvatar.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-          }
-        });
+        // Profile Photo Upload
+        if (profilePhoto) {
+          profilePhoto.addEventListener("change", async function (e) {
+            const file = e.target.files[0];
+            if (file) {
+              // Check file size (max 2MB)
+              if (file.size > 2 * 1024 * 1024) {
+                showToast("File size too large. Max 2MB allowed.", "error");
+                return;
+              }
+
+              // Check file type
+              const validTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/gif",
+                "image/webp",
+              ];
+              if (!validTypes.includes(file.type)) {
+                showToast(
+                  "Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.",
+                  "error"
+                );
+                return;
+              }
+
+              const reader = new FileReader();
+              reader.onload = function (event) {
+                profilePreview.src = event.target.result;
+                sidebarAvatar.src = event.target.result;
+              };
+              reader.readAsDataURL(file);
+
+              // Upload the image to server
+              try {
+                const formData = new FormData();
+                formData.append("image", file);
+
+                const response = await fetch(
+                  "http://localhost:3000/api/upload",
+                  {
+                    method: "POST",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: formData,
+                  }
+                );
+
+                if (!response.ok) {
+                  throw new Error("Failed to upload image");
+                }
+
+                const result = await response.json();
+
+                // Update profile with new image URL
+                const updateResponse = await fetch(
+                  "http://localhost:3000/api/auth/profile",
+                  {
+                    method: "PUT",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      profilePhoto: result.imageUrl,
+                    }),
+                  }
+                );
+
+                if (!updateResponse.ok) {
+                  throw new Error("Failed to update profile with new image");
+                }
+
+                // Update local storage
+                const updatedUser = {
+                  ...userData,
+                  profilePhoto: result.imageUrl,
+                };
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+
+                showToast("Profile picture updated successfully!", "success");
+              } catch (error) {
+                console.error("Error uploading image:", error);
+                showToast("Failed to upload profile picture", "error");
+                // Reset to default image if upload fails
+                profilePreview.src = "../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png";
+                sidebarAvatar.src = "../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png";
+              }
+            }
+          });
+        }
 
         // Form Submission
-        profileForm.addEventListener("submit", async function (e) {
-          e.preventDefault();
+        if (profileForm) {
+          profileForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
 
-          try {
-            const formData = {
-              firstName: firstNameInput.value,
-              lastName: lastNameInput.value,
-              bio: bioInput.value,
-              portofolio: linkPortoInput.value,
-            };
-
-            const response = await fetch(
-              "http://localhost:3000/api/auth/profile",
-              {
-                method: "PUT",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-              }
-            );
-
-            if (!response.ok) {
-              throw new Error("Failed to update profile");
-            }
-
-            const result = await response.json();
-
-            // Update local storage dengan data terbaru
-            if (result.user) {
-              const updatedUser = {
-                ...userData,
-                firstName: result.user.firstName,
-                lastName: result.user.lastName,
-                bio: result.user.bio,
-                portofolio: result.user.portofolio,
+            try {
+              const formData = {
+                firstName: firstNameInput.value,
+                lastName: lastNameInput.value,
+                bio: bioInput.value,
+                portofolio: linkPortoInput.value,
               };
-              localStorage.setItem("user", JSON.stringify(updatedUser));
-            }
 
-            showToast("Profile updated successfully!", "success");
-            loadProfileData(); // Memuat ulang data untuk memastikan sinkronisasi
-          } catch (error) {
-            console.error("Error updating profile:", error);
-            showToast("Failed to update profile", "error");
-          }
-        });
+              console.log("Data form Profile: ", formData);
+
+              const response = await fetch(
+                "http://localhost:3000/api/auth/profile",
+                {
+                  method: "PUT",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(formData),
+                }
+              );
+
+              if (!response.ok) {
+                throw new Error("Failed to update profile");
+              }
+
+              const result = await response.json();
+
+              // Update local storage dengan data terbaru
+              if (result.user) {
+                const updatedUser = {
+                  ...userData,
+                  firstName: result.user.firstName,
+                  lastName: result.user.lastName,
+                  bio: result.user.bio,
+                  portofolio: result.user.portofolio,
+                };
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+              }
+
+              showToast("Profile updated successfully!", "success");
+              loadProfileData(); // Memuat ulang data untuk memastikan sinkronisasi
+            } catch (error) {
+              console.error("Error updating profile:", error);
+              showToast("Failed to update profile", "error");
+            }
+          });
+        }
 
         // Cancel Button
-        cancelBtn.addEventListener("click", function () {
-          if (confirm("Are you sure you want to discard changes?")) {
-            loadProfileData(); // Memuat ulang data asli dari server
-            profilePreview.src =
-              "../../../assets/images/profile-placeholder.jpg";
-            sidebarAvatar.src =
-              "../../../assets/images/profile-placeholder.jpg";
-          }
-        });
+        if (cancelBtn) {
+          cancelBtn.addEventListener("click", function () {
+            if (confirm("Are you sure you want to discard changes?")) {
+              loadProfileData(); // Memuat ulang data asli dari server
+              profilePreview.src = "../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png";
+              sidebarAvatar.src = "../../../../server/uploads/2d7e6791-b60a-4407-b2e4-8a773a13df42.png";
+            }
+          });
+        }
 
         // Logout Handler
-        logoutLink.addEventListener("click", function (e) {
-          e.preventDefault();
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          window.location.href = "../../../auth/login/indexLogin.html";
-        });
+        if (logoutLink) {
+          logoutLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "../../../auth/login/indexLogin.html";
+          });
+        }
 
         // Toast Notification
         function showToast(message, type) {
@@ -918,21 +1010,23 @@ Frontend Developer | UI/UX Enthusiast | Passionate about creating beautiful and 
         loadProfileData();
       });
 
-      // Improved dropdown behavior
+      // Only initialize dropdown behavior if elements exist
       const userMenu = document.querySelector(".user-menu");
       const dropdownMenu = document.querySelector(".dropdown-menu");
 
-      userMenu.addEventListener("mouseenter", () => {
-        dropdownMenu.style.opacity = "1";
-        dropdownMenu.style.visibility = "visible";
-        dropdownMenu.style.transform = "translateY(0)";
-      });
+      if (userMenu && dropdownMenu) {
+        userMenu.addEventListener("mouseenter", () => {
+          dropdownMenu.style.opacity = "1";
+          dropdownMenu.style.visibility = "visible";
+          dropdownMenu.style.transform = "translateY(0)";
+        });
 
-      userMenu.addEventListener("mouseleave", () => {
-        dropdownMenu.style.opacity = "0";
-        dropdownMenu.style.visibility = "hidden";
-        dropdownMenu.style.transform = "translateY(10px)";
-      });
+        userMenu.addEventListener("mouseleave", () => {
+          dropdownMenu.style.opacity = "0";
+          dropdownMenu.style.visibility = "hidden";
+          dropdownMenu.style.transform = "translateY(10px)";
+        });
+      }
     </script>
   </body>
 </html>

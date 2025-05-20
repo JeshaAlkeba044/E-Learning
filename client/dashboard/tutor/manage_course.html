@@ -1,252 +1,866 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Learning Platform</title>
-    <link rel="stylesheet" href="../../assets/css/styles.css">
-</head>
-<body>
-    <header>
-        <div class="header-container">
-            <div class="logo">E-Learning</div>
-            <nav class="navbar">
-                <div>
-                    <a href=""></a>
-                    <a href=""></a>
-                    <a href=""></a>
-                </div>
-            </nav>
-            <button class="login-btn" onclick="window.location.href='../index.html'">Logout</button>
-        </div>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kelola Kursus - EduPlus</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* ========== VARIABLES ========== */
+      :root {
+        /* Colors */
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --primary-dark: #3f37c9;
+        --secondary: #f72585;
+        --accent: #4cc9f0;
+        --success: #38b000;
+        --warning: #ffaa00;
+        --danger: #ef233c;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --white: #ffffff;
+        --black: #000000;
+        --sidebar-bg: #2b2d42;
+        --sidebar-active: #3a3d5d;
 
-    <main>
-        <section class="hero">
-            <h1>Belajar Tanpa Batas</h1>
-            <p>Silahkan daftar untuk memperluas jangkauan anda</p>
-        </section>
-        <br>
+        /* Spacing */
+        --space-xs: 0.25rem;
+        --space-sm: 0.5rem;
+        --space-md: 1rem;
+        --space-lg: 1.5rem;
+        --space-xl: 2rem;
 
-        <section class="courses">
-            <h2 class="section-title">All Your Courses</h2>
-            <a href="add_course.html"><button class="btn btn-primary add-course-btn">+ Add New Course</button></a>
-        
-            <div class="course-grid">
-                <div class="course-card purple">
-                    <div class="course-img"><img src="../img/UI UX Design Illustration.jpg"></div>
-                    <div class="course-content">
-                        <span class="badge badge-popular">Popular</span>
-                        <h3 class="course-title">Digital Design Thinking</h3>
-                        <p class="course-description">Pelajari pendekatan inovatif untuk memecahkan masalah kompleks dengan metodologi design thinking.</p>
-                        <div class="course-meta">
-                            <span>📂 17 Materi</span>
-                            <span>⏳ 40 Menit</span>
-                        </div>
-                        <div class="course-price">Rp 299.000/bulan</div>
-        
-                        <div class="course-actions">
-                            <a href="update_course.html"><button class="btn-edit">✏️ Update</button></a>
-                            <button class="btn-delete">🗑️ Hapus</button>
-                            <a href="exam_list_tutor.html"><button class="btn-exam">📄 Exam</button></a>
-                        </div>
-                    </div>
-                </div>
-              
-                <div class="course-card blue">
-                    <div class="course-img"><img src="../img/Free Vector _ Space icons.jpg"></div>
-                    <div class="course-content">
-                        <h3 class="course-title">Web Development</h3>
-                        <p class="course-description">Kuasai dasar-dasar pengembangan web modern termasuk HTML, CSS, JavaScript dan framework populer.</p>
-                        <div class="course-meta">
-                            <span>📂 20 Materi</span>
-                            <span>⏳ 2 Jam</span>
-                        </div>
-                        <div class="course-price">Rp 399.000/bulan</div>
-                        <div class="course-actions">
-                            <a href="update_course.html"><button class="btn-edit">✏️ Update</button></a>
-                            <button class="btn-delete">🗑️ Hapus</button>
-                            <a href="exam_list_tutor.html"><button class="btn-exam">📄 Exam</button></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="course-card orange">
-                    <div class="course-img"><img src="../img/RIVERPARK_TR.jpg"></div>
-                    <div class="course-content">
-                        <span class="badge badge-new">Baru</span>
-                        <h3 class="course-title">Creative Art Design</h3>
-                        <p class="course-description">Eksplorasi kreativitas Anda melalui berbagai teknik seni digital dan tradisional.</p>
-                        <div class="course-meta">
-                            <span>📂 15 Materi</span>
-                            <span>⏳ 30 Menit</span>
-                        </div>
-                        <div class="course-price">Rp 249.000/bulan</div>
-                        <div class="course-actions">
-                            <a href="update_course.html"><button class="btn-edit">✏️ Update</button></a>
-                            <button class="btn-delete">🗑️ Hapus</button>
-                            <a href="exam_list_tutor.html"><button class="btn-exam">📄 Exam</button></a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>  
-        </section>
-    </main>
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>E-Learning</h3>
-                    <p>Your gateway to professional development and lifelong learning.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#courses">Courses</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Connect</h3>
-                    <div class="social-links">
-                        <a href="#">@Facebook<i class="fab fa-facebook-f"></i></a>
-                        <a href="#">@twiter<i class="fab fa-twitter"></i></a>
-                        <a href="#">@instagram<i class="fab fa-instagram"></i></a>
-                        <a href="#">@linkedin<i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 E-Learning.</p>
-            </div>
-        </div>
-    </footer>
-    
-    <script>
-        // Simulated database
-        let registeredUsers = [];
-        let enrolledCourses = [];
-        
-        // DOM Elements
-        const EnrollModal = document.getElementById('EnrollModal');
-        const showRegistrationBtn = document.getElementById('show-registration');
-        const closeModalBtn = document.querySelector('.close-modal');
-        const enrollForm = document.getElementById('enrollForm');
-        const courseCheckboxes = document.querySelectorAll('.course-checkbox');
-        const totalPriceElement = document.getElementById('totalPrice');
-        
-        // Show modal when button clicked
-        showRegistrationBtn.addEventListener('click', function() {
-            EnrollModal.style.display = 'flex';
-        });
-        
-        // Close modal
-        closeModalBtn.addEventListener('click', function() {
-            EnrollModal.style.display = 'none';
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target === EnrollModal) {
-                EnrollModal.style.display = 'none';
-            }
-        });
-        
-        // Calculate total price when course selection changes
-        courseCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', calculateTotal);
-        });
-        
-        function calculateTotal() {
-            let total = 0;
-            courseCheckboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    total += parseInt(checkbox.dataset.price);
-                }
-            });
-            
-            // Format to Indonesian Rupiah
-            totalPriceElement.textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
+        /* Border Radius */
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+
+        /* Shadows */
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+        --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+        /* Transitions */
+        --transition-fast: 0.2s ease;
+        --transition-normal: 0.3s ease;
+        --transition-slow: 0.5s ease;
+      }
+
+      /* ========== BASE STYLES ========== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+        background-color: var(--light);
+        overflow-x: hidden;
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: 100vh;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--space-md);
+      }
+
+      /* ========== SIDEBAR ========== */
+      .sidebar {
+        background-color: var(--sidebar-bg);
+        color: var(--white);
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        padding: var(--space-xl) 0;
+      }
+
+      .sidebar-header {
+        padding: 0 var(--space-lg);
+        margin-bottom: var(--space-xl);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+      }
+
+      .sidebar-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+      }
+
+      .sidebar-logo i {
+        margin-right: var(--space-sm);
+        font-size: 1.8rem;
+        color: var(--accent);
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-nav a {
+        padding: var(--space-sm) var(--space-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        transition: var(--transition-fast);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background-color: var(--sidebar-active);
+        color: var(--white);
+      }
+
+      .sidebar-nav a i {
+        width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-nav a.active {
+        border-left: 3px solid var(--accent);
+      }
+
+      /* ========== MAIN CONTENT ========== */
+      .main-content {
+        padding: var(--space-xl) 0;
+        width: 100%;
+      }
+
+      /* Header */
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-xl);
+        padding: 0 var(--space-md);
+      }
+
+      .page-title h1 {
+        font-size: 1.8rem;
+        color: var(--dark);
+      }
+
+      .page-title p {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-light);
+      }
+
+      .profile-name {
+        font-weight: 500;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background-color: var(--white);
+        min-width: 200px;
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--radius-md);
+        z-index: 100;
+        display: none;
+        overflow: hidden;
+      }
+
+      .profile-dropdown a {
+        padding: var(--space-sm) var(--space-md);
+        display: block;
+        color: var(--dark);
+        transition: var(--transition-fast);
+      }
+
+      .profile-dropdown a:hover {
+        background-color: var(--light-gray);
+        color: var(--primary);
+      }
+
+      .user-profile:hover .profile-dropdown {
+        display: block;
+      }
+
+      /* Course Management */
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-lg);
+      }
+
+      .section-header h2 {
+        font-size: 1.5rem;
+        color: var(--dark);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-sm);
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        border: none;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      .btn-danger {
+        background-color: var(--danger);
+        color: var(--white);
+      }
+
+      .btn-danger:hover {
+        background-color: #d11a2d;
+      }
+
+      .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: var(--space-lg);
+      }
+
+      .course-card {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-normal);
+      }
+
+      .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .course-badge {
+        position: absolute;
+        top: var(--space-md);
+        left: var(--space-md);
+        background-color: var(--secondary);
+        color: var(--white);
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 1;
+      }
+
+      .badge-popular {
+        background-color: var(--secondary);
+      }
+
+      .badge-new {
+        background-color: var(--success);
+      }
+
+      .card-image {
+        height: 160px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition-slow);
+      }
+
+      .course-card:hover .card-image img {
+        transform: scale(1.05);
+      }
+
+      .card-content {
+        padding: var(--space-lg);
+      }
+
+      .card-category {
+        color: var(--primary);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: var(--space-xs);
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+        margin-bottom: var(--space-sm);
+        color: var(--dark);
+      }
+
+      .card-description {
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: var(--space-md);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .card-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: var(--space-md);
+      }
+
+      .card-price {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.1rem;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: var(--space-sm);
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--light-gray);
+      }
+
+      .card-actions .btn {
+        flex: 1;
+        text-align: center;
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.9rem;
+      }
+
+      /* Additional styles for new features */
+      .card-status {
+        display: inline-block;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-bottom: var(--space-sm);
+      }
+
+      .status-draft {
+        background-color: var(--warning);
+        color: var(--white);
+      }
+
+      .status-published {
+        background-color: var(--success);
+        color: var(--white);
+      }
+
+      .status-archived {
+        background-color: var(--gray);
+        color: var(--white);
+      }
+
+      .card-materials {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        body {
+          grid-template-columns: 1fr;
         }
-        
-        // Form submission
-        enrollForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const fullname = document.getElementById('fullname').value;
-            const email = document.getElementById('email').value;
-            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-            
-            // Get selected courses
-            const selectedCourses = [];
-            courseCheckboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selectedCourses.push({
-                        id: checkbox.dataset.course,
-                        price: parseInt(checkbox.dataset.price)
-                    });
-                }
-            });
-            
-            if (selectedCourses.length === 0) {
-                alert('Pilih minimal satu kursus');
-                return;
-            }
-            
-            // Calculate total
-            const total = selectedCourses.reduce((sum, course) => sum + course.price, 0);
-            
-            // Save to database (simulated)
-            const newUser = {
-                id: Date.now(),
-                name: fullname,
-                email: email,
-                courses: selectedCourses,
-                paymentMethod: paymentMethod,
-                totalPayment: total,
-                registrationDate: new Date().toISOString(),
-                isPremium: true
-            };
-            
-            registeredUsers.push(newUser);
-            enrolledCourses = [...selectedCourses];
-            
-            // In a real app, you would send this data to your backend
-            console.log('New registration:', newUser);
-            
-            // Show success message
-            alert(`Pendaftaran berhasil! Total pembayaran: Rp ${total.toLocaleString('id-ID')}\nAnda akan diarahkan ke dashboard premium.`);
-            
-            // Redirect to premium dashboard (simulated)
-            sessionStorage.setItem('currentUser', JSON.stringify(newUser));
-            window.location.href = 'student/dashboard.html';
-        });
 
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function () {
-                const confirmed = confirm('Yakin ingin menghapus kursus ini?');
-                if (confirmed) {
-                    // Di real app: Hapus dari database
-                    this.closest('.course-card').remove();
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: -240px;
+          height: 100vh;
+          z-index: 1000;
+          transition: var(--transition-normal);
+        }
+
+        .sidebar.active {
+          left: 0;
+        }
+
+        .main-content {
+          padding-top: 80px;
+        }
+
+        .menu-toggle {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          width: 30px;
+          height: 21px;
+          cursor: pointer;
+          z-index: 1001;
+          position: fixed;
+          top: 20px;
+          left: 20px;
+        }
+
+        .menu-toggle span {
+          display: block;
+          height: 3px;
+          width: 100%;
+          background: var(--primary);
+          border-radius: 3px;
+          transition: var(--transition-normal);
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+          transform: translateY(9px) rotate(45deg);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+          opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+          transform: translateY(-9px) rotate(-45deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .course-grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+      }
+
+      @media (max-width: 576px) {
+        .course-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .card-actions {
+          flex-direction: column;
+        }
+
+        .profile-name {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-graduation-cap"></i>
+          <span>EduPlus</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard_tutor.html">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="manage_course.html" class="active">
+          <i class="fas fa-book-open"></i>
+          <span>Kelola Kursus</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <div class="main-header">
+        <div class="page-title">
+          <h1>Kelola Kursus</h1>
+          <p>Daftar kursus yang Anda kelola</p>
+        </div>
+
+        <div class="user-actions">
+          <div class="user-profile">
+            <img
+              src="https://randomuser.me/api/portraits/men/32.jpg"
+              alt="Profile"
+              class="profile-pic"
+            />
+            <span class="profile-name">Tutor</span>
+
+            <div class="profile-dropdown">
+              <a href="settings/profile.html"> <i class="fas fa-user"></i> Profil Saya </a>
+              <a href="../../auth/login/indexLogin.html"> <i class="fas fa-sign-out-alt"></i> Keluar </a>
+            </div>
+          </div>
+
+          <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Course Management -->
+      <div class="container">
+        <div class="section-header">
+          <h2>Daftar Kursus</h2>
+          <div>
+            <a href="add_course.html" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Tambah Kursus
+            </a>
+          </div>
+        </div>
+
+        <div class="course-grid">
+          <!-- Course 1 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img
+                src="https://images.unsplash.com/photo-1541462608143-67571c6738dd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                alt="Digital Design Thinking"
+              />
+              <div class="course-badge badge-popular">Populer</div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-status status-published">Published</div>
+              <div class="card-category">Desain</div>
+              <h3 class="card-title">Digital Design Thinking</h3>
+              <p class="card-description">
+                Pelajari pendekatan inovatif untuk memecahkan masalah kompleks
+                dengan metodologi design thinking.
+              </p>
+
+              <div class="card-meta">
+                <div class="card-materials">
+                  <i class="fas fa-book"></i> 17 Materi
+                </div>
+                <span><i class="fas fa-clock"></i> 40 Menit</span>
+              </div>
+              <div class="card-price">Rp 299.000</div>
+
+              <div class="card-actions">
+                <a href="edit_content.html?course=1" class="btn btn-outline">
+                  <i class="fas fa-edit"></i> Edit Konten
+                </a>
+                <a href="update_course.html" class="btn btn-outline">
+                  <i class="fas fa-cog"></i> Settings
+                </a>
+                <button class="btn btn-danger btn-delete">
+                  <i class="fas fa-trash"></i> Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 2 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img
+                src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                alt="Web Development"
+              />
+            </div>
+
+            <div class="card-content">
+              <div class="card-status status-draft">Draft</div>
+              <div class="card-category">Pengembangan</div>
+              <h3 class="card-title">Web Development Modern</h3>
+              <p class="card-description">
+                Kuasai dasar-dasar pengembangan web modern termasuk HTML, CSS,
+                JavaScript dan framework populer.
+              </p>
+
+              <div class="card-meta">
+                <div class="card-materials">
+                  <i class="fas fa-book"></i> 8 Materi
+                </div>
+                <span><i class="fas fa-clock"></i> 2 Jam</span>
+              </div>
+              <div class="card-price">Rp 399.000</div>
+
+              <div class="card-actions">
+                <a href="edit_content.html?course=2" class="btn btn-outline">
+                  <i class="fas fa-edit"></i> Edit Konten
+                </a>
+                <a href="update_course.html" class="btn btn-outline">
+                  <i class="fas fa-cog"></i> Settings
+                </a>
+                <button class="btn btn-danger btn-delete">
+                  <i class="fas fa-trash"></i> Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course 3 -->
+          <div class="course-card">
+            <div class="card-image">
+              <img
+                src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                alt="Creative Art Design"
+              />
+              <div class="course-badge badge-new">Baru</div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-status status-published">Published</div>
+              <div class="card-category">Desain</div>
+              <h3 class="card-title">Creative Art Design</h3>
+              <p class="card-description">
+                Eksplorasi kreativitas Anda melalui berbagai teknik seni digital
+                dan tradisional.
+              </p>
+
+              <div class="card-meta">
+                <div class="card-materials">
+                  <i class="fas fa-book"></i> 15 Materi
+                </div>
+                <span><i class="fas fa-clock"></i> 30 Menit</span>
+              </div>
+              <div class="card-price">Rp 249.000</div>
+
+              <div class="card-actions">
+                <a href="edit_content.html?course=3" class="btn btn-outline">
+                  <i class="fas fa-edit"></i> Edit Konten
+                </a>
+                <a href="update_course.html" class="btn btn-outline">
+                  <i class="fas fa-cog"></i> Settings
+                </a>
+                <button class="btn btn-danger btn-delete">
+                  <i class="fas fa-trash"></i> Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Mobile Menu Toggle
+      const menuToggle = document.querySelector(".menu-toggle");
+      const sidebar = document.querySelector(".sidebar");
+
+      menuToggle.addEventListener("click", () => {
+        menuToggle.classList.toggle("active");
+        sidebar.classList.toggle("active");
+      });
+
+      // Fetch and display courses
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          // In a real app, you would get the user ID from authentication
+          const user = JSON.parse(localStorage.getItem('user'))
+          const userId = user.id;
+
+          console.log('User: ',user.id); // debug id user
+
+          const response = await fetch(`http://localhost:3000/api/tutor/courses/instructor/${userId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          const courses = await response.json();
+
+          console.log(response); // debug courses
+
+          const courseGrid = document.querySelector(".course-grid");
+          
+          if (Array.isArray(courses)) {
+            courseGrid.innerHTML = courses
+              .map(
+                (course) => `
+                  <div class="course-card">
+                      <div class="card-image">
+                          <img src="../../../server/${
+                            course.thumbnail_path ||
+                            "uploads/defaultPic.png"
+                          }" alt="${course.title}">
+                          ${
+                            course.is_popular
+                              ? '<div class="course-badge badge-popular">Populer</div>'
+                              : ""
+                          }
+                          ${
+                            course.is_new
+                              ? '<div class="course-badge badge-new">Baru</div>'
+                              : ""
+                          }
+                      </div>
+                      <div class="card-content">
+                          <div class="card-status status-${
+                            course.is_active ? "published" : "draft"
+                          }">
+                              ${course.is_active ? "Published" : "Draft"}
+                          </div>
+                          <div class="card-category">${course.category}</div>
+                          <h3 class="card-title">${course.title}</h3>
+                          <p class="card-description">${
+                            course.description || "No description available"
+                          }</p>
+                          <div class="card-meta">
+                              <div class="card-materials">
+                                  <i class="fas fa-book"></i> ${
+                                    course.materials_id?.length || 0
+                                  } Materi
+                              </div>
+                              <span><i class="fas fa-clock"></i> ${
+                                course.duration || 0
+                              } Menit</span>
+                          </div>
+                          <div class="card-price">Rp ${
+                            course.price?.toLocaleString() || "0"
+                          }</div>
+                          <div class="card-actions">
+                              <a href="edit_content.html?course=${
+                                course.id_course
+                              }" class="btn btn-outline">
+                                  <i class="fas fa-edit"></i> Edit Konten
+                              </a>
+                              <a href="update_course.html?course=${
+                                course.id_course
+                              }" class="btn btn-outline">
+                                  <i class="fas fa-cog"></i> Settings
+                              </a>
+                              <button class="btn btn-danger btn-delete" data-course-id="${
+                                course.id_course
+                              }">
+                                  <i class="fas fa-trash"></i> Hapus
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              `
+              )
+              .join("");
+          }else{
+            courseGrid.innerHTML = '';
+          }
+
+          // Set up delete buttons
+          document.querySelectorAll(".btn-delete").forEach((button) => {
+            button.addEventListener("click", async function (e) {
+              e.preventDefault();
+              const courseId = this.dataset.courseId;
+              const courseTitle =
+                this.closest(".course-card").querySelector(
+                  ".card-title"
+                ).textContent;
+
+              if (
+                confirm(
+                  `Apakah Anda yakin ingin menghapus kursus "${courseTitle}"?`
+                )
+              ) {
+                try {
+                  const response = await fetch(`http://localhost:3000/api/tutor/courses/${courseId}`, {
+                    method: "DELETE",
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  });
+
+                  if (response.ok) {
+                    this.closest(".course-card").remove();
+                    alert("Kursus berhasil dihapus!");
+                  } else {
+                    throw new Error("Failed to delete course");
+                  }
+                } catch (error) {
+                  console.error("Error deleting course:", error);
+                  alert("Gagal menghapus kursus");
                 }
+              }
             });
+          });
+        } catch (error) {
+          console.error("Error loading courses:", error);
+          alert("Gagal memuat daftar kursus");
+        }
+      });
+
+      // Close sidebar when clicking on nav links (mobile)
+      document.querySelectorAll(".sidebar-nav a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth <= 992) {
+            menuToggle.classList.remove("active");
+            sidebar.classList.remove("active");
+          }
         });
-    
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function () {
-                alert('Fitur edit belum tersedia. Silakan implementasikan di backend.');
-                // Arahkan ke halaman edit atau tampilkan form modal
-            });
-        });
-    
-        document.querySelector('.add-course-btn').addEventListener('click', function () {
-            alert('Fitur tambah kursus baru belum tersedia. Silakan implementasikan di backend.');
-            // Bisa arahkan ke form tambah kursus atau tampilkan modal
-        });
+      });
     </script>
-</body>
+  </body>
 </html>

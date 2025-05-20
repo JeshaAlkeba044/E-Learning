@@ -215,6 +215,7 @@ export const getProfile = [
           YoE: user.YoE ? decrypt(user.YoE) : null,
           bio: user.bio ? decrypt(user.bio) : null,
           portofolio: user.linkPorto ? decrypt(user.linkPorto) : null,
+          photo_path: user.photo_path || null,
         }
       });
     } catch (error) {
@@ -228,7 +229,7 @@ export const updateProfile = [
   async (req: Request, res: Response) => {
     try {
       const user = req.user as User;
-      const { firstName, lastName, specialization, experience, bio, portofolio } = req.body;
+      const { firstName, lastName, specialization, experience, bio, portofolio, profilePhoto } = req.body;
 
       await user.update({
         firstName: firstName ? encrypt(firstName) : user.firstName,
@@ -236,10 +237,16 @@ export const updateProfile = [
         specialization: specialization ? encrypt(specialization) : user.specialization,
         YoE: experience ? encrypt(experience) : user.YoE,
         bio: bio ? encrypt(bio) : user.bio,
-        linkPorto: portofolio ? encrypt(portofolio) : user.linkPorto
+        linkPorto: portofolio ? encrypt(portofolio) : user.linkPorto,
+        photo_path: profilePhoto || user.photo_path
       });
 
-      res.status(200).json({ message: 'Profile updated successfully' });
+      res.status(200).json({ 
+        message: 'Profile updated successfully',
+        user: {
+          photo_path: profilePhoto || user.photo_path
+        }
+      });
     } catch (error) {
       res.status(500).json({ message: 'Error updating profile', error });
     }

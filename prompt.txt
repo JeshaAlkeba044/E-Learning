@@ -1,0 +1,31 @@
+## Kasih semua file di dashboard/learner dan semua model yang ada di dir server ##
+
+Berdasarkan semua file html diatas, tolong buatkan controller dan routes (dengan sequelize-typescript) yang sesuai dan buatkan pula kode javascript yang dibutuhkan untuk masing-masing file html tersebut. Apabila Anda perlu menambahkan atribut pada model yang ada, tolong beritahu apa yang Anda tambahkan. Namun tidak diperkenankan untuk mengurangi atribut yang sudah ada. Apabila ada atribut dari model yang perlu dihapus, tolong beritahu apa dan alasannya. Tolong berikan kode yang lengkap utuh, dan tidak terpotong.
+
+
+
+
+
+## Kasih file course_detail.html ##
+
+Tolong tingkatkan kembali kode pada javascript pada edit_content.html tertutama pada bagian preview. Saya inginnya pada bagian preview memiliki hasil tampilan yang sama seperti yang dilihat oleh learner seperti pada isi file course_detail.html. Tolong perbaiki juga button "Pindahkan ke atas", "Pindahkan ke bawah", dan "Hapus" untuk yang video dikarenakan tidak bekerja sama sekali.
+
+
+
+
+
+
+###
+<!-- 
+Halaman yang belum:
+- Liat semua course yang ada termasuk di paging apabila ada banyak course
+- Liat isi materi (lengkap apabila ada gambar dan ada video)
+- Perbaikan untuk halaman payment
+- Perbaikan untuk halaman profil saya dan account setting
+- Pertimbangkan untuk menambah atribut is_active -> apabila akun dihapus user
+ 
+
+
+
+
+-->

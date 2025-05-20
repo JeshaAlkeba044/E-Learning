@@ -7,6 +7,32 @@
   } from '../shared/auth-validation.js';
 
   document.addEventListener('DOMContentLoaded', function() {
+    // Role selection
+    const learnerOption = document.getElementById('learnerOption');
+    const tutorOption = document.getElementById('tutorOption');
+    const tutorFields = document.getElementById('tutorFields');
+    
+    // Setup password toggle
+    setupPasswordToggle('password', 'togglePassword');
+    setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
+    
+    // Role selection handler
+    function handleRoleSelection() {
+      if (document.querySelector('input[name="role"]:checked').value === 'tutor') {
+        tutorOption.classList.add('selected');
+        learnerOption.classList.remove('selected');
+        tutorFields.style.display = 'block';
+      } else {
+        learnerOption.classList.add('selected');
+        tutorOption.classList.remove('selected');
+        tutorFields.style.display = 'none';
+      }
+    }
+    
+    learnerOption.addEventListener('click', handleRoleSelection);
+    tutorOption.addEventListener('click', handleRoleSelection);
+
+
     const form = document.getElementById('registerForm');
     const emailError = document.getElementById('emailError');
     const passwordError = document.getElementById('passwordError');
