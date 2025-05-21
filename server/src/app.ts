@@ -51,12 +51,12 @@ app.use(bodyParser.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-
-
-
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/admin', adminRoutes); // 
+app.use('/admin', adminRoutes); 
+app.use('/learner', learnerRoutes);
+app.use('/transaction', transactionRoutes);
+app.use('/tutor', tutorRoutes);
 
 const PORT = process.env.PORT || 3000;
 

@@ -8,7 +8,7 @@ export class User extends Model {
   @Column({
     type: DataType.UUIDV4,
     primaryKey: true,
-    defaultValue: v4(),
+    defaultValue: () => v4(),
   })
   id_user!: string;
 

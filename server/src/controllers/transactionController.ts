@@ -58,3 +58,29 @@ export const getUserTransactions = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const getUserEnrolledCourses = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id_user;
+
+    const successfulTransactions = await Transaction.findAll({
+      where: {
+        id_user: userId,
+        status: 'success' // Hanya transaksi yang berhasil
+      },
+      include: [{
+        model: Course,
+        as: 'course'
+      }],
+      order: [['transaction_date', 'DESC']]
+    });
+
+    // Extract hanya kursusnya
+    const enrolledCourses = successfulTransactions.map(transaction => transaction.course);
+
+    res.json(enrolledCourses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

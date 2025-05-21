@@ -91,9 +91,12 @@ export const getUnverifiedTutors = async (req: Request, res: Response) => {
     });
 
     const unverifiedTutors = users.filter((user: any) => {
+      user.firstName = decrypt(user.firstName);
+      user.lastName = decrypt(user.lastName);
       const decryptedRole = decrypt(user.role);
       return decryptedRole === 'tutor';
     });
+
 
     res.status(200).json({
       message: unverifiedTutors.length === 0 ? 'Tidak ada tutor yang perlu diverifikasi' : undefined,

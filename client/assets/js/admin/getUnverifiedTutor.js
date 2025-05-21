@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const tutors = result.data || [];
 
+            console.log(tutors);
+
             listContainer.innerHTML = '';
 
             if (tutors.length === 0) {
@@ -18,12 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             tutors.forEach(tutor => {
+                console.log("Tutor: ",tutor);
                 const card = document.createElement('div');
                 card.classList.add('verification-card');
                 card.innerHTML = `
-                <img src="../../img/${tutor.photo_path}" alt="${tutor.name}" class="verification-image" />
+                <img src="../../img/${tutor.photo_path}" alt="${tutor.firstName}" class="verification-image" />
                 <div class="verification-info">
-                    <h3 class="verification-name">${tutor.name}</h3>
+                    <h3 class="verification-name">${tutor.firstName}</h3>
                     <p class="verification-subject">${tutor.subjects || '-'}</p>
                 </div>
                 <button class="verify-btn" data-id="${tutor.id_user}">Verifikasi</button>
