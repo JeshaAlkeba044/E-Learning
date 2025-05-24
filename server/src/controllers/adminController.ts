@@ -20,12 +20,19 @@ export const getTutors = async (req: Request, res: Response) => {
         const decryptedEmail = await decrypt(user.encryptedEmail);
         const decryptedFirstName = await decrypt(user.firstName);
         const decryptedLastName = await decrypt(user.lastName);
+        const decryptedSpecialization = await decrypt(user.specialization);
+        const decryptedExperience = await decrypt(user.YoE);
+        const decryptedBio = await decrypt(user.bio);
+        // const decryptedPortofolio = await decrypt(user.linkPorto);
 
         const tutorData = {
           ...user.toJSON(),
           email: decryptedEmail,
           firstName: decryptedFirstName,
           lastName: decryptedLastName,
+          specialization: decryptedSpecialization,
+          YoE: decryptedExperience,
+          bio: decryptedBio,          
         };
 
         tutors.push(tutorData);
@@ -44,6 +51,7 @@ export const deleteTutor = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
+
     const deletedUser = await User.destroy({ where: { id_user: id }});
 
     if (deletedUser > 0) {
@@ -57,21 +65,30 @@ export const deleteTutor = async (req: Request, res: Response) => {
   }
 };
 
-// Verifikasi tutor berdasarkan id
 export const verifyTutor = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const [updated] = await User.update(
-      { is_verified: "verified" }, 
-      { where: { id_user: id, role: 'tutor' } }
+    const user = await User.findOne({ where: { id_user: id } });
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return 
+    }
+
+    const decryptedRole = await decrypt(user.role);
+
+    if (decryptedRole !== 'tutor') {
+      res.status(403).json({ message: 'User is not a tutor' });
+    }
+
+    await User.update(
+      { statusUser: 'verified' },
+      { where: { id_user: id } }
     );
 
-    if (updated > 0) {
-      res.status(200).json({ message: 'Tutor verified successfully' });
-    } else {
-      res.status(404).json({ message: 'Tutor not found' });
-    }
+    res.status(200).json({ message: 'Tutor verified successfully' });
+
   } catch (error) {
     console.error('Error verifying tutor:', error);
     res.status(500).json({ message: 'Error verifying tutor', error });

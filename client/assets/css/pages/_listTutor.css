@@ -454,3 +454,97 @@ copyright {
         flex: 0 0 100%;
     }
 }
+/* Tutor Card - Elegant White Theme */
+.tutor-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    border-left: 4px solid #4361ee;
+    padding: 1.1rem;
+    margin-bottom: 1.1rem;
+    width: 800px;
+}
+
+.tutor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.tutor-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.tutor-info {
+    display: flex;
+    flex-direction: column;
+    /* gap: 0.5rem; */
+    color: #4a5568;
+}
+
+.tutor-info h3 {
+    color: #2d3748;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+    /* padding-bottom: 0.5rem; */
+}
+
+.tutor-info p {
+    margin: 0.25rem ;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.tutor-info p strong {
+    color: #1a202c;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.2rem;
+}
+
+.tutor-info a {
+    color: #4361ee;
+    word-break: break-all;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.tutor-info a:hover {
+    text-decoration: underline;
+    color: #3a4fd8;
+}
+
+.delete-btn {
+    margin-top: 1rem;
+    background-color: #fff;
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: fit-content;
+}
+
+.delete-btn:hover {
+    background-color: #e53e3e;
+    color: white;
+}

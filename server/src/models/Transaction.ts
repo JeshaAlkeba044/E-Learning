@@ -3,7 +3,8 @@ import { User } from './User';
 import { Course } from './Course';
 import { v4 } from 'uuid';
 
-@Table({ tableName: 'transactions' })
+@Table({ tableName: 'transactions', timestamps: false, // ⬅️ MATIKAN ini kalau gak pakai field createdAt & updatedAt
+ })
 export class Transaction extends Model {
   @Column({
     type: DataType.UUIDV4,
@@ -59,4 +60,18 @@ export class Transaction extends Model {
 
   @BelongsTo(() => Course)
   course!: Course;
+
+    @Column({
+    type: DataType.DATE,
+    allowNull: false,
+    defaultValue: DataType.NOW,
+  })
+  created_at!: Date;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+    defaultValue: DataType.NOW,
+  })
+  updated_at!: Date;
 }

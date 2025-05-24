@@ -3,6 +3,7 @@ import { User } from './User';
 import { Course } from './Course';
 import { Material } from './Material';
 import { Transaction } from './Transaction';
+import { UserMaterialProgress } from './UserMaterialProgress';
 
 const sequelize = new Sequelize({
   database: 'e_learning',
@@ -10,7 +11,7 @@ const sequelize = new Sequelize({
   password: '',
   host: 'localhost',
   dialect: 'mysql',
-  models: [User, Course, Material, Transaction],
+  models: [User, Course, Material, Transaction, UserMaterialProgress],
 });
 
-export { sequelize, User, Course, Material, Transaction };
+export { sequelize, User, Course, Material, Transaction, UserMaterialProgress };

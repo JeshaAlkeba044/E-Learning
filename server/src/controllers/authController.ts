@@ -88,7 +88,7 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     // Cek user
-
+    
     const user = await User.findOne({ where: { hashEmail : hashedEmail } });
     if (!user) {
         res.status(401).json({ message: 'Invalid email' });
@@ -199,9 +199,7 @@ declare global {
 }
 
 // Routes for profile
-export const getProfile = [
-  authenticate,
-  async (req: Request, res: Response) => {
+export const getProfile = [ authenticate, async (req: Request, res: Response) => {
     try {
       const user = req.user as User;
       res.status(200).json({

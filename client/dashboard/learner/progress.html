@@ -889,6 +889,10 @@
           return;
         }
 
+        await loadDashboardData();
+
+        await loadUserData();
+
         // Load progress data
         await loadProgressData();
 
@@ -911,15 +915,106 @@
         });
       });
 
+       async function loadUserData() {
+        try {
+          const response = await fetch("http://localhost:3000/api/auth/profile",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          // console.log("Status:", response.status); // Debug
+
+          if (!response.ok) throw new Error("Failed to load user data");
+
+          const user = await response.json();
+          // console.log("User Data:", user); // Debug
+          renderUserData(user);
+        } catch (error) {
+          console.error(error);
+          if (error.message.includes("401")) {
+            window.location.href = "/auth/login/indexLogin.html";
+          }
+        }
+      }
+
+
+      function renderUserData(user) {
+        const pageTitle = document.querySelector(".page-title h1");
+        const profileName = document.querySelector(".profile-name");
+        const profilePic = document.querySelector(".profile-pic");
+
+        // console.log("User Data:", user.user.firstName); // Debug
+        if (pageTitle) {
+          pageTitle.textContent = `Selamat Datang, ${user.user.firstName}!`;
+        }
+
+        if (profileName) {
+          profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
+        }
+
+        if (profilePic && user.user.photo_path) {
+          profilePic.src = user.user.photo_path;
+        }
+      }
+
+      async function loadDashboardData() {
+      try {
+        const token = localStorage.getItem("token"); // <- Pastikan token diambil di sini
+
+        const response = await fetch("http://localhost:3000/learner/dashboard", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) throw new Error("Gagal mengambil data dashboard");
+
+          const data = await response.json();
+          console.log(data);
+
+          // Update nilai Kursus Aktif
+          // const activeCoursesEl = document.querySelector(".stat-card .stat-value(1)");
+          // if (activeCoursesEl) activeCoursesEl.textContent = data.activeCourses;
+
+          // // Update nilai Jam Belajar
+          // const studyHoursEl = document.querySelector(".stat-card .stat-value(2)");
+          // if (studyHoursEl) studyHoursEl.textContent = data.studyHours;
+
+          // const completedModulesEl = document.querySelector(".stat-card .stat-value(3)");
+          // if (completedModulesEl) completedModulesEl.textContent = data.completedModules;
+          
+        // Update stats cards
+          document.querySelectorAll(".stat-card .stat-value")[0].textContent =
+            data.studyHours;
+          document.querySelectorAll(".stat-card .stat-value")[1].textContent =
+            data.moduleCompleted;
+          // console.log(data.completedModules);
+          document.querySelectorAll(".stat-card .stat-value")[2].textContent =
+            data.activeCourses;
+
+        } catch (error) {
+          console.error("Oops, gagal mengambil data dashboard:", error);
+        }
+      }
+
       async function loadProgressData() {
         try {
-          const response = await fetch("/api/learner/progress", {
-            headers: { "x-auth-token": localStorage.getItem("token") },
-          });
+          const response = await fetch("http://localhost:3000/learner/progress",{
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+
+          // console.log(response);
 
           if (!response.ok) throw new Error("Failed to load progress data");
 
           const progress = await response.json();
+          console.log(progress);
           renderProgressData(progress);
         } catch (error) {
           console.error(error);
@@ -931,82 +1026,140 @@
       }
 
       function renderProgressData(progress) {
-        // Calculate total stats
-        const totalHours = progress.reduce((sum, c) => sum + c.totalHours, 0);
-        const completedModules = progress.reduce(
-          (sum, c) => sum + c.completedModules,
-          0
-        );
-        const activeCourses = progress.filter((c) => c.progress < 100).length;
-
-        // Update stats cards
-        document.querySelectorAll(".stat-card .stat-value")[0].textContent =
-          totalHours;
-        document.querySelectorAll(".stat-card .stat-value")[1].textContent =
-          completedModules;
-        document.querySelectorAll(".stat-card .stat-value")[2].textContent =
-          activeCourses;
-
-        // Render recent activity (simplified)
-        const timeline = document.querySelector(".progress-timeline");
-        timeline.innerHTML = `
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-date">Hari ini, 14:30</div>
-        <h3 class="timeline-title">Menyelesaikan Modul 5: Advanced Components</h3>
-        <p class="timeline-desc">Kursus Web Development Modern</p>
-      </div>
-    </div>
-    
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <div class="timeline-date">Kemarin, 19:15</div>
-        <h3 class="timeline-title">Mengumpulkan Proyek Akhir</h3>
-        <p class="timeline-desc">Kursus UI/UX Design Fundamental</p>
-      </div>
-    </div>
-  `;
-
-        // Render course progress table
         const tableBody = document.querySelector(".progress-table tbody");
-        tableBody.innerHTML = progress
-          .map(
-            (course) => `
-    <tr>
-      <td>
-        <div class="course-info">
-          <div class="course-thumb">
-            <img src="${
-              course.thumbnail || "../img/course-placeholder.jpg"
-            }" alt="${course.title}">
-          </div>
-          <div>
-            <div class="course-name">${course.title}</div>
-            <div class="course-category">${course.category}</div>
-          </div>
-        </div>
-      </td>
-      <td>${course.lastAccessed || "Belum diakses"}</td>
-      <td>
-        <button class="action-btn btn-continue" data-id="${course.id}">
-          ${course.progress === 100 ? "Selesai, Pelajari Lagi?" : "Lanjutkan"}
-        </button>
-      </td>
-    </tr>
-  `
-          )
-          .join("");
+        const timeline = document.querySelector(".progress-timeline");
 
-        // Add click handlers for continue buttons
+        // Handle timeline kosong
+        if (timeline) {
+          if (!progress || progress.length === 0) {
+            timeline.innerHTML = `<p class="empty-state">Belum ada progres yang tercatat 😴</p>`;
+          } else {
+            timeline.innerHTML = progress.map((item) => {
+              const date = new Date(item.lastAccessed);
+              const formattedDate = date.toLocaleDateString("id-ID", {
+                weekday: "long",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+
+              return `
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-date">${formattedDate}</div>
+                    <h3 class="timeline-title">${item.progress}%</h3>
+                    <p class="timeline-desc">${item.courseTitle}</p>
+                  </div>
+                </div>
+              `;
+            }).join("");
+          }
+        }
+
+        // Handle tabel kosong
+        if (!tableBody) return;
+        if (!progress || progress.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="3" class="empty-state">Tidak ada kursus ditemukan 🤷‍♀️</td></tr>`;
+          return;
+        }
+
+        // Render dinamis dari backend
+        tableBody.innerHTML = progress.map((course) => `
+          <tr>
+            <td>
+              <div class="course-info">
+                <div class="course-thumb">
+                  <img src="${course.thumbnail || "../img/course-placeholder.jpg"}" alt="${course.courseTitle}">
+                </div>
+                <div>
+                  <div class="course-name">${course.courseTitle}</div>
+                  <div class="course-category">Kategori belum tersedia</div>
+                </div>
+              </div>
+            </td>
+            <td>${course.lastAccessed ? new Date(course.lastAccessed).toLocaleString("id-ID") : "Belum diakses"}</td>
+            <td>
+              <button class="action-btn btn-continue" data-id="${course.courseId}">
+                ${course.progress === 100 ? "Selesai, Pelajari Lagi?" : "Lanjutkan"}
+              </button>
+            </td>
+          </tr>
+        `).join("");
+
+        // Tombol aksi
         document.querySelectorAll(".btn-continue").forEach((btn) => {
           btn.addEventListener("click", function () {
             const courseId = this.getAttribute("data-id");
-            window.location.href = `course_detail.html?id=${courseId}`;
+            if (courseId) {
+              window.location.href = `course_detail.html?id=${courseId}`;
+            }
           });
         });
       }
+
+
+      // function renderProgressData(progress) {
+
+      //   // Render recent activity (simplified)
+      //   const timeline = document.querySelector(".progress-timeline");
+      //   timeline.innerHTML = `
+      //     <div class="timeline-item">
+      //       <div class="timeline-dot"></div>
+      //       <div class="timeline-content">
+      //         <div class="timeline-date">Hari ini, 14:30</div>
+      //         <h3 class="timeline-title">Menyelesaikan Modul 5: Advanced Components</h3>
+      //         <p class="timeline-desc">Kursus Web Development Modern</p>
+      //       </div>
+      //     </div>
+          
+      //     <div class="timeline-item">
+      //       <div class="timeline-dot"></div>
+      //       <div class="timeline-content">
+      //         <div class="timeline-date">Kemarin, 19:15</div>
+      //         <h3 class="timeline-title">Mengumpulkan Proyek Akhir</h3>
+      //         <p class="timeline-desc">Kursus UI/UX Design Fundamental</p>
+      //       </div>
+      //     </div>
+      //   `;
+
+      //   // Render course progress table
+      //   const tableBody = document.querySelector(".progress-table tbody");
+      //   tableBody.innerHTML = progress
+      //     .map(
+      //       (course) => `
+      //       <tr>
+      //         <td>
+      //           <div class="course-info">
+      //             <div class="course-thumb">
+      //               <img src="${
+      //                 course.thumbnail || "../img/course-placeholder.jpg"
+      //               }" alt="${course.title}">
+      //             </div>
+      //             <div>
+      //               <div class="course-name">${course.title}</div>
+      //               <div class="course-category">${course.category}</div>
+      //             </div>
+      //           </div>
+      //         </td>
+      //         <td>${course.lastAccessed || "Belum diakses"}</td>
+      //         <td>
+      //           <button class="action-btn btn-continue" data-id="${course.id}">
+      //             ${course.progress === 100 ? "Selesai, Pelajari Lagi?" : "Lanjutkan"}
+      //           </button>
+      //         </td>
+      //       </tr>
+      //     `
+      //     )
+      //     .join("");
+
+      //   // Add click handlers for continue buttons
+      //   document.querySelectorAll(".btn-continue").forEach((btn) => {
+      //     btn.addEventListener("click", function () {
+      //       const courseId = this.getAttribute("data-id");
+      //       window.location.href = `course_detail.html?id=${courseId}`;
+      //     });
+      //   });
+      // }
     </script>
   </body>
 </html>

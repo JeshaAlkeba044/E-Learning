@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.innerHTML = `
                 <img src="../../img/${tutor.photo_path}" alt="${tutor.firstName}" class="verification-image" />
                 <div class="verification-info">
-                    <h3 class="verification-name">${tutor.firstName}</h3>
+                    <h3 class="verification-name">${tutor.firstName} ${tutor.lastName}</h3>
                     <p class="verification-subject">${tutor.subjects || '-'}</p>
                 </div>
                 <button class="verify-btn" data-id="${tutor.id_user}">Verifikasi</button>
@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const verifyTutor = async (tutorId, cardElement) => {
         try {
-            const response = await fetch(`http://localhost:3000/verifyTutor/${tutorId}`, {
-                method: 'PATCH'
+            const response = await fetch(`http://localhost:3000/admin/verifyTutor/${tutorId}`, {
+                method: 'PUT'
             });
 
             if (!response.ok) throw new Error('Verifikasi gagal');

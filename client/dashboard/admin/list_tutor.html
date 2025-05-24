@@ -3,21 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifikasi Transaksi | EduPlus</title>
+    <title>List Tutor | EduPlus</title>
     <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css">
-
 </head>
+
+<style>
+
+/* Tutor Card - Elegant White Theme */
+.tutor-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    /* overflow: hidden; */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    /* display: flex; */
+    transition: all 0.3s ease;
+    border-left: 4px solid #4361ee;
+    padding: 1.1rem;
+    margin-bottom: 1.1rem;
+    width: 800px;
+}
+
+/* .tutor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+} */
+
+.tutor-list {
+    display: flex;
+    flex-direction: column; /* bikin listnya ke bawah */
+    gap: 1.5rem;            /* jarak antar kartu */
+    padding: 1rem 0;
+    max-width: 800px;       /* supaya card gak melebar lebih dari 800px */
+    /* margin: 0 auto;          */
+}
+
+.tutor-info {
+    /* display: flex; */
+    flex-direction: column;
+    /* gap: 0.5rem; */
+    color: #4a5568;
+}
+
+.tutor-info h3 {
+    color: #2d3748;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+    /* padding-bottom: 0.5rem; */
+}
+
+.tutor-info p {
+    margin: 0.25rem ;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.tutor-info p strong {
+    color: #1a202c;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.2rem;
+}
+
+.tutor-info a {
+    color: #4361ee;
+    word-break: break-all;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.tutor-info a:hover {
+    text-decoration: underline;
+    color: #3a4fd8;
+}
+
+.delete-btn {
+    margin-top: 1rem;
+    background-color: #fff;
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: fit-content;
+}
+
+.delete-btn:hover {
+    background-color: #e53e3e;
+    color: white;
+}
+
+
+</style>
 <body>
     <div class="sidebar">
         <div class="logo-container">
             <span class="logo-text">EduPlus</span>
         </div>
-        
+
         <a href="homeAdmin.html" class="menu-item">
             <div class="menu-icon">🏠</div>
             <span>Dashboard</span>
         </a>
-        
+
         <a href="verify_trans.html" class="menu-item">
             <div class="menu-icon">💳</div>
             <span>Verifikasi Transaksi</span>
@@ -27,14 +127,13 @@
             <div class="menu-icon">👨‍🏫</div>
             <span>List Tutor</span>
         </a>
-        
+
         <a href="pengaturan.html" class="menu-item">
             <div class="menu-icon">⚙️</div>
             <span>Pengaturan</span>
         </a>
 
         <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button>
-
     </div>
 
     <div class="main-content">
@@ -44,7 +143,6 @@
             </div>
             <div class="user-profile">
                 <img src="../../assets/img/pisi.jpeg" alt="Admin Avatar" class="admin-avatar" />
-
             </div>
         </div>
 
@@ -52,26 +150,102 @@
             <h2>Daftar Tutor</h2>
         </div>
 
-        <div class="trans-list" id="transactionContainer">
-            <!-- Loader -->
+        <!-- Di sinilah kartu tutor akan ditampilkan -->
+        <div class="tutor-list">
             <div class="loading" id="loadingIndicator">
                 <div class="spinner"></div>
             </div>
         </div>
     </div>
 
-    <script src="../../assets/js/admin/listTutor.js"></script>
-
     <script>
-    const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
+        document.addEventListener('DOMContentLoaded', () => {
+            const listContainer = document.querySelector('.tutor-list');
+            const loadingIndicator = document.getElementById('loadingIndicator');
 
-    const menuItems = document.querySelectorAll('.menu-item');
+            const fetchTutors = async () => {
+                try {
+                    const response = await fetch('http://localhost:3000/admin/allTutors');
+                    if (!response.ok) throw new Error('Gagal fetch tutor');
 
-    menuItems.forEach(item => {
-        if (item.getAttribute("href") === path) {
-        item.classList.add('active');
-        }
-    });
+                    const result = await response.json();
+                    const tutors = result.data || result || [];
+
+                    listContainer.innerHTML = ''; // Clear loading
+
+                    if (tutors.length === 0) {
+                        listContainer.innerHTML = `
+                            <div class="empty-state">
+                                <h3>Empty Data</h3>
+                                <p>Belum ada tutor yang terdaftar.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    tutors.forEach(tutor => {
+                        const name = `${tutor.firstName || ''} ${tutor.lastName || ''}`.trim();
+                        const card = document.createElement('div');
+                        card.classList.add('tutor-card');
+                        card.innerHTML = `
+                            <div class="tutor-info">
+                                <h3>${name || 'Tanpa Nama'}</h3>
+                                <p><strong>Email:</strong> ${tutor.email || '-'}</p>
+                                <p><strong>Telepon:</strong> ${tutor.phoneNumber || '-'}</p>
+                                <p><strong>Bio:</strong> ${tutor.bio || '-'}</p>
+                                <p><strong>Spesialisasi:</strong> ${tutor.specialization || '-'}</p>
+                                <p><strong>YoE:</strong> ${tutor.YoE || '-'}</p>
+                                <p><strong>Link Portofolio:</strong> 
+                                    ${tutor.linkPorto ? `<a href="${tutor.linkPorto}" target="_blank">${tutor.linkPorto}</a>` : '-'}</p>
+                                <button class="delete-btn" data-tutor-id="${tutor.id_user}">🗑️ Hapus</button>
+                            </div>
+                        `;
+                        listContainer.appendChild(card);
+                    });
+
+                } catch (error) {
+                    console.error('Gagal mengambil data tutor:', error);
+                    listContainer.innerHTML = `
+                        <div class="empty-state">
+                            <h3>Terjadi Kesalahan</h3>
+                            <p>Gagal memuat list Tutor. Silakan coba lagi nanti.</p>
+                        </div>
+                    `;
+                }
+            };
+
+            const deleteTutor = async (tutorId, cardElement) => {
+                const confirmDelete = confirm("Yakin ingin menghapus tutor ini? Aksi ini tidak bisa dibatalkan 🥺");
+                if (!confirmDelete) return;
+                // console.log("Menghapus tutor dengan ID:", tutorId);
+
+                try {
+                    const response = await fetch(`http://localhost:3000/admin/deleteTutors/${tutorId}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (!response.ok) throw new Error('Gagal menghapus tutor');
+
+                    alert("Tutor berhasil dihapus ✅");
+                    cardElement.remove();
+                } catch (error) {
+                    console.error("Gagal menghapus tutor:", error);
+                    alert("Terjadi kesalahan saat menghapus tutor 😣");
+                }
+            };
+
+            listContainer.addEventListener('click', async (e) => {
+                if (e.target.classList.contains('delete-btn')) {
+                    const btn = e.target;
+                    const tutorId = btn.getAttribute('data-tutor-id');
+                    console.log("Tutor ID:", tutorId);
+                    const card = btn.closest('.tutor-card');
+                    await deleteTutor(tutorId, card);
+                }
+            });
+
+            fetchTutors();
+        });
     </script>
 </body>
 </html>

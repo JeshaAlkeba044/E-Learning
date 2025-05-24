@@ -8,7 +8,8 @@ import {
 
 import {
   getUserProgress,
-  updateMaterialProgress
+  updateMaterialProgress,
+  getDashboardLearner
 } from '../controllers/progressController';
 
 import {authenticate} from '../middleware/authMiddleware';
@@ -22,6 +23,7 @@ router.get('/courses/:id', getCourseById);
 router.get('/courses/:id/materials', getCourseMaterials);
 router.get('/materials/:id', getMaterialById);
 router.get('/courses/:id/materials', getMaterialsForLearner);
+router.get('/dashboard', getDashboardLearner);
 
 // Protected routes (require authentication)
 router.use(authenticate);
