@@ -964,7 +964,7 @@
       try {
         const token = localStorage.getItem("token"); // <- Pastikan token diambil di sini
 
-        const response = await fetch("http://localhost:3000/learner/dashboard", {
+        const response = await fetch("http://localhost:3000/api/learner/dashboard", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -1002,7 +1002,7 @@
 
       async function loadProgressData() {
         try {
-          const response = await fetch("http://localhost:3000/learner/progress",{
+          const response = await fetch("http://localhost:3000/api/learner/progress",{
               method: "GET",
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

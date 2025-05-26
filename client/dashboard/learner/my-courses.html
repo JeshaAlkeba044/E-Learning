@@ -816,7 +816,7 @@
 
   async function loadUserCourses() {
     try {
-      const response = await fetch("http://localhost:3000/learner/courses", {
+      const response = await fetch("http://localhost:3000/api/learner/courses", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

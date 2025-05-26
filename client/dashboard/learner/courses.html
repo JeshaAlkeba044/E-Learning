@@ -646,7 +646,7 @@
           if (sort !== "popular") params.append("sort", sort);
           if (search) params.append("search", search);
 
-          const response = await fetch(`http://localhost:3000/learner/courses?${params.toString()}`);
+          const response = await fetch(`http://localhost:3000/api/learner/courses?${params.toString()}`);
           if (!response.ok) throw new Error("Failed to load courses");
 
           const courses = await response.json();
