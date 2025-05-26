@@ -826,7 +826,8 @@
       if (!response.ok) throw new Error("Failed to load user courses");
 
       const user = await response.json();
-      renderUserCourses(user.transactions);
+      renderUserCourses(user);
+      // console.log("Courses loaded successfully:", user.transactions);
     } catch (error) {
       console.error("Course error:", error.message);
       if (error.message.includes("401")) {
@@ -869,90 +870,72 @@
     }
   }
 
-  function renderUserCourses(transactions) {
-    const courseList = document.querySelector(".course-list");
+    function renderUserCourses(courses) {
+      const courseList = document.querySelector(".course-list");
 
-    if (!transactions || transactions.length === 0) {
-      courseList.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon"><i class="fas fa-book-open"></i></div>
-          <h3>Anda belum memiliki kursus</h3>
-          <p>Temukan kursus menarik untuk mulai belajar dan tingkatkan keterampilan Anda</p>
-          <a href="courses.html" class="btn-explore">Jelajahi Kursus</a>
-        </div>
-      `;
-      return;
-    }
-
-    courseList.innerHTML = transactions
-      .map((tx) => {
-        const course = tx.course;
-        const progress = Math.floor(Math.random() * 100); // Dummy progress
-        const status =
-          progress === 100
-            ? "completed"
-            : tx.saved
-            ? "saved"
-            : "in-progress";
-
-        return `
-          <div class="course-item" data-course="${status}">
-            <div class="course-thumbnail">
-              <img src="${course.thumbnail_path || "../img/course-placeholder.jpg"}" alt="${course.title}" />
-              ${
-                status === "completed"
-                  ? '<div class="course-badge">Selesai</div>'
-                  : status === "saved"
-                  ? '<div class="course-badge">Tersimpan</div>'
-                  : '<div class="course-badge">Aktif</div>'
-              }
-            </div>
-
-            <div class="course-details">
-              <div class="course-category">${course.category}</div>
-              <h3 class="course-title">${course.title}</h3>
-              <p class="course-instructor">Oleh ${course.instructor_Id.firstName} ${course.instructor_Id.lastName}</p>
-              
-              ${
-                status !== "saved"
-                  ? `
-                  <div class="progress-container">
-                    <div class="progress-label">
-                      <span>Progress</span>
-                      <span class="progress-percent">${progress}%</span>
-                    </div>
-                    <div class="progress-bar">
-                      <div class="progress-fill" style="width: ${progress}%"></div>
-                    </div>
-                  </div>
-                `
-                  : ""
-              }
-
-              <div class="course-meta">
-                <span><i class="fas fa-book"></i> ${
-                  status === "completed"
-                    ? "Selesai"
-                    : status === "saved"
-                    ? "Belum Dimulai"
-                    : "Dalam Proses"
-                }</span>
-                <span><i class="fas fa-clock"></i> ${Math.round(
-                  course.total_duration / 60
-                )} jam</span>
-              </div>
-
-              <div class="course-actions">
-                <a href="course_detail.html?id=${
-                  course.id_course
-                }" class="btn-continue">Lihat</a>
-              </div>
-            </div>
+      if (!courses || courses.length === 0) {
+        courseList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+            <h3>Anda belum memiliki kursus</h3>
+            <p>Temukan kursus menarik untuk mulai belajar dan tingkatkan keterampilan Anda</p>
+            <a href="courses.html" class="btn-explore">Jelajahi Kursus</a>
           </div>
         `;
-      })
-      .join("");
-  }
+        return;
+      }
+
+      courseList.innerHTML = courses
+        .map((course) => {
+          // Status dan badge
+          let status = "in-progress";
+          let badge = '<div class="course-badge">Aktif</div>';
+          if (course.completed) {
+            status = "completed";
+            badge = '<div class="course-badge">Selesai</div>';
+          } else if (course.saved) {
+            status = "saved";
+            badge = '<div class="course-badge">Tersimpan</div>';
+          }
+
+          // Meta info
+          let modulInfo = "";
+          let jamInfo = "";
+          if (status === "completed") {
+            modulInfo = `${course.total_module || 0}/${course.total_module || 0} Modul`;
+            jamInfo = `${course.total_duration || 0}/${course.total_duration || 0} Jam`;
+          } else if (status === "saved") {
+            modulInfo = `0/${course.total_module || 0} Modul`;
+            jamInfo = `0/${course.total_duration || 0} Jam`;
+          } else {
+            modulInfo = `${course.module_done || 0}/${course.total_module || 0} Modul`;
+            jamInfo = `${course.duration_done || 0}/${course.total_duration || 0} Jam`;
+          }
+
+
+          return `
+            <div class="course-item" data-course="${status}">
+              <div class="course-thumbnail">
+                <img src="${course.thumbnail_path || "../img/course-placeholder.jpg"}" alt="${course.title}" />
+                ${badge}
+              </div>
+              <div class="course-details">
+                <div class="course-category">${course.category || ""}</div>
+                <h3 class="course-title">${course.title || ""}</h3>
+                <p class="course-instructor">Oleh ${course.instructor_Id?.firstName || ""} ${course.instructor_Id?.lastName || ""}</p>
+                <div class="course-meta">
+                  <span><i class="fas fa-book"></i> ${modulInfo}</span>
+                  <span><i class="fas fa-clock"></i> ${jamInfo}</span>
+                </div>
+                <div class="course-actions">
+                  <a href="course-detail.html?id=${course.id_course}" class="btn-continue">Lihat</a>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
 
   function setupTabs() {
     document.querySelectorAll(".tab-btn").forEach((tab) => {

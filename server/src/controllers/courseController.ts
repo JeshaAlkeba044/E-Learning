@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Course, Material, User } from '../models';
+import { decrypt, encrypt } from '../utils/cryptoUtil';
 import { v4 } from 'uuid';
 import { Op } from 'sequelize';
 import fs from 'fs';
@@ -7,6 +8,8 @@ import { fn, col } from 'sequelize';
 
 
 // For Learner
+// import { decrypt } from '../utils/encryption'; // Pastikan path ini sesuai dengan lokasi fungsi decrypt-mu
+
 export const getAllCourses = async (req: Request, res: Response) => {
   try {
     const { category, level, sort, search } = req.query;
@@ -45,7 +48,6 @@ export const getAllCourses = async (req: Request, res: Response) => {
       }
     }
 
-    // Step 1: Ambil semua course terlebih dahulu
     const courses = await Course.findAll({
       where,
       order,
@@ -60,7 +62,6 @@ export const getAllCourses = async (req: Request, res: Response) => {
 
     const courseIds = courses.map(course => course.id_course);
 
-    // Step 2: Hitung jumlah material per course
     const materialCounts = await Material.findAll({
       attributes: ['id_course', [fn('COUNT', col('id_material')), 'material_count']],
       where: {
@@ -71,17 +72,24 @@ export const getAllCourses = async (req: Request, res: Response) => {
       group: ['id_course']
     });
 
-    // Step 3: Mapping hasil count ke bentuk object: { [id_course]: material_count }
     const materialCountMap: { [key: string]: number } = {};
     materialCounts.forEach((item: any) => {
       materialCountMap[item.id_course] = parseInt(item.getDataValue('material_count'));
     });
 
-    // Step 4: Tambahkan properti material_count ke setiap course
     const coursesWithCounts = courses.map(course => {
       const material_count = materialCountMap[course.id_course] || 0;
+
+      const courseData = course.toJSON();
+
+      // Cek dan decrypt nama instructor
+      if (courseData.instructor_Id) {
+        courseData.instructor_Id.firstName = decrypt(courseData.instructor_Id.firstName);
+        courseData.instructor_Id.lastName = decrypt(courseData.instructor_Id.lastName);
+      }
+
       return {
-        ...course.toJSON(),
+        ...courseData,
         material_count
       };
     });
@@ -92,6 +100,7 @@ export const getAllCourses = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 export const getCourseById = async (req: Request, res: Response) => {
   try {
