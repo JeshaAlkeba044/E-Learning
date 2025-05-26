@@ -53,10 +53,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/admin', adminRoutes); 
-app.use('/learner', learnerRoutes);
-app.use('/transaction', transactionRoutes);
-app.use('/tutor', tutorRoutes);
+app.use('/api/admin', adminRoutes); 
+app.use('/api/learner', learnerRoutes);
+app.use('/api/transaction', transactionRoutes);
+app.use('/api/tutor', tutorRoutes);
 
 const PORT = process.env.PORT || 3000;
 
