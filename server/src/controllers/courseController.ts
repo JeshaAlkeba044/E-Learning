@@ -3,35 +3,35 @@ import { Course, Material, User } from '../models';
 import { v4 } from 'uuid';
 import { Op } from 'sequelize';
 import fs from 'fs';
+import { fn, col } from 'sequelize';
 
 
 // For Learner
 export const getAllCourses = async (req: Request, res: Response) => {
   try {
     const { category, level, sort, search } = req.query;
-    
+
     const where: any = {};
-    const order: any = [['created_at', 'DESC']]; // Default order
-    
+    const order: any = [['created_at', 'DESC']];
+
     if (category && category !== 'all') {
       where.category = category;
     }
-    
+
     if (level && level !== 'all') {
       where.level = level;
     }
-    
+
     if (search) {
       where.title = { [Op.like]: `%${search}%` };
     }
-    
+
     if (sort) {
       switch (sort) {
         case 'newest':
           order[0] = ['created_at', 'DESC'];
           break;
         case 'highest-rated':
-          // Assuming we have a rating system
           order[0] = ['rating', 'DESC'];
           break;
         case 'price-low':
@@ -40,22 +40,53 @@ export const getAllCourses = async (req: Request, res: Response) => {
         case 'price-high':
           order[0] = ['price', 'DESC'];
           break;
-        default: // popular
+        default:
           order[0] = ['enrollment_count', 'DESC'];
       }
     }
-    
+
+    // Step 1: Ambil semua course terlebih dahulu
     const courses = await Course.findAll({
       where,
       order,
-      include: [{
-        model: User,
-        as: 'instructor_Id',
-        attributes: ['firstName', 'lastName', 'photo_path']
-      }]
+      include: [
+        {
+          model: User,
+          as: 'instructor_Id',
+          attributes: ['firstName', 'lastName', 'photo_path']
+        }
+      ]
     });
-    
-    res.json(courses);
+
+    const courseIds = courses.map(course => course.id_course);
+
+    // Step 2: Hitung jumlah material per course
+    const materialCounts = await Material.findAll({
+      attributes: ['id_course', [fn('COUNT', col('id_material')), 'material_count']],
+      where: {
+        id_course: {
+          [Op.in]: courseIds
+        }
+      },
+      group: ['id_course']
+    });
+
+    // Step 3: Mapping hasil count ke bentuk object: { [id_course]: material_count }
+    const materialCountMap: { [key: string]: number } = {};
+    materialCounts.forEach((item: any) => {
+      materialCountMap[item.id_course] = parseInt(item.getDataValue('material_count'));
+    });
+
+    // Step 4: Tambahkan properti material_count ke setiap course
+    const coursesWithCounts = courses.map(course => {
+      const material_count = materialCountMap[course.id_course] || 0;
+      return {
+        ...course.toJSON(),
+        material_count
+      };
+    });
+
+    res.json(coursesWithCounts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

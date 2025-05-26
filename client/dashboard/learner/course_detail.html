@@ -1137,7 +1137,7 @@
               const materialId = "current-material-id"; // Replace with actual logic
 
               // Load material content
-              fetch(`/api/tutor/materials/${materialId}/content`) // API INI ANEHHH !!!!!
+              fetch(`http://localhost:3000/api/tutor/materials/${materialId}/content`) // API INI ANEHHH !!!!!
                 .then((response) => response.json())
                 .then((material) => {
                   const contentContainer =
@@ -1345,7 +1345,16 @@
 
         // Fetch course data
         try {
-          const response = await fetch(`/api/learner/courses/${courseId}`);
+
+          const response = await fetch(`http://localhost:3000/api/learner/courses/${courseId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          // const response = await fetch(`/api/learner/courses/${courseId}`);
           if (!response.ok) throw new Error("Failed to fetch course");
           const course = await response.json();
 
@@ -1376,9 +1385,18 @@
 
       async function checkEnrollment(courseId) {
         try {
-          const response = await fetch("/api/transactions", {
-            headers: { "x-auth-token": localStorage.getItem("token") },
-          });
+          const response = await fetch(`http://localhost:3000/api/transactions`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          
+          // const response = await fetch("/api/transactions", {
+          //   headers: { "x-auth-token": localStorage.getItem("token") },
+          // });
           if (!response.ok) return false;
 
           const transactions = await response.json();
@@ -1391,7 +1409,16 @@
 
       async function loadMaterials(courseId, isEnrolled) {
         try {
-          const response = await fetch(`/api/learner/courses/${courseId}/materials`);
+
+          const response = await fetch(`http://localhost:3000/api/learner/courses/${courseId}/materials`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          // const response = await fetch(`/api/learner/courses/${courseId}/materials`);
           if (!response.ok) throw new Error("Failed to fetch materials");
 
           const materials = await response.json();
@@ -1493,7 +1520,16 @@
 
       async function loadMaterialContent(materialId) {
         try {
-          const response = await fetch(`/api/learner/materials/${materialId}`);
+
+          const response = await fetch(`http://localhost:3000/api/learner/materials/${materialId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          // const response = await fetch(`/api/learner/materials/${materialId}`);
           if (!response.ok) throw new Error("Failed to fetch material");
 
           const material = await response.json();
@@ -1573,11 +1609,10 @@
         if (!courseId) return;
 
         try {
-          const response = await fetch("/api/transactions", {
+          const response = await fetch("http://localhost:3000/api/transactions", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
-              "x-auth-token": localStorage.getItem("token"),
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify({
               courseId,
