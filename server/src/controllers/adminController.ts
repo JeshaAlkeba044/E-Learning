@@ -127,7 +127,6 @@ export const getUnverifiedTutors = async (req: Request, res: Response) => {
 
 
 
-// GET 
 export const getPendingTransactions = async (req: Request, res: Response) => {
   try {
     const pendingTransactions = await Transaction.findAll({
@@ -145,22 +144,28 @@ export const getPendingTransactions = async (req: Request, res: Response) => {
       order: [['transaction_date', 'DESC']]
     });
 
-    const formattedTransactions = pendingTransactions.map(trx => ({
-      id_transaction: trx.id_transaction,
-      transaction_date: trx.transaction_date,
-      amount: trx.amount,
-      payment_method: trx.payment_method,
-      status: trx.status,
-      user: {
-        name: `${trx.user?.firstName || ''} ${trx.user?.lastName || ''}`.trim()
-      },
-      course: {
-        title: trx.course?.title || '-'
-      }
-    }));
+    const formattedTransactions = await Promise.all(
+      pendingTransactions.map(async (trx) => {
+        const decryptedFirstName = await decrypt(trx.user?.firstName || '');
+        const decryptedLastName = await decrypt(trx.user?.lastName || '');
+
+        return {
+          id_transaction: trx.id_transaction,
+          transaction_date: trx.transaction_date,
+          amount: trx.amount,
+          payment_method: trx.payment_method,
+          status: trx.status,
+          user: {
+            name: `${decryptedFirstName} ${decryptedLastName}`.trim()
+          },
+          course: {
+            title: trx.course?.title || '-'
+          }
+        };
+      })
+    );
 
     res.json({ success: true, data: formattedTransactions });
-    return;
   } catch (error) {
     console.error('Error fetching transactions:', error);
     res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mengambil data transaksi' });
@@ -179,7 +184,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       return;
     }
 
-    transaction.status = 'verified';
+    transaction.status = 'completed';
     await transaction.save();
 
     res.json({ success: true, message: 'Transaksi berhasil diverifikasi' });

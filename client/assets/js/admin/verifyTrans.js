@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`${apiBaseUrl}/api/admin/payment/${transactionId}`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' }
             });
 
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusClass = getStatusClass(transaction.status);
             const formattedDate = formatDate(transaction.transaction_date);
             const formattedAmount = formatCurrency(transaction.amount);
-            const fullName = `${transaction.user.firstName} ${transaction.user.lastName}`;
+            const fullName = `${transaction.user.name}`;
             const courseTitle = transaction.course?.title || 'Kursus tidak ditemukan';
 
             html += `
