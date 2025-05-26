@@ -609,18 +609,18 @@
       <!-- Header -->
       <div class="main-header">
         <div class="page-title">
-          <h1>Selamat Datang, Sarah!</h1>
+          <h1 id="welcome-title">Selamat Datang!</h1>
           <p>Ringkasan aktivitas mengajar Anda</p>
         </div>
 
         <div class="user-actions">
           <div class="user-profile">
             <img
-              src="https://randomuser.me/api/portraits/women/44.jpg"
+              id="profile-picture"
               alt="Profile"
               class="profile-pic"
             />
-            <span class="profile-name">Sarah Johnson</span>
+            <span class="profile-name" id="profile-name"></span>
 
             <div class="profile-dropdown">
               <a href="settings/profile.html"> <i class="fas fa-user"></i> Profil Saya </a>
@@ -757,8 +757,56 @@
         sidebar.classList.toggle("active");
       });
 
-      // Fetch and display tutor dashboard data
-      document.addEventListener("DOMContentLoaded", async () => {
+      // Load user data from localStorage
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const userData = JSON.parse(localStorage.getItem('user'));
+          console.log("user data", userData)
+          if (userData) {
+            // Update welcome message
+            const welcomeTitle = document.getElementById('welcome-title');
+            welcomeTitle.textContent = `Selamat Datang, ${userData.firstName}!`;
+            
+            // Update profile name
+            const profileName = document.getElementById('profile-name');
+            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+            
+            // Update profile picture
+            const profilePic = document.getElementById('profile-picture');
+            if (userData.photo_path) {
+              // Handle different photo_path formats
+              let photoUrl = userData.photo_path;
+
+              console.log("photoUrl", photoUrl)
+              
+              // If path doesn't start with http or /, assume it's a local path
+              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
+                // Remove any leading slashes or backslashes
+                photoUrl = photoUrl.replace(/^[\\/]+/, '');
+                // Construct full URL
+                // photoUrl = `http://localhost:3000/${photoUrl}`;
+                photoUrl = `http://localhost:3000/src/uploads/defaultPic.png`;
+              }
+              
+              profilePic.src = photoUrl;
+              profilePic.onerror = function() {
+                // Fallback if image fails to load
+                profilePic.src = "https://randomuser.me/api/portraits/women/44.jpg";
+              };
+            } else {
+              // Default profile picture if none is set
+              profilePic.src = "https://randomuser.me/api/portraits/women/44.jpg";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
+
+        // Fetch and display tutor dashboard data
+        fetchDashboardData();
+      });
+
+      async function fetchDashboardData() {
         try {
           const user = JSON.parse(localStorage.getItem('user'));
           const userId = user.id;
@@ -832,7 +880,7 @@
         } catch (error) {
           console.error("Error loading dashboard data:", error);
         }
-      });
+      }
 
       // Close sidebar when clicking on nav links (mobile)
       document.querySelectorAll(".sidebar-nav a").forEach((link) => {

@@ -134,6 +134,7 @@ export const login = async (req: Request, res: Response) => {
         YoE: user.YoE !== null ? decrypt(user.YoE) : null,
         bio: user.bio !== null ? decrypt(user.bio) : null,
         portofolio: user.linkPorto !== null ? decrypt(user.linkPorto) : null,
+        photo_path: user.photo_path || '../uploads/defaulPic.png',
       },
     });
   } catch (error) {

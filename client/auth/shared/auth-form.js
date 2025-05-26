@@ -21,6 +21,8 @@ export async function handleAuthForm(data, idForm, endpoint, redirectUrls) {
       localStorage.setItem('token', result.token);
       localStorage.setItem('user', JSON.stringify(result.user));
 
+      console.log("result:", result )
+
       // Determine redirect URL based on role
       let redirectUrl;
       switch(result.user.role) {
