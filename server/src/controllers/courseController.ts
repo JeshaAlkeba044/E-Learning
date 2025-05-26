@@ -95,9 +95,9 @@ export const getAllCourses = async (req: Request, res: Response) => {
 
 export const getCourseById = async (req: Request, res: Response) => {
   try {
-    const { id_course } = req.params;
+    const { id } = req.params;
 
-    const course = await Course.findByPk(id_course, {
+    const course = await Course.findByPk(id, {
       include: [
         {
           model: User,
@@ -245,9 +245,9 @@ export const updateCourse = async (req: Request & { file?: Express.Multer.File }
 
 export const deleteCourse = async (req: Request & { file?: Express.Multer.File }, res: Response) => {
     try {
-        const { id_course } = req.params;
+        const { id } = req.params;
 
-        const course = await Course.findByPk(id_course);
+        const course = await Course.findByPk(id);
         if (!course) {
             res.status(404).json({ error: 'Course not found' });
             return 

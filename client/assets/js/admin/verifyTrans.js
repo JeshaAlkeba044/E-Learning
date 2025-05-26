@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirmVerify) return;
 
         try {
-            const response = await fetch(`${apiBaseUrl}/admin/payment/${transactionId}`, {
+            const response = await fetch(`${apiBaseUrl}/api/admin/payment/${transactionId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingIndicator.style.display = 'flex';
 
         try {
-            const response = await fetch(`${apiBaseUrl}/admin/pendingPayment`);
+            const response = await fetch(`${apiBaseUrl}/api/admin/pendingPayment`);
             const data = await response.json();
 
             if (data.success) {

@@ -3,11 +3,11 @@ import { Transaction, Course, User } from '../models';
 
 export const createTransaction = async (req: Request, res: Response) => {
   try {
-    const { courseId, paymentMethod, amount } = req.body;
+    const { id, paymentMethod, amount } = req.body;
     const userId = req.user?.id_user; // From auth middleware
     
     // Check if course exists
-    const course = await Course.findByPk(courseId);
+    const course = await Course.findByPk(id);
     if (!course) {
         res.status(404).json({ message: 'Course not found' });
         return 
@@ -15,7 +15,7 @@ export const createTransaction = async (req: Request, res: Response) => {
     
     // Check if user already enrolled
     const existingTransaction = await Transaction.findOne({
-      where: { id_user: userId, id_course: courseId }
+      where: { id_user: userId, id_course: id }
     });
     
     if (existingTransaction) {
@@ -26,7 +26,7 @@ export const createTransaction = async (req: Request, res: Response) => {
     // Create transaction
     const transaction = await Transaction.create({
       id_user: userId,
-      id_course: courseId,
+      id_course: id,
       amount,
       payment_method: paymentMethod,
       status: 'completed' // In real app, you'd verify payment first
@@ -51,6 +51,11 @@ export const getUserTransactions = async (req: Request, res: Response) => {
       }],
       order: [['transaction_date', 'DESC']]
     });
+
+    if (!transactions || transactions.length === 0) {
+      res.status(404).json({ message: 'No transactions found' });
+      return;
+    }
     
     res.json(transactions);
   } catch (error) {

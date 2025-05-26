@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchTutors = async () => {
     try {
-        const response = await fetch('http://localhost:3000/admin/allTutors');
+        const response = await fetch('http://localhost:3000/api/admin/allTutors');
         if (!response.ok) throw new Error('Gagal fetch tutor');
 
         const result = await response.json();
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirmDelete) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/deteleTutors/${tutorId}`, {
+            const response = await fetch(`http://localhost:3000/api/deteleTutors/${tutorId}`, {
                 method: 'DELETE',
             });
 

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchUnverifiedTutors = async () => {
         try {
-            const response = await fetch('http://localhost:3000/admin/unverifiedTutor'); 
+            const response = await fetch('http://localhost:3000/api/admin/unverifiedTutor'); 
             if (!response.ok) throw new Error('Gagal fetch tutor');
 
             const result = await response.json();
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const verifyTutor = async (tutorId, cardElement) => {
         try {
-            const response = await fetch(`http://localhost:3000/admin/verifyTutor/${tutorId}`, {
+            const response = await fetch(`http://localhost:3000/api/admin/verifyTutor/${tutorId}`, {
                 method: 'PUT'
             });
 

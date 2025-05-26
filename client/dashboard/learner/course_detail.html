@@ -1021,7 +1021,7 @@
         <!-- Main Content -->
         <main class="course-content">
           <div class="content-header">
-            <h2 id="contentTitle">
+            <h2 class="contentTitle">
               Komposisi Visual: Prinsip Penataan Elemen dalam Karya Seni
             </h2>
             <div class="content-meta">
@@ -1055,7 +1055,7 @@
               </div>
             </div>
 
-            <h3>Pengantar Komposisi Visual</h3>
+            <h3 class="material-title">Pengantar Komposisi Visual</h3>
             <p>
               Komposisi visual adalah penyusunan elemen-elemen seni dan desain
               menjadi satu kesatuan yang harmonis. Prinsip komposisi membantu
@@ -1130,90 +1130,6 @@
           <div class="content-body" id="dynamicContent">
             <!-- Content will be loaded dynamically here -->
           </div>
-
-          <script>
-            document.addEventListener("DOMContentLoaded", function () {
-              // Get the current material ID from the URL or other source
-              const materialId = "current-material-id"; // Replace with actual logic
-
-              // Load material content
-              fetch(`http://localhost:3000/api/tutor/materials/${materialId}/content`) // API INI ANEHHH !!!!!
-                .then((response) => response.json())
-                .then((material) => {
-                  const contentContainer =
-                    document.getElementById("dynamicContent");
-
-                  if (material.content && material.content.blocks) {
-                    material.content.blocks.forEach((block) => {
-                      let blockHtml = "";
-
-                      switch (block.type) {
-                        case "text":
-                          blockHtml = `
-                                    <div class="content-block">
-                                        ${block.content}
-                                    </div>
-                                `;
-                          break;
-                        case "image":
-                          blockHtml = `
-                                    <div class="content-block image-block">
-                                        <img src="${block.content}" alt="${
-                            block.metadata?.alt || ""
-                          }">
-                                    </div>
-                                `;
-                          break;
-                        case "video":
-                          blockHtml = `
-                                    <div class="content-block video-block">
-                                        <div class="video-container">
-                                            <iframe src="${getVideoEmbedUrl(
-                                              block.content
-                                            )}" allowfullscreen></iframe>
-                                        </div>
-                                    </div>
-                                `;
-                          break;
-                        case "heading":
-                          blockHtml = `
-                                    <div class="content-block heading-block">
-                                        <h3>${block.content}</h3>
-                                    </div>
-                                `;
-                          break;
-                      }
-
-                      contentContainer.insertAdjacentHTML(
-                        "beforeend",
-                        blockHtml
-                      );
-                    });
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error loading material content:", error);
-                  document.getElementById("dynamicContent").innerHTML = `
-                    <p>Gagal memuat konten materi. Silakan coba lagi nanti.</p>
-                `;
-                });
-
-              function getVideoEmbedUrl(url) {
-                if (!url) return "";
-
-                if (url.includes("youtube.com") || url.includes("youtu.be")) {
-                  const videoId = url.match(
-                    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
-                  );
-                  if (videoId && videoId[1]) {
-                    return `https://www.youtube.com/embed/${videoId[1]}`;
-                  }
-                }
-
-                return url;
-              }
-            });
-          </script>
 
           <div class="content-footer">
             <a href="#" class="btn btn-outline">
@@ -1336,8 +1252,8 @@
     <script>
       document.addEventListener("DOMContentLoaded", async function () {
         // Get course ID from URL
-        const courseId = new URLSearchParams(window.location.search).get("id");
-        if (!courseId) {
+        const id = new URLSearchParams(window.location.search).get("id");
+        if (!id) {
           alert("Course ID not provided");
           // window.location.href = "/courses.html";
           return;
@@ -1346,7 +1262,7 @@
         // Fetch course data
         try {
 
-          const response = await fetch(`http://localhost:3000/api/learner/courses/${courseId}`,
+          const response = await fetch(`http://localhost:3000/api/learner/courses/${id}`,
             {
               method: "GET",
               headers: {
@@ -1359,16 +1275,18 @@
           const course = await response.json();
 
           // Update UI
+          document.querySelector(".course-price").textContent =
+            `Rp ${course.price.toLocaleString()}`;
           document.querySelector(".course-title h1").textContent = course.title;
           document.querySelector(".course-title p").textContent =
             course.description.substring(0, 100) + "...";
 
           // Check if user is enrolled
-          const isEnrolled = await checkEnrollment(courseId);
+          const isEnrolled = await checkEnrollment(id);
           initializeView(isEnrolled);
 
           // Load materials
-          loadMaterials(courseId, isEnrolled);
+          loadMaterials(id, isEnrolled);
         } catch (error) {
           console.error(error);
           alert("Failed to load course data");
@@ -1385,10 +1303,14 @@
 
       async function checkEnrollment(courseId) {
         try {
-          const response = await fetch(`http://localhost:3000/api/transactions`,
+            console.log("Masuk ke getUserTransactions");
+
+          const response = await fetch(`http://localhost:3000/api/transaction/transactions`,
+          
             {
               method: "GET",
               headers: {
+                
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             }
@@ -1503,6 +1425,7 @@
 
             // Load material content
             const materialId = this.getAttribute("data-id");
+            // console.log("Loading material ID:", materialId);
             loadMaterialContent(materialId);
           });
         });
@@ -1520,7 +1443,7 @@
 
       async function loadMaterialContent(materialId) {
         try {
-
+          console.log("Fetching material ID:", materialId);
           const response = await fetch(`http://localhost:3000/api/learner/materials/${materialId}`,
             {
               method: "GET",
@@ -1538,50 +1461,68 @@
           console.error(error);
         }
       }
+function renderMaterialContent(material) {
+  // // Pastikan title tampil di elemen yang benar
+  // const contentTitle = document.getElementById("contentTitle");
+  // if (contentTitle) contentTitle.textContent = material.title;
 
-      function renderMaterialContent(material) {
-        const contentTitle = document.getElementById("contentTitle");
-        const dynamicContent = document.getElementById("dynamicContent");
+  document.querySelector("contentTitle").textContent = material.title;
 
-        contentTitle.textContent = material.title;
+  const dynamicContent = document.getElementById("dynamicContent");
+  if (!dynamicContent) return;
 
-        // Clear existing content
-        dynamicContent.innerHTML = "";
+  // Parse JSON jika content masih string
+  let contentObj = material.content;
+  if (typeof contentObj === "string") {
+    try {
+      contentObj = JSON.parse(contentObj);
+    } catch (e) {
+      dynamicContent.innerHTML = "<div class='content-block'>Format materi tidak valid.</div>";
+      return;
+    }
+  }
 
-        // Render content blocks
-        material.content.blocks.forEach((block) => {
-          let blockHTML = "";
+  // Clear existing content
+  dynamicContent.innerHTML = "";
 
-          switch (block.type) {
-            case "text":
-              blockHTML = `<div class="content-block">${block.content}</div>`;
-              break;
-            case "image":
-              blockHTML = `
-          <div class="content-block image-block">
-            <img src="${block.content}" alt="${block.metadata?.alt || ""}">
-          </div>
-        `;
-              break;
-            case "video":
-              blockHTML = `
-          <div class="content-block video-block">
-            <div class="video-container">
-              <iframe src="${getVideoEmbedUrl(
-                block.content
-              )}" allowfullscreen></iframe>
+  // Render content blocks jika ada
+  if (contentObj && Array.isArray(contentObj.blocks) && contentObj.blocks.length > 0) {
+    contentObj.blocks.forEach((block) => {
+      let blockHTML = "";
+      switch (block.type) {
+        case "text":
+          blockHTML = `<div class="content-block">${block.content}</div>`;
+          break;
+        case "image":
+          blockHTML = `
+            <div class="content-block image-block">
+              <img src="${block.content}" alt="${block.metadata?.alt || ""}">
             </div>
-          </div>
-        `;
-              break;
-            case "heading":
-              blockHTML = `<div class="content-block heading-block"><h3>${block.content}</h3></div>`;
-              break;
-          }
-
-          dynamicContent.insertAdjacentHTML("beforeend", blockHTML);
-        });
+          `;
+          break;
+        case "video":
+          blockHTML = `
+            <div class="content-block video-block">
+              <div class="video-container">
+                <iframe src="${getVideoEmbedUrl(
+                  block.content
+                )}" allowfullscreen></iframe>
+              </div>
+            </div>
+          `;
+          break;
+        case "heading":
+          blockHTML = `<div class="content-block heading-block"><h3>${block.content}</h3></div>`;
+          break;
+        default:
+          blockHTML = `<div class="content-block">${block.content || ""}</div>`;
       }
+      dynamicContent.insertAdjacentHTML("beforeend", blockHTML);
+    });
+  } else {
+    dynamicContent.innerHTML = "<div class='content-block'>Materi kosong.</div>";
+  }
+}
 
       function formatDuration(minutes) {
         const hours = Math.floor(minutes / 60);
@@ -1605,17 +1546,18 @@
       }
 
       async function enrollInCourse() {
-        const courseId = new URLSearchParams(window.location.search).get("id");
-        if (!courseId) return;
+        const id = new URLSearchParams(window.location.search).get("id");
+        if (!id) return;
 
         try {
-          const response = await fetch("http://localhost:3000/api/transactions", {
+          const response = await fetch("http://localhost:3000/api/transaction/transactions", {
             method: "POST",
             headers: {
+                "Content-Type": "application/json", // <- jangan lupa ini ya!
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify({
-              courseId,
+              id,
               paymentMethod: "transfer", // Default for demo
               amount:
                 document
