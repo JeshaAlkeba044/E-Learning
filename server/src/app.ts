@@ -43,13 +43,14 @@ const app = express();
 
 // Konfigurasi CORS
 app.use(cors({
-  origin: ['http://localhost:5502', 'http://127.0.0.1:5502'], // Sesuaikan dengan port frontend
+  origin: ['http://localhost:5502', 'http://127.0.0.1:5502'],
   credentials: true
 }));
 
 app.use(bodyParser.json());
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const uploadsDir = path.join(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadsDir));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -57,6 +58,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/learner', learnerRoutes);
 app.use('/api/transaction', transactionRoutes);
 app.use('/api/tutor', tutorRoutes);
+
+
+// Upload image route
+app.post('/api/upload', upload.single('image'), uploadImage);
+app.delete('/api/upload/:filename', deleteImage);
 
 const PORT = process.env.PORT || 3000;
 

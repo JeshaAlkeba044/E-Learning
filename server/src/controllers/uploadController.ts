@@ -16,29 +16,6 @@ export const uploadImage = async (req: Request, res: Response) => {
                 success: false,
                 error: 'No file uploaded' 
             });
-            return
-        }
-
-        // Validate file type
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        if (!allowedTypes.includes(req.file.mimetype)) {
-            // Delete the uploaded file
-            fs.unlinkSync(req.file.path);
-            res.status(400).json({ 
-                success: false,
-                error: 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.' 
-            });
-            return;
-        }
-
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        if (req.file.size > maxSize) {
-            fs.unlinkSync(req.file.path);
-            res.status(400).json({ 
-                success: false,
-                error: 'File too large. Maximum size is 5MB.' 
-            });
             return;
         }
 
@@ -52,11 +29,8 @@ export const uploadImage = async (req: Request, res: Response) => {
 
         res.json({
             success: true,
-            url: `/uploads/${uniqueFilename}`,
-            filename: uniqueFilename,
-            originalname: req.file.originalname,
-            mimetype: req.file.mimetype,
-            size: req.file.size
+            imageUrl: `/uploads/${uniqueFilename}`,
+            filename: uniqueFilename
         });
     } catch (error) {
         console.error('Error uploading image:', error);
@@ -93,18 +67,6 @@ export const deleteImage = async (req: Request, res: Response) => {
                 success: false,
                 error: 'File not found' 
             });
-            return
-        }
-
-        // Check if file is actually an image (optional)
-        const fileExt = path.extname(filename).toLowerCase();
-        const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-        if (!allowedExtensions.includes(fileExt)) {
-            res.status(400).json({ 
-                success: false,
-                error: 'Invalid file type' 
-            });
-
             return;
         }
 

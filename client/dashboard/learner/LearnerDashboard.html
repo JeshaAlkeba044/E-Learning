@@ -698,18 +698,19 @@
       <!-- Header -->
       <div class="main-header">
         <div class="page-title">
-          <h1>Selamat Datang, John!</h1>
+          <h1 id="welcome-title">Selamat Datang, John!</h1>
           <p>Lanjutkan pembelajaran Anda hari ini</p>
         </div>
 
         <div class="user-actions">
           <div class="user-profile">
             <img
-              src="../../assets/img/d4a10452-7b05-4aa8-a2ab-a372b5dc3369.jpg"
+              src="http://localhost:3000/uploads/defaultPic.png"
               alt="Profile"
               class="profile-pic"
+              id="profile-picture"
             />
-            <span class="profile-name">John Doe</span>
+            <span class="profile-name" id="profile-name">John Doe</span>
 
             <div class="profile-dropdown">
               <a href="settings/profile.html">
@@ -765,7 +766,7 @@
           </div>
 
           <div class="progress-list">
-            <div class="progress-item">
+            <!-- <div class="progress-item">
               <div class="course-image">
                 <img
                   src="../../assets/img/c1591799-131d-45da-bec4-7f9fce0baa92.jpg"
@@ -799,7 +800,7 @@
                   >Lanjutkan Belajar</a
                 >
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
 
@@ -964,13 +965,13 @@
         }
 
         if (profilePic && user.user.photo_path) {
-          profilePic.src = user.user.photo_path;
+          profilePic.src = `http://localhost:3000${user.user.photo_path}`;
         }
       }
 
       async function loadActiveCourses() {
         try {
-          const response = await fetch("http://localhost:3000/api/learner/courses",{
+          const response = await fetch("http://localhost:3000/api/learner/progress",{
               method: "GET",
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -984,37 +985,6 @@
         } catch (error) {
           console.error(error);
         }
-      }
-
-      
-      function renderActiveCourses(courses) {
-        const container= document.querySelector(".progress-list");
-        container.innerHTML = ""; // Clear previous data
-
-        if (courses.length === 0) {
-          container.innerHTML =`
-              <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
-            `;
-          return;
-        }
-
-        courses.forEach((course) => {
-          const courseItem = document.createElement("div");
-          courseItem.className = "progress-item";
-
-          courseItem.innerHTML = `
-            <div class="course-image">
-              <img src="${course.thumbnail || '../../assets/img/default-thumbnail.jpg'}" alt="${course.title}" />
-            </div>
-            <div class="course-info">
-              <h3 class="course-title">${course.title}</h3>
-              <p class="course-instructor">Oleh ${course.instructor_Id ? `${course.instructor_Id.firstName} ${course.instructor_Id.lastName}` : "Tidak diketahui"}</p>
-              <a href="course_detail.html?id=${course.id_course}" class="continue-btn">Lanjutkan Belajar</a>
-            </div>
-          `;
-
-          container.appendChild(courseItem);
-        });
       }
 
       async function loadDashboardData() {
@@ -1045,64 +1015,64 @@
       }
 
 
-      // function renderActiveCourses(progress) {
-      //   const progressList = document.querySelector(".progress-list");
+      function renderActiveCourses(progress) {
+        const progressList = document.querySelector(".progress-list");
 
-      //   // Update dashboard stats
-      //   const activeCourses = progress.filter((c) => c.progress < 100).length;
-      //   const completedCourses = progress.filter(
-      //     (c) => c.progress === 100
-      //   ).length;
+        // Update dashboard stats
+        const activeCourses = progress.filter((c) => c.progress < 100).length;
+        const completedCourses = progress.filter(
+          (c) => c.progress === 100
+        ).length;
 
-      //   document.querySelector(
-      //     ".dashboard-card:nth-child(1) .card-value"
-      //   ).textContent = activeCourses;
-      //   document.querySelector(
-      //     ".dashboard-card:nth-child(2) .card-value"
-      //   ).textContent = progress.reduce((sum, c) => sum + c.totalHours, 0);
+        document.querySelector(
+          ".dashboard-card:nth-child(1) .card-value"
+        ).textContent = activeCourses;
+        document.querySelector(
+          ".dashboard-card:nth-child(2) .card-value"
+        ).textContent = progress.reduce((sum, c) => sum + c.totalHours, 0);
 
-      //   // Render active courses
-      //   progressList.innerHTML = progress
-      //     .filter((c) => c.progress < 100)
-      //     .slice(0, 2) // Show only 2 active courses
-      //     .map(
-      //       (course) => `
-      //         <div class="progress-item">
-      //           <div class="course-image">
-      //             <img src="${
-      //               course.thumbnail || "../../assets/img/course-placeholder.jpg"
-      //             }" alt="${course.title}">
-      //           </div>
+        // Render active courses
+        progressList.innerHTML = progress
+          .filter((c) => c.progress < 100)
+          .slice(0, 2) // Show only 2 active courses
+          .map(
+            (course) => `
+              <div class="progress-item">
+                <div class="course-image">
+                  <img src="http://localhost:3000/${
+                    course.thumbnail || "../../assets/img/course-placeholder.jpg"
+                  }" alt="${course.title}">
+                </div>
                 
-      //           <div class="course-info">
-      //             <h3 class="course-title">${course.title}</h3>
-      //             <p class="course-instructor">Oleh ${course.instructor}</p>
+                <div class="course-info">
+                  <h3 class="course-title">${course.title}</h3>
+                  <p class="course-instructor">Oleh ${course.instructor}</p>
                   
-      //             <div class="progress-container">
-      //               <div class="progress-bar">
-      //                 <div class="progress-fill" style="width: ${
-      //                   course.progress
-      //                 }%"></div>
-      //               </div>
-      //               <span class="progress-percent">${course.progress}%</span>
-      //             </div>
+                  <div class="progress-container">
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: ${
+                        course.progress
+                      }%"></div>
+                    </div>
+                    <span class="progress-percent">${course.progress}%</span>
+                  </div>
                   
-      //             <a href="course_detail.html?id=${
-      //               course.id
-      //             }" class="continue-btn">Lanjutkan Belajar</a>
-      //           </div>
-      //         </div>
-      //       `
-      //     )
-      //     .join("");
+                  <a href="course_detail.html?id=${
+                    course.id
+                  }" class="continue-btn">Lanjutkan Belajar</a>
+                </div>
+              </div>
+            `
+          )
+          .join("");
 
-      //     if (progressList.innerHTML.trim() === "") {
-      //       progressList.innerHTML = `
-      //         <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
-      //       `;
-      //     }
+          if (progressList.innerHTML.trim() === "") {
+            progressList.innerHTML = `
+              <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
+            `;
+          }
 
-      // }
+      }
 
       async function loadRecommendedCourses() {
         try {
@@ -1127,9 +1097,7 @@
             (course) => `
               <div class="course-card">
                 <div class="card-image">
-                  <img src="${
-                    course.thumbnail_path || "../img/course-placeholder.jpg"
-                  }" alt="${course.title}">
+                  <img src="http://localhost:3000/${course.thumbnail_path || '/uploads/course-placeholder.jpg'}" alt="${course.title}">
                   ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
                 </div>
                 
@@ -1163,6 +1131,51 @@
           return;
         }
       }
+
+
+      // Load user data from localStorage
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const userData = JSON.parse(localStorage.getItem('user'));
+          console.log("user data", userData)
+          if (userData) {
+            // Update welcome message
+            const welcomeTitle = document.getElementById('welcome-title');
+            welcomeTitle.textContent = `Selamat Datang, ${userData.firstName}!`;
+            
+            // Update profile name
+            const profileName = document.getElementById('profile-name');
+            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+            
+            // Update profile picture
+            const profilePic = document.getElementById('profile-picture');
+            if (userData.photo_path) {
+              // Handle different photo_path formats
+              let photoUrl = `http://localhost:3000/${userData.photo_path}`;
+
+              console.log("photoUrl", photoUrl)
+              
+              // If path doesn't start with http or /, assume it's a local path
+              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
+                // Remove any leading slashes or backslashes
+                photoUrl = photoUrl.replace(/^[\\/]+/, '');
+                // Construct full URL
+                photoUrl = `http://localhost:3000/${photoUrl}`;
+              }
+              
+              profilePic.src = photoUrl;
+              profilePic.onerror = function() {
+                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
+              };
+            } else {
+              // Default profile picture if none is set
+              profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
+      });
     </script>
   </body>
 </html>

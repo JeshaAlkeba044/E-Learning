@@ -775,7 +775,7 @@
             const profilePic = document.getElementById('profile-picture');
             if (userData.photo_path) {
               // Handle different photo_path formats
-              let photoUrl = userData.photo_path;
+              let photoUrl = `../../../server${userData.photo_path}`;
 
               console.log("photoUrl", photoUrl)
               
@@ -784,18 +784,17 @@
                 // Remove any leading slashes or backslashes
                 photoUrl = photoUrl.replace(/^[\\/]+/, '');
                 // Construct full URL
-                // photoUrl = `http://localhost:3000/${photoUrl}`;
-                photoUrl = `http://localhost:3000/src/uploads/defaultPic.png`;
+                photoUrl = `../../../server/${photoUrl}`;
               }
               
               profilePic.src = photoUrl;
               profilePic.onerror = function() {
                 // Fallback if image fails to load
-                profilePic.src = "https://randomuser.me/api/portraits/women/44.jpg";
+                profilePic.src = "../../../server/uploads/defaultPic.png";
               };
             } else {
               // Default profile picture if none is set
-              profilePic.src = "https://randomuser.me/api/portraits/women/44.jpg";
+              profilePic.src = "../../../server/uploads/defaultPic.png";
             }
           }
         } catch (error) {

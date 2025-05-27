@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import { User, Course, Material } from '../models';
+import { User, Course, Material, sequelize } from '../models';
 import { UserMaterialProgress } from '../models/UserMaterialProgress';
 import { Transaction } from '../models/Transaction';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import { decrypt, encrypt, hashEmail } from '../utils/cryptoUtil';
+import { Op } from 'sequelize';
 
 export const getUserProgress = [
   authenticate,
@@ -163,3 +164,42 @@ export const getDashboardLearner = [
   },
 ];
 
+export const getCourseProgress = async (req: Request, res: Response) => {
+  try {
+    const { id_course } = req.params;
+    const userId = req.user?.id_user;
+
+    if (!userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return 
+    }
+
+    // Hitung total material dalam course
+    const totalMaterials = await Material.count({
+      where: { id_course }
+    });
+
+    // Hitung material yang sudah diselesaikan
+    const completedMaterials = await UserMaterialProgress.count({
+      where: {
+        id_user: userId,
+        is_completed: true,
+        id_material: {
+          [Op.in]: sequelize.literal(`(SELECT id_material FROM materials WHERE id_course = '${id_course}')`)
+        }
+      }
+    });
+
+    // Hitung progress dalam persentase
+    const progress = totalMaterials > 0 ? Math.round((completedMaterials / totalMaterials) * 100) : 0;
+
+    res.json({
+      totalMaterials,
+      completedMaterials,
+      progress
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

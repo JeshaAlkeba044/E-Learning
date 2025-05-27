@@ -134,7 +134,7 @@ export const login = async (req: Request, res: Response) => {
         YoE: user.YoE !== null ? decrypt(user.YoE) : null,
         bio: user.bio !== null ? decrypt(user.bio) : null,
         portofolio: user.linkPorto !== null ? decrypt(user.linkPorto) : null,
-        photo_path: user.photo_path || '../uploads/defaulPic.png',
+        photo_path: user.photo_path || 'defaulPic.png',
       },
     });
   } catch (error) {
@@ -228,22 +228,29 @@ export const updateProfile = [
   async (req: Request, res: Response) => {
     try {
       const user = req.user as User;
-      const { firstName, lastName, specialization, experience, bio, portofolio, profilePhoto } = req.body;
+      const { firstName, lastName, bio, portofolio } = req.body;
+
+      // Handle profile photo separately if it's being updated
+      const profilePhoto = req.body.profilePhoto;
 
       await user.update({
         firstName: firstName ? encrypt(firstName) : user.firstName,
         lastName: lastName ? encrypt(lastName) : user.lastName,
-        specialization: specialization ? encrypt(specialization) : user.specialization,
-        YoE: experience ? encrypt(experience) : user.YoE,
         bio: bio ? encrypt(bio) : user.bio,
-        linkPorto: portofolio ? encrypt(portofolio) : user.linkPorto,
+        portofolio: portofolio ? encrypt(portofolio) : user.linkPorto,
         photo_path: profilePhoto || user.photo_path
       });
 
       res.status(200).json({ 
         message: 'Profile updated successfully',
         user: {
-          photo_path: profilePhoto || user.photo_path
+          id: user.id_user,
+          firstName: decrypt(user.firstName),
+          lastName: decrypt(user.lastName),
+          email: decrypt(user.encryptedEmail),
+          bio: user.bio ? decrypt(user.bio) : null,
+          portofolio: user.linkPorto ? decrypt(user.linkPorto) : null,
+          photo_path: user.photo_path || null
         }
       });
     } catch (error) {
