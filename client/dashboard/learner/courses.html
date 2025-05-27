@@ -514,16 +514,18 @@
         <div class="user-actions">
           <div class="user-profile">
             <img
-              src="../assets/images/profile-placeholder.jpg"
+              src="http://localhost:3000/uploads/defaultPic.png"
               alt="Profile"
               class="profile-pic"
+              id="profile-picture"
             />
-            <span class="profile-name">John Doe</span>
+            <span class="profile-name" id="profile-name">John Doe</span>
+
             <div class="profile-dropdown">
               <a href="settings/profile.html">
                 <i class="fas fa-user"></i> Profil Saya
               </a>
-              <a href="../auth/login/indexLogin.html">
+              <a href="../../auth/login/indexLogin.html">
                 <i class="fas fa-sign-out-alt"></i> Keluar
               </a>
             </div>
@@ -686,21 +688,21 @@
 
       function renderUserData(user) {
         const pageTitle = document.querySelector(".page-title h1");
-        const profileName = document.querySelector(".profile-name");
-        const profilePic = document.querySelector(".profile-pic");
+        // const profileName = document.querySelector(".profile-name");
+        // const profilePic = document.querySelector(".profile-pic");
 
         // console.log("User Data:", user.user.firstName); // Debug
         if (pageTitle) {
           pageTitle.textContent = `Selamat Datang, ${user.user.firstName}!`;
         }
 
-        if (profileName) {
-          profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
-        }
+        // if (profileName) {
+        //   profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
+        // }
 
-        if (profilePic && user.user.photo_path) {
-          profilePic.src = user.user.photo_path;
-        }
+        // if (profilePic && user.user.photo_path) {
+        //   profilePic.src = user.user.photo_path;
+        // }
       }
 
       function renderCourses(courses) {
@@ -753,6 +755,49 @@
           )
           .join("");
       }
+
+            document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const userData = JSON.parse(localStorage.getItem('user'));
+          console.log("user data", userData)
+          if (userData) {
+            // Update welcome message
+            const welcomeTitle = document.getElementById('welcome-title');
+            welcomeTitle.textContent = `Selamat Datang, ${userData.firstName}!`;
+            
+            // Update profile name
+            const profileName = document.getElementById('profile-name');
+            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+            
+            // Update profile picture
+            const profilePic = document.getElementById('profile-picture');
+            if (userData.photo_path) {
+              // Handle different photo_path formats
+              let photoUrl = `http://localhost:3000/${userData.photo_path}`;
+
+              console.log("photoUrl", photoUrl)
+              
+              // If path doesn't start with http or /, assume it's a local path
+              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
+                // Remove any leading slashes or backslashes
+                photoUrl = photoUrl.replace(/^[\\/]+/, '');
+                // Construct full URL
+                photoUrl = `http://localhost:3000/${photoUrl}`;
+              }
+              
+              profilePic.src = photoUrl;
+              profilePic.onerror = function() {
+                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
+              };
+            } else {
+              // Default profile picture if none is set
+              profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
+      });
     </script>
   </body>
 </html>

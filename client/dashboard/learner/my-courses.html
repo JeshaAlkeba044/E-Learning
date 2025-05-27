@@ -661,7 +661,7 @@
               <a href="settings/profile.html">
                 <i class="fas fa-user"></i> Profil Saya
               </a>
-              <a href="../auth/login/indexLogin.html">
+              <a href="../../auth/login/indexLogin.html">
                 <i class="fas fa-sign-out-alt"></i> Keluar
               </a>
             </div>
@@ -809,11 +809,54 @@
           window.location.href = "/auth/login/indexLogin.html";
           return;
         }
+        
+        await loadUserData();
 
         await Promise.all([loadUserCourses(), loadUserData()]);
         setupTabs();
         setupSidebarToggle();
+
       });
+
+      async function loadUserData() {
+        try {
+          const response = await fetch("http://localhost:3000/api/auth/profile",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          // console.log("Status:", response.status); // Debug
+
+          if (!response.ok) throw new Error("Failed to load user data");
+
+          const user = await response.json();
+          // console.log("User Data:", user); // Debug
+          renderUserData(user);
+        } catch (error) {
+          console.error(error);
+          if (error.message.includes("401")) {
+            window.location.href = "/auth/login/indexLogin.html";
+          }
+        }
+      }
+
+
+      function renderUserData(user) {
+        const pageTitle = document.querySelector(".page-title h1");
+        const profileName = document.querySelector(".profile-name");
+
+        // console.log("User Data:", user.user.firstName); // Debug
+        if (pageTitle) {
+          pageTitle.textContent = `Selamat Datang, ${user.user.firstName}!`;
+        }
+
+        if (profileName) {
+          profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
+        }
+      }
 
       async function loadUserCourses() {
         try {
@@ -837,38 +880,6 @@
           if (error.message.includes("401")) {
             window.location.href = "/auth/login/indexLogin.html";
           }
-        }
-      }
-
-      async function loadUserData() {
-        try {
-          const response = await fetch(
-            "http://localhost:3000/api/auth/profile",
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
-
-          if (!response.ok) throw new Error("Failed to load user data");
-
-          const user = await response.json();
-          renderUserData(user.user);
-        } catch (error) {
-          console.error("Profile error:", error.message);
-          if (error.message.includes("401")) {
-            window.location.href = "/auth/login/indexLogin.html";
-          }
-        }
-      }
-
-      function renderUserData(user) {
-        const profileName = document.querySelector(".profile-name");
-
-        if (profileName) {
-          profileName.textContent = `${user.firstName} ${user.lastName}`;
         }
       }
 
@@ -930,10 +941,8 @@
               </div>
               <div class="course-details">
                 <div class="course-category">${course.category || ""}</div>
-                <h3 class="course-title">${course.title || ""}</h3>
-                <p class="course-instructor">Oleh ${
-                  course.instructor_Id?.firstName || ""
-                } ${course.instructor_Id?.lastName || ""}</p>
+                <h3 class="course-title">${course.courseTitle || ""}</h3>
+                <p class="course-instructor">Oleh ${course.instructor}</p>
                 <div class="course-meta">
                   <span><i class="fas fa-book"></i> ${modulInfo}</span>
                   <span><i class="fas fa-clock"></i> ${jamInfo}</span>
@@ -1002,12 +1011,15 @@
         }
       }
 
-      // Load user data from localStorage
       document.addEventListener("DOMContentLoaded", () => {
         try {
           const userData = JSON.parse(localStorage.getItem('user'));
           console.log("user data", userData)
           if (userData) {
+            // // Update welcome message
+            // const welcomeTitle = document.getElementById('welcome-title');
+            // welcomeTitle.textContent = `Selamat Datang, ${userData.firstName}!`;
+            
             // Update profile name
             const profileName = document.getElementById('profile-name');
             profileName.textContent = `${userData.firstName} ${userData.lastName}`;
@@ -1015,14 +1027,20 @@
             // Update profile picture
             const profilePic = document.getElementById('profile-picture');
             if (userData.photo_path) {
-              // Normalize the photo_path to ensure correct URL
-              let photoPath = userData.photo_path.replace(/\\/g, '/').replace(/^\/+/, '');
-              let photoUrl = userData.photo_path.startsWith('http')
-                ? userData.photo_path
-                : `http://localhost:3000/${photoPath}`;
+              // Handle different photo_path formats
+              let photoUrl = `http://localhost:3000${userData.photo_path}`;
 
+              console.log("photoUrl", photoUrl)
+              
+              // If path doesn't start with http or /, assume it's a local path
+              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
+                // Remove any leading slashes or backslashes
+                photoUrl = photoUrl.replace(/^[\\/]+/, '');
+                // Construct full URL
+                photoUrl = `http://localhost:3000${photoUrl}`;
+              }
+              
               profilePic.src = photoUrl;
-              console.log("profilePic.src", profilePic.src)
               profilePic.onerror = function() {
                 profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
               };
@@ -1035,6 +1053,9 @@
           console.error("Error loading user data:", error);
         }
       });
+
+
+
     </script>
   </body>
 </html>

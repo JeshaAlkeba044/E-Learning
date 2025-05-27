@@ -14,7 +14,7 @@ export const getUserProgress = [
 
       // Cari semua transaksi user yang sudah berhasil (misal status 'verified' atau 'paid')
       const transactions = await Transaction.findAll({
-        where: { id_user: user.id_user, status: 'completed' }, // sesuaikan status transaksi yang valid
+        where: { id_user: user.id_user, status: 'completed' }, 
         include: [
           {
             model: Course,

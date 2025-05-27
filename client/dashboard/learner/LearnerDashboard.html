@@ -981,6 +981,7 @@
           if (!response.ok) throw new Error("Failed to load active courses");
 
           const progress = await response.json();
+          console.log("Active Courses Data:", progress); // Debug
           renderActiveCourses(progress);
         } catch (error) {
           console.error(error);
@@ -1031,6 +1032,7 @@
           ".dashboard-card:nth-child(2) .card-value"
         ).textContent = progress.reduce((sum, c) => sum + c.totalHours, 0);
 
+        console.log("Progress list: ", progress);
         // Render active courses
         progressList.innerHTML = progress
           .filter((c) => c.progress < 100)
@@ -1041,11 +1043,11 @@
                 <div class="course-image">
                   <img src="http://localhost:3000/${
                     course.thumbnail || "../../assets/img/course-placeholder.jpg"
-                  }" alt="${course.title}">
+                  }" alt="${course.courseTitle}">
                 </div>
                 
                 <div class="course-info">
-                  <h3 class="course-title">${course.title}</h3>
+                  <h3 class="course-title">${course.courseTitle}</h3>
                   <p class="course-instructor">Oleh ${course.instructor}</p>
                   
                   <div class="progress-container">
@@ -1058,7 +1060,7 @@
                   </div>
                   
                   <a href="course_detail.html?id=${
-                    course.id
+                    course.courseId
                   }" class="continue-btn">Lanjutkan Belajar</a>
                 </div>
               </div>

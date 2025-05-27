@@ -1021,36 +1021,32 @@
         }
       }
 
+      // Helper function to format date as relative (e.g., "Hari ini", "Kemarin", etc.)
+      function formatRelativeDate(dateString) {
+        if (!dateString) return "Belum diakses";
+        const date = new Date(dateString);
+        const now = new Date();
+
+        // Remove time for comparison
+        const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const nowOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        const diffTime = nowOnly - dateOnly;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) {
+          return `Hari ini, ${date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}`;
+        } else if (diffDays === 86400000 || diffDays === 1) {
+          return `Kemarin, ${date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}`;
+        } else if (diffDays > 1) {
+          return `${diffDays} hari lalu, ${date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}`;
+        } else {
+          return date.toLocaleString("id-ID");
+        }
+      }
+
       function renderProgressData(progress) {
         const tableBody = document.querySelector(".progress-table tbody");
-        // const timeline = document.querySelector(".progress-timeline");
-
-        // // Handle timeline kosong
-        // if (timeline) {
-        //   if (!progress || progress.length === 0) {
-        //     timeline.innerHTML = `<p class="empty-state">Belum ada progres yang tercatat 😴</p>`;
-        //   } else {
-        //     timeline.innerHTML = progress.map((item) => {
-        //       const date = new Date(item.lastAccessed);
-        //       const formattedDate = date.toLocaleDateString("id-ID", {
-        //         weekday: "long",
-        //         hour: "2-digit",
-        //         minute: "2-digit",
-        //       });
-
-        //       return `
-        //         <div class="timeline-item">
-        //           <div class="timeline-dot"></div>
-        //           <div class="timeline-content">
-        //             <div class="timeline-date">${formattedDate}</div>
-        //             <h3 class="timeline-title">${item.progress}%</h3>
-        //             <p class="timeline-desc">${item.courseTitle}</p>
-        //           </div>
-        //         </div>
-        //       `;
-        //     }).join("");
-        //   }
-        // }
 
         // Handle tabel kosong
         if (!tableBody) return;
@@ -1073,7 +1069,7 @@
                 </div>
               </div>
             </td>
-            <td>${course.lastAccessed ? new Date(course.lastAccessed).toLocaleString("id-ID") : "Belum diakses"}</td>
+            <td>${formatRelativeDate(course.lastAccessed)}</td>
             <td>
               <button class="action-btn btn-continue" data-id="${course.courseId}">
                 ${course.progress === 100 ? "Selesai, Pelajari Lagi?" : "Lanjutkan"}
