@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { User } from './User';
 import { Material } from './Material';
 import { v4 } from 'uuid';
@@ -39,4 +39,10 @@ export class UserMaterialProgress extends Model {
     defaultValue: DataType.NOW,
   })
   last_accessed!: Date;
+
+  @BelongsTo(() => User)
+  user!: User;
+
+  @BelongsTo(() => Material)
+  material!: Material;
 }

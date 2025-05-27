@@ -887,6 +887,34 @@
         color: #666;
       }
 
+      /* Tambahkan di bagian CSS yang sudah ada */
+      .checkbox {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        margin: var(--space-md) 0;
+      }
+
+      .checkbox input {
+        margin: 0;
+      }
+
+      .checkbox label {
+        cursor: pointer;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--light-gray);
+        border-radius: var(--radius-sm);
+      }
+
+      .form-group {
+        margin-bottom: var(--space-lg);
+      }
+
       /* Responsive Styles */
       @media (max-width: 768px) {
         .header-container {
@@ -1189,7 +1217,7 @@
 
             <div class="completion-section" id="completionSection">
               <div class="checkbox-container">
-                <input type="checkbox" id="markComplete" checked />
+                <input type="checkbox" id="markComplete" />
                 <span class="custom-checkbox">
                   <i class="fas fa-check"></i>
                 </span>
@@ -1322,436 +1350,657 @@
       </a>
     </div>
 
-    <script>
-      // Ganti seluruh script dengan yang ini
-document.addEventListener("DOMContentLoaded", async function () {
-  // Get course ID from URL
-  const id = new URLSearchParams(window.location.search).get("id");
-  if (!id) {
-    alert("Course ID not provided");
-    window.location.href = "/courses.html";
-    return;
-  }
+<script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    try {
+      // Get course ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const courseId = urlParams.get("id");
 
-  // Load user data
-  const user = await loadUserData();
-  if (!user) return;
-
-  // Fetch course data
-  try {
-    const [courseResponse, progressResponse] = await Promise.all([
-      fetch(`http://localhost:3000/api/learner/courses/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }),
-      fetch(`http://localhost:3000/api/learner/courses/${id}/progress`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-    ]);
-
-    if (!courseResponse.ok) throw new Error("Failed to fetch course");
-    if (!progressResponse.ok) throw new Error("Failed to fetch progress");
-
-    const course = await courseResponse.json();
-    const progress = await progressResponse.json();
-
-    // Update UI
-    updateCourseUI(course, progress);
-
-    // Check if user is enrolled
-    const isEnrolled = await checkEnrollment(id);
-    initializeView(isEnrolled);
-
-    // Load materials
-    loadMaterials(id, isEnrolled);
-  } catch (error) {
-    console.error(error);
-    alert("Failed to load course data");
-  }
-});
-
-async function loadUserData() {
-  try {
-    const response = await fetch("http://localhost:3000/api/auth/profile", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        window.location.href = "/auth/login/indexLogin.html";
-        return null;
-      }
-      throw new Error("Failed to load user data");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
-
-function updateCourseUI(course, progress) {
-  // Update course info
-  document.querySelector(".course-title h1").textContent = course.title;
-  document.querySelector(".course-price").textContent = `Rp ${course.price.toLocaleString()}`;
-  
-  // Update progress
-  const progressSection = document.getElementById("progressSection");
-  if (progressSection) {
-    progressSection.querySelector(".progress-text span:last-child").textContent = `${progress.progress}%`;
-    progressSection.querySelector(".progress-fill").style.width = `${progress.progress}%`;
-    progressSection.querySelector(".progress-meta span:first-child").textContent = 
-      `${progress.completedMaterials} dari ${progress.totalMaterials} modul`;
-  }
-}
-
-async function checkEnrollment(courseId) {
-  try {
-    const response = await fetch("http://localhost:3000/api/transaction/transactions", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    
-    if (!response.ok) return false;
-
-    const transactions = await response.json();
-    return transactions.some((t) => t.id_course === courseId && t.status === 'verified');
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-async function loadMaterials(courseId, isEnrolled) {
-  try {
-    const response = await fetch(`http://localhost:3000/api/learner/courses/${courseId}/materials`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    
-    if (!response.ok) throw new Error("Failed to fetch materials");
-
-    const materials = await response.json();
-    renderMaterials(materials, isEnrolled);
-    
-    // Load first material content if available
-    if (materials.length > 0) {
-      await loadMaterialContent(materials[0].id_material);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-function renderMaterials(materials, isEnrolled) {
-  const modulesMenu = document.querySelector(".modules-menu");
-  if (!modulesMenu) return;
-
-  // Group materials by topic/section
-  const sections = {};
-  materials.forEach((material) => {
-    if (!sections[material.topic]) {
-      sections[material.topic] = [];
-    }
-    sections[material.topic].push(material);
-  });
-
-  // Clear existing content
-  modulesMenu.innerHTML = "";
-
-  // Create sections
-  Object.entries(sections).forEach(([topic, mats], index) => {
-    const isFirstSection = index === 0;
-
-    const sectionHTML = `
-      <div class="module-group">
-        <div class="group-header ${isFirstSection ? "active" : ""}">
-          <span>${topic || 'Untitled Section'}</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <ul class="module-items" ${isFirstSection ? 'style="max-height: 1000px;"' : ''}>
-          ${mats.map((mat, matIndex) => `
-            <li class="module-item ${matIndex === 0 && isFirstSection ? "active" : ""} 
-                ${!isEnrolled && !mat.is_free ? "locked" : ""}" 
-                data-id="${mat.id_material}">
-              <div class="item-title">${mat.sequence_order}. ${mat.title}</div>
-              <div class="item-duration">${formatDuration(mat.duration)}</div>
-              ${!isEnrolled && !mat.is_free ? `
-                <div class="item-lock">
-                  <i class="fas fa-lock"></i>
-                  <span>Terlock</span>
-                </div>
-              ` : ''}
-            </li>
-          `).join("")}
-        </ul>
-      </div>
-    `;
-
-    modulesMenu.insertAdjacentHTML("beforeend", sectionHTML);
-  });
-
-  // Add click handlers
-  document.querySelectorAll(".module-item").forEach((item) => {
-    item.addEventListener("click", async function () {
-      if (this.classList.contains("locked")) {
-        alert("Anda perlu berlangganan untuk mengakses modul ini");
+      if (!courseId) {
+        alert("Course ID not provided");
+        window.location.href = "/courses.html";
         return;
       }
 
-      // Update active item
-      document.querySelectorAll(".module-item").forEach((i) => i.classList.remove("active"));
-      this.classList.add("active");
+      // Check authentication
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/auth/login/indexLogin.html";
+        return;
+      }
 
-      // Load material content
-      const materialId = this.getAttribute("data-id");
-      await loadMaterialContent(materialId);
-    });
+      // Fetch course data and progress in parallel
+      const [courseResponse, progressResponse] = await Promise.all([
+        fetch(`http://localhost:3000/api/learner/courses/${courseId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        fetch(
+          `http://localhost:3000/api/learner/courses/${courseId}/progress`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        ),
+      ]);
+
+      if (!courseResponse.ok || !progressResponse.ok) {
+        throw new Error("Failed to load course data");
+      }
+
+      const course = await courseResponse.json();
+      const progress = await progressResponse.json();
+
+      // Update course info
+      document.querySelector(".course-title h1").textContent = course.title;
+      document.querySelector(".course-price").textContent = formatPrice(course.price);
+
+      // Store course price in data attribute for later use
+      document.querySelector(".course-price").setAttribute("data-price", course.price);
+
+      // Update progress section
+      updateProgressUI(progress);
+
+      // Check enrollment status
+      const isEnrolled = await checkEnrollment(courseId);
+      initializeView(isEnrolled);
+
+      // Load materials
+      await loadMaterials(courseId, isEnrolled);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to load course data");
+    }
   });
 
-  // Add section toggle handlers
-  document.querySelectorAll(".group-header").forEach((header) => {
-    header.addEventListener("click", function () {
-      this.classList.toggle("active");
-      const icon = this.querySelector("i");
-      icon.classList.toggle("fa-chevron-down");
-      icon.classList.toggle("fa-chevron-up");
-    });
-  });
-}
+  // Update progress UI elements
+  function updateProgressUI(progress) {
+    const progressSection = document.getElementById("progressSection");
+    if (!progressSection) return;
 
-async function loadMaterialContent(materialId) {
-  try {
-    const [materialResponse, progressResponse] = await Promise.all([
-      fetch(`http://localhost:3000/api/learner/materials/${materialId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }),
-      fetch(`http://localhost:3000/api/learner/progress/materials/${materialId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-    ]);
+    progressSection.querySelector(
+      ".progress-text span:last-child"
+    ).textContent = `${progress.progress}%`;
+    progressSection.querySelector(
+      ".progress-fill"
+    ).style.width = `${progress.progress}%`;
+    progressSection.querySelector(
+      ".progress-meta span:first-child"
+    ).textContent = `${progress.completedMaterials} dari ${progress.totalMaterials} modul`;
+  }
 
-    if (!materialResponse.ok) throw new Error("Failed to fetch material");
-    if (!progressResponse.ok) throw new Error("Failed to fetch progress");
-
-    const material = await materialResponse.json();
-    const progress = await progressResponse.json();
-
-    renderMaterialContent(material);
-    
-    // Update completion checkbox
-    const checkbox = document.getElementById("markComplete");
-    if (checkbox) {
-      checkbox.checked = progress.is_completed || false;
-      checkbox.onchange = async () => {
-        await updateMaterialProgress(materialId, checkbox.checked);
-        // Refresh progress after update
-        const newProgressResponse = await fetch(`http://localhost:3000/api/learner/courses/${id}/progress`, {
+  // Check if user is enrolled in the course - FIXED VERSION
+  async function checkEnrollment(courseId) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/transaction/transactions?courseId=${courseId}`,
+        {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        });
-        if (newProgressResponse.ok) {
-          const newProgress = await newProgressResponse.json();
-          updateCourseUI(material, newProgress);
         }
-      };
+      );
+
+      if (!response.ok) return false;
+
+      const result = await response.json();
+      
+      // Handle both array response and object with data property
+      const transactions = Array.isArray(result) ? result : (result.data || []);
+      
+      return transactions.some(t => t.id_course === courseId && t.status === 'completed');
+    } catch (error) {
+      console.error("Error checking enrollment:", error);
+      return false;
     }
-  } catch (error) {
-    console.error(error);
   }
-}
 
-function renderMaterialContent(material) {
-  const dynamicContent = document.getElementById("dynamicContent");
-  const contentTitle = document.querySelector(".contentTitle");
-  
-  if (!dynamicContent || !contentTitle) return;
+  // Initialize view based on enrollment status
+  function initializeView(isEnrolled) {
+    const elements = {
+      progressSection: document.getElementById("progressSection"),
+      enrollSection: document.getElementById("enrollSection"),
+      subscriptionSection: document.getElementById("subscriptionSection"),
+      previewOverlay: document.getElementById("previewOverlay"),
+      resourcesSection: document.getElementById("resourcesSection"),
+      completionSection: document.getElementById("completionSection"),
+      nextButton: document.getElementById("nextButton"),
+      lockedModules: document.querySelectorAll(".module-item.locked"),
+      videoPlayer: document.getElementById("courseVideo"),
+      enrollBtn: document.getElementById("enrollBtn")
+    };
 
-  // Update the module title
-  document.getElementById("moduleTitle").textContent = material.title;
-  contentTitle.textContent = material.title;
+    if (isEnrolled) {
+      // Show enrolled state
+      elements.progressSection.style.display = "block";
+      elements.enrollSection.style.display = "none";
+      elements.subscriptionSection.style.display = "none";
+      elements.previewOverlay.style.display = "none";
+      elements.resourcesSection.style.display = "block";
+      elements.completionSection.style.display = "flex";
 
-  // Clear existing content
-  dynamicContent.innerHTML = "";
+      // Unlock all modules
+      elements.lockedModules.forEach((module) => {
+        module.classList.remove("locked");
+        const lockElement = module.querySelector(".item-lock");
+        if (lockElement) lockElement.style.display = "none";
+      });
 
-  // Parse content if it's a string
-  let content = material.content;
-  if (typeof content === 'string') {
+      // Enable video player
+      if (elements.videoPlayer) {
+        elements.videoPlayer.style.pointerEvents = "auto";
+      }
+
+      // Enable next button
+      elements.nextButton.style.opacity = "1";
+      elements.nextButton.style.cursor = "pointer";
+      elements.nextButton.onclick = null; // Remove any previous click handler
+    } else {
+      // Show not enrolled state
+      elements.progressSection.style.display = "none";
+      elements.enrollSection.style.display = "block";
+      elements.subscriptionSection.style.display = "block";
+      elements.previewOverlay.style.display = "flex";
+      elements.resourcesSection.style.display = "none";
+      elements.completionSection.style.display = "none";
+
+      // Disable video player interactions
+      if (elements.videoPlayer) {
+        elements.videoPlayer.style.pointerEvents = "none";
+      }
+
+      // Disable next button
+      elements.nextButton.style.opacity = "0.5";
+      elements.nextButton.style.cursor = "not-allowed";
+      elements.nextButton.onclick = (e) => e.preventDefault();
+    }
+  }
+
+  // Load course materials
+  async function loadMaterials(courseId, isEnrolled) {
     try {
-      content = JSON.parse(content);
-    } catch (e) {
-      content = { blocks: [] };
+      const response = await fetch(
+        `http://localhost:3000/api/learner/courses/${courseId}/materials`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to load materials");
+
+      const materials = await response.json();
+      renderMaterials(materials, isEnrolled);
+
+      // Load first material content if available
+      if (materials.length > 0) {
+        await loadMaterialContent(materials[0].id_material);
+      }
+    } catch (error) {
+      console.error("Error loading materials:", error);
     }
   }
 
-  // If no content or empty blocks
-  if (!content || !content.blocks || content.blocks.length === 0) {
-    dynamicContent.innerHTML = `
-      <div class="content-block empty-state">
-        <p>Materi belum tersedia. Silakan coba lagi nanti.</p>
-      </div>
-    `;
-    return;
+  // Render materials list
+  function renderMaterials(materials, isEnrolled) {
+    const modulesMenu = document.querySelector(".modules-menu");
+    if (!modulesMenu) return;
+
+    // Group materials by topic
+    const sections = {};
+    materials.forEach((material) => {
+      const topic = material.topic || "Uncategorized";
+      if (!sections[topic]) {
+        sections[topic] = [];
+      }
+      sections[topic].push(material);
+    });
+
+    // Clear existing content
+    modulesMenu.innerHTML = "";
+
+    // Create sections
+    Object.entries(sections).forEach(([topic, mats], index) => {
+      const isFirstSection = index === 0;
+      const sectionHTML = `
+        <div class="module-group">
+          <div class="group-header ${isFirstSection ? "active" : ""}">
+            <span>${topic}</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <ul class="module-items" ${
+            isFirstSection ? 'style="max-height: 1000px;"' : ""
+          }>
+            ${mats
+              .map(
+                (mat, matIndex) => `
+              <li class="module-item ${
+                matIndex === 0 && isFirstSection ? "active" : ""
+              } 
+                  ${!isEnrolled && !mat.is_free ? "locked" : ""}" 
+                  data-id="${mat.id_material}">
+                <div class="item-title">${mat.sequence_order}. ${mat.title}</div>
+                <div class="item-duration">${formatDuration(mat.duration)}</div>
+                ${
+                  !isEnrolled && !mat.is_free
+                    ? `
+                  <div class="item-lock">
+                    <i class="fas fa-lock"></i>
+                    <span>Terlock</span>
+                  </div>
+                `
+                    : ""
+                }
+              </li>
+            `
+              )
+              .join("")}
+          </ul>
+        </div>
+      `;
+
+      modulesMenu.insertAdjacentHTML("beforeend", sectionHTML);
+    });
+
+    // Add click handlers for materials
+    document.querySelectorAll(".module-item").forEach((item) => {
+      item.addEventListener("click", async function () {
+        if (this.classList.contains("locked")) {
+          alert("Anda perlu berlangganan untuk mengakses modul ini");
+          return;
+        }
+
+        // Update active item
+        document
+          .querySelectorAll(".module-item")
+          .forEach((i) => i.classList.remove("active"));
+        this.classList.add("active");
+
+        // Load material content
+        const materialId = this.getAttribute("data-id");
+        await loadMaterialContent(materialId);
+      });
+    });
+
+    // Add toggle handlers for sections
+    document.querySelectorAll(".group-header").forEach((header) => {
+      header.addEventListener("click", function () {
+        this.classList.toggle("active");
+        const icon = this.querySelector("i");
+        icon.classList.toggle("fa-chevron-down");
+        icon.classList.toggle("fa-chevron-up");
+      });
+    });
   }
 
-  // Render each content block
-  content.blocks.forEach((block) => {
-    let blockHTML = '';
-    
-    switch (block.type) {
-      case "text":
-        blockHTML = `
-          <div class="content-block text-block">
-            ${block.content}
-          </div>
-        `;
-        break;
-        
-      case "image":
-        blockHTML = `
-          <div class="content-block image-block">
-            <img src="${block.content}" alt="${block.metadata?.alt || ''}" class="content-image">
-            ${block.metadata?.caption ? `<p class="image-caption">${block.metadata.caption}</p>` : ''}
-          </div>
-        `;
-        break;
-        
-      case "video":
-        blockHTML = `
-          <div class="content-block video-block">
-            <div class="video-container">
-              <iframe src="${getVideoEmbedUrl(block.content)}" allowfullscreen></iframe>
+  // Load material content
+  async function loadMaterialContent(materialId) {
+    try {
+      const [materialResponse, progressResponse] = await Promise.all([
+        fetch(`http://localhost:3000/api/learner/materials/${materialId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }),
+        fetch(
+          `http://localhost:3000/api/learner/progress/materials/${materialId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        ),
+      ]);
+
+      if (!materialResponse.ok || !progressResponse.ok) {
+        throw new Error("Failed to load material data");
+      }
+
+      const material = await materialResponse.json();
+      const progress = await progressResponse.json();
+
+      // Render material content
+      renderMaterialContent(material);
+
+      // Setup completion checkbox
+      setupCompletionCheckbox(materialId, progress.is_completed);
+    } catch (error) {
+      console.error("Error loading material content:", error);
+    }
+  }
+
+  // Render material content
+  function renderMaterialContent(material) {
+    const dynamicContent = document.getElementById("dynamicContent");
+    const contentTitle = document.querySelector(".contentTitle");
+
+    if (!dynamicContent || !contentTitle) return;
+
+    // Update titles
+    document.getElementById("moduleTitle").textContent = material.title;
+    contentTitle.textContent = material.title;
+
+    // Clear existing content
+    dynamicContent.innerHTML = "";
+
+    // Parse content
+    let content = material.content;
+    if (typeof content === "string") {
+      try {
+        content = JSON.parse(content);
+      } catch (e) {
+        content = { blocks: [] };
+      }
+    }
+
+    // Handle empty content
+    if (!content?.blocks || content.blocks.length === 0) {
+      dynamicContent.innerHTML = `
+        <div class="content-block empty-state">
+          <p>Materi belum tersedia. Silakan coba lagi nanti.</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Render each content block
+    content.blocks.forEach((block) => {
+      let blockHTML = "";
+
+      switch (block.type) {
+        case "text":
+          blockHTML = `
+            <div class="content-block text-block">
+              ${block.content}
             </div>
-            ${block.metadata?.description ? `<p class="video-description">${block.metadata.description}</p>` : ''}
-          </div>
-        `;
-        break;
-        
-      case "heading":
-        blockHTML = `
-          <div class="content-block heading-block">
-            <h3>${block.content}</h3>
-          </div>
-        `;
-        break;
-        
-      default:
-        blockHTML = `
-          <div class="content-block unknown-block">
-            <p>Jenis konten tidak dikenali</p>
-          </div>
-        `;
+          `;
+          break;
+
+        case "image":
+          blockHTML = `
+            <div class="content-block image-block">
+              <img src="${block.content}" alt="${
+            block.metadata?.alt || ""
+          }" class="content-image">
+              ${
+                block.metadata?.caption
+                  ? `<p class="image-caption">${block.metadata.caption}</p>`
+                  : ""
+              }
+            </div>
+          `;
+          break;
+
+        case "video":
+          blockHTML = `
+            <div class="content-block video-block">
+              <div class="video-container">
+                <iframe src="${getVideoEmbedUrl(
+                  block.content
+                )}" allowfullscreen></iframe>
+              </div>
+              ${
+                block.metadata?.description
+                  ? `<p class="video-description">${block.metadata.description}</p>`
+                  : ""
+              }
+            </div>
+          `;
+          break;
+
+        case "heading":
+          blockHTML = `
+            <div class="content-block heading-block">
+              <h3>${block.content}</h3>
+            </div>
+          `;
+          break;
+
+        default:
+          blockHTML = `
+            <div class="content-block unknown-block">
+              <p>Jenis konten tidak dikenali</p>
+            </div>
+          `;
+      }
+
+      dynamicContent.insertAdjacentHTML("beforeend", blockHTML);
+    });
+  }
+
+  // Setup completion checkbox functionality
+  function setupCompletionCheckbox(materialId, isCompleted) {
+    const checkbox = document.getElementById("markComplete");
+    if (!checkbox) return;
+
+    // Set initial state
+    checkbox.checked = isCompleted || false;
+
+    // Remove previous event listeners
+    checkbox.onchange = null;
+
+    // Add new event listener
+    checkbox.onchange = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/learner/progress/materials/${materialId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ isCompleted: checkbox.checked }),
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to update progress");
+
+        // Refresh course progress
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get("id");
+
+        if (courseId) {
+          const progressResponse = await fetch(
+            `http://localhost:3000/api/learner/courses/${courseId}/progress`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (progressResponse.ok) {
+            const progress = await progressResponse.json();
+            updateProgressUI(progress);
+          }
+        }
+      } catch (error) {
+        console.error("Error updating progress:", error);
+        checkbox.checked = !checkbox.checked; // Revert checkbox state
+        alert("Gagal memperbarui progress");
+      }
+    };
+  }
+
+  // Helper function to format duration
+  function formatDuration(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+  }
+
+  // Helper function to get video embed URL
+  function getVideoEmbedUrl(url) {
+    if (!url) return "";
+
+    // Handle YouTube URLs
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      const videoId = url.match(
+        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+      );
+      if (videoId && videoId[1]) {
+        return `https://www.youtube.com/embed/${videoId[1]}`;
+      }
     }
-    
-    dynamicContent.insertAdjacentHTML('beforeend', blockHTML);
+
+    return url;
+  }
+
+  // Helper function to format price
+  function formatPrice(price) {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    })
+      .format(price)
+      .replace("IDR", "Rp");
+  }
+
+  // Enroll button click handler
+  document.getElementById("enrollBtn").addEventListener("click", () => {
+    showPaymentModal("single");
   });
-}
 
-async function updateMaterialProgress(materialId, isCompleted) {
-  try {
-    const response = await fetch(`http://localhost:3000/api/learner/progress/materials/${materialId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ isCompleted })
+  // Subscription button click handlers
+  document.querySelectorAll(".btn-subscribe").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const plan = e.target.getAttribute("data-plan");
+      showPaymentModal(plan);
     });
+  });
 
-    if (!response.ok) {
-      throw new Error("Failed to update progress");
+  // Enroll from preview click handler
+  document.getElementById("enrollFromPreview").addEventListener("click", () => {
+    showPaymentModal("single");
+  });
+
+  // Show payment modal
+  function showPaymentModal(planType) {
+    const modal = document.getElementById("paymentModal");
+    const nominalInput = document.getElementById("nominal");
+    const confirmCheckbox = document.getElementById("confirm");
+    const bayarBtn = document.getElementById("bayarBtn");
+    
+    // Get course price from data attribute or element text
+    const coursePriceElement = document.querySelector(".course-price");
+    let coursePrice = coursePriceElement.getAttribute("data-price");
+    
+    // Fallback to text content if data attribute not set
+    if (!coursePrice) {
+      coursePrice = coursePriceElement.textContent.replace(/\D/g, "");
     }
 
-    return await response.json();
-  } catch (error) {
-    console.error("Error updating progress:", error);
-    throw error;
+    // Set nominal based on plan type
+    let amount = 0;
+    let displayAmount = "";
+    
+    if (planType === "monthly") {
+      amount = 250000;
+      displayAmount = "Rp250.000";
+    } else if (planType === "yearly") {
+      amount = 900000;
+      displayAmount = "Rp900.000";
+    } else {
+      // Single course purchase
+      amount = parseInt(coursePrice);
+      displayAmount = formatPrice(amount);
+    }
+
+    // Set nominal value
+    nominalInput.value = displayAmount;
+
+    // Reset form
+    document.getElementById("paymentForm").reset();
+    bayarBtn.disabled = true;
+    
+    // Show modal
+    modal.classList.add("show");
+
+    // Confirm checkbox handler
+    confirmCheckbox.onchange = () => {
+      bayarBtn.disabled = !confirmCheckbox.checked;
+    };
   }
-}
 
-function formatDuration(minutes) {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-}
+  // Close modal handler
+  document.getElementById("closeModal").addEventListener("click", () => {
+    document.getElementById("paymentModal").classList.remove("show");
+  });
 
-function getVideoEmbedUrl(url) {
-  if (!url) return "";
+  // Payment form submission
+  document.getElementById("paymentForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  if (url.includes("youtube.com") || url.includes("youtu.be")) {
-    const videoId = url.match(
-      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
-    );
-    if (videoId && videoId[1]) {
-      return `https://www.youtube.com/embed/${videoId[1]}`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get("id");
+    const paymentMethod = document.getElementById("metode").value;
+    const amount = document.getElementById("nominal").value.replace(/\D/g, "");
+    const voucher = document.getElementById("voucher").value;
+
+    try {
+      const response = await createTransaction(
+        courseId,
+        paymentMethod,
+        amount,
+        voucher
+      );
+
+      if (response.success) {
+        alert("Pembayaran berhasil! Anda sekarang terdaftar di kursus ini.");
+        document.getElementById("paymentModal").classList.remove("show");
+        
+        // Periksa ulang status enroll dan perbarui tampilan
+        const isEnrolled = await checkEnrollment(courseId);
+        initializeView(isEnrolled);
+        
+        // Reload materials
+        await loadMaterials(courseId, isEnrolled);
+      } else {
+        alert("Pembayaran gagal: " + response.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan saat memproses pembayaran");
+    }
+  });
+
+  // Function to create transaction
+  async function createTransaction(courseId, paymentMethod, amount, voucher) {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/transaction/transactions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            id: courseId,
+            paymentMethod,
+            amount: parseInt(amount),
+            voucher,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create transaction");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Transaction error:", error);
+      throw error;
     }
   }
-
-  return url;
-}
-
-function initializeView(isEnrolled) {
-  const elements = {
-    progressSection: document.getElementById("progressSection"),
-    enrollSection: document.getElementById("enrollSection"),
-    subscriptionSection: document.getElementById("subscriptionSection"),
-    previewOverlay: document.getElementById("previewOverlay"),
-    resourcesSection: document.getElementById("resourcesSection"),
-    completionSection: document.getElementById("completionSection"),
-    nextButton: document.getElementById("nextButton"),
-    lockedModules: document.querySelectorAll(".module-item.locked"),
-  };
-
-  if (isEnrolled) {
-    elements.progressSection.style.display = "block";
-    elements.enrollSection.style.display = "none";
-    elements.subscriptionSection.style.display = "none";
-    elements.previewOverlay.style.display = "none";
-    elements.resourcesSection.style.display = "block";
-    elements.completionSection.style.display = "flex";
-
-    elements.lockedModules.forEach((module) => {
-      module.classList.remove("locked");
-      const lockElement = module.querySelector(".item-lock");
-      if (lockElement) lockElement.style.display = "none";
-    });
-
-    elements.nextButton.href = "#";
-    elements.nextButton.style.opacity = "1";
-    elements.nextButton.style.cursor = "pointer";
-  } else {
-    elements.progressSection.style.display = "none";
-    elements.enrollSection.style.display = "block";
-    elements.subscriptionSection.style.display = "block";
-    elements.previewOverlay.style.display = "flex";
-    elements.resourcesSection.style.display = "none";
-    elements.completionSection.style.display = "none";
-
-    elements.nextButton.removeAttribute("href");
-    elements.nextButton.style.opacity = "0.5";
-    elements.nextButton.style.cursor = "not-allowed";
-  }
-}
-    </script>
+</script>
   </body>
 </html>
