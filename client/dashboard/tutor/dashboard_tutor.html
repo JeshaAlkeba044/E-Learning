@@ -799,80 +799,67 @@
       });
 
       async function fetchDashboardData() {
-        try {
-          const user = JSON.parse(localStorage.getItem('user'));
-          const userId = user.id;
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user.id;
 
-          const response = await fetch(`http://localhost:3000/api/tutor/courses/instructor/${userId}`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
-          const courses = await response.json();
+    const response = await fetch(`http://localhost:3000/api/tutor/courses/instructor/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-          // Update dashboard stats
-          document.querySelector(
-            ".dashboard-card:nth-child(1) .card-value"
-          ).textContent = courses.length;
+    const courses = await response.json();
+    console.log("Courses response:", courses);
 
-          // Calculate total students (simplified for demo)
-          const totalStudents = courses.reduce(
-            (sum, course) => sum + (course.transactions_id?.length || 0),
-            0
-          );
-          document.querySelector(
-            ".dashboard-card:nth-child(2) .card-value"
-          ).textContent = totalStudents;
 
-          // Display recent courses
-          const courseGrid = document.querySelector(".course-grid");
-          courseGrid.innerHTML = courses
-            .slice(0, 3)
-            .map(
-              (course) => `
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="../../../server/${
-                            course.thumbnail_path ||
-                            "uploads/defaultPic.png"
-                          }" alt="${course.title}">
-                        ${
-                          Math.floor(Math.random() * 2) === 1
-                            ? '<div class="course-badge">Populer</div>'
-                            : ""
-                        }
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">${course.category}</div>
-                        <h3 class="card-title">${course.title}</h3>
-                        <div class="card-meta">
-                            <span><i class="fas fa-clock"></i> ${
-                              course.duration
-                            } Menit</span>
-                            <span><i class="fas fa-book"></i> ${
-                              course.materials_id?.length || 0
-                            } Materi</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-students">${
-                              course.transactions_id?.length || 0
-                            } Murid</span>
-                            <a href="manage_course.html?course=${
-                              course.id_course
-                            }" class="manage-btn">Kelola</a>
-                        </div>
-                    </div>
-                </div>
-            `
-            )
-            .join("");
-        } catch (error) {
-          console.error("Error loading dashboard data:", error);
-        }
-      }
+    // Update jumlah kursus
+    document.querySelector(
+      ".dashboard-card:nth-child(1) .card-value"
+    ).textContent = courses.length;
+
+    // Hitung total murid dari semua studentCount
+    const totalStudents = courses.reduce(
+      (sum, course) => sum + (parseInt(course.studentCount) || 0),
+      0
+    );
+
+    document.querySelector(
+      ".dashboard-card:nth-child(2) .card-value"
+    ).textContent = totalStudents;
+
+    // Tampilkan 3 course terbaru
+    const courseGrid = document.querySelector(".course-grid");
+    courseGrid.innerHTML = courses
+      .slice(0, 3)
+      .map((course) => `
+        <div class="course-card">
+          <div class="card-image">
+            <img src="../../../server/${course.thumbnail_path || "uploads/defaultPic.png"}" alt="${course.title || 'Course'}" />
+            ${Math.random() < 0.5 ? '<div class="course-badge">Populer</div>' : ''}
+          </div>
+          <div class="card-content">
+            <div class="card-category">${course.category || 'Kategori'}</div>
+            <h3 class="card-title">${course.title || 'Untitled Course'}</h3>
+            <div class="card-meta">
+              <span><i class="fas fa-clock"></i> ${course.total_duration || 0} Menit</span>
+              <span><i class="fas fa-book"></i> ${course.materials_id?.length || 0} Materi</span>
+            </div>
+            <div class="card-footer">
+              <span class="card-students">${parseInt(course.studentCount) || 0} Murid</span>
+              <a href="manage_course.html?course=${course.id_course}" class="manage-btn">Kelola</a>
+            </div>
+          </div>
+        </div>
+      `)
+      .join("");
+
+  } catch (error) {
+    console.error("Error loading dashboard data:", error);
+  }
+}
+
 
       // Close sidebar when clicking on nav links (mobile)
       document.querySelectorAll(".sidebar-nav a").forEach((link) => {
