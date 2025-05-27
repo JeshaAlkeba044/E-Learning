@@ -10,7 +10,8 @@ import {
   getUserProgress,
   updateMaterialProgress,
   getDashboardLearner,
-  getCourseProgress
+  getCourseProgress,
+  getMaterialProgress
 } from '../controllers/progressController';
 
 import {authenticate} from '../middleware/authMiddleware';
@@ -31,6 +32,7 @@ router.use(authenticate);
 router.get('/progress', getUserProgress);
 router.put('/progress/materials/:materialId', updateMaterialProgress);
 router.get('/courses/:id/progress', authenticate, getCourseProgress);
+router.get('/progress/materials/:materialId', authenticate, getMaterialProgress);
 
 
 export default router;

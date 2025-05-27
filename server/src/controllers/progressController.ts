@@ -166,7 +166,7 @@ export const getDashboardLearner = [
 
 export const getCourseProgress = async (req: Request, res: Response) => {
   try {
-    const { id_course } = req.params;
+    const { id } = req.params;
     const userId = req.user?.id_user;
 
     if (!userId) {
@@ -176,7 +176,7 @@ export const getCourseProgress = async (req: Request, res: Response) => {
 
     // Hitung total material dalam course
     const totalMaterials = await Material.count({
-      where: { id_course }
+      where: { id_course: id }
     });
 
     // Hitung material yang sudah diselesaikan
@@ -185,7 +185,7 @@ export const getCourseProgress = async (req: Request, res: Response) => {
         id_user: userId,
         is_completed: true,
         id_material: {
-          [Op.in]: sequelize.literal(`(SELECT id_material FROM materials WHERE id_course = '${id_course}')`)
+          [Op.in]: sequelize.literal(`(SELECT id_material FROM materials WHERE id_course = '${id}')`)
         }
       }
     });
@@ -197,6 +197,32 @@ export const getCourseProgress = async (req: Request, res: Response) => {
       totalMaterials,
       completedMaterials,
       progress
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const getMaterialProgress = async (req: Request, res: Response) => {
+  try {
+    const { materialId } = req.params;
+    const userId = req.user?.id_user;
+
+    if (!userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return 
+    }
+
+    const progress = await UserMaterialProgress.findOne({
+      where: {
+        id_user: userId,
+        id_material: materialId
+      }
+    });
+
+    res.json({
+      is_completed: progress?.is_completed || false
     });
   } catch (error) {
     console.error(error);
