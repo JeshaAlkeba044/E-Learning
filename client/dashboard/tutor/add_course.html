@@ -504,8 +504,9 @@
               src="https://randomuser.me/api/portraits/men/32.jpg"
               alt="Profile"
               class="profile-pic"
+              id="profile-picture"
             />
-            <span class="profile-name">Tutor</span>
+            <span class="profile-name" id="profile-name">Tutor</span>
 
             <div class="profile-dropdown">
               <a href="#"> <i class="fas fa-user"></i> Profil Saya </a>
@@ -698,6 +699,39 @@
             sidebar.classList.remove("active");
           }
         });
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const userData = JSON.parse(localStorage.getItem('user'));
+          console.log("user data", userData)
+          if (userData) {
+            // Update profile name
+            const profileName = document.getElementById('profile-name');
+            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+            
+            // Update profile picture
+            const profilePic = document.getElementById('profile-picture');
+            if (userData.photo_path) {
+              // Normalize the photo_path to ensure correct URL
+              let photoPath = userData.photo_path.replace(/\\/g, '/').replace(/^\/+/, '');
+              let photoUrl = userData.photo_path.startsWith('http')
+                ? userData.photo_path
+                : `http://localhost:3000/${photoPath}`;
+
+              profilePic.src = photoUrl;
+              console.log("profilePic.src", profilePic.src)
+              profilePic.onerror = function() {
+                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
+              };
+            } else {
+              // Default profile picture if none is set
+              profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
       });
     </script>
   </body>

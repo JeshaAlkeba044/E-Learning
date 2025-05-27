@@ -866,14 +866,9 @@
 
       function renderUserData(user) {
         const profileName = document.querySelector(".profile-name");
-        const profilePic = document.querySelector(".profile-pic");
 
         if (profileName) {
           profileName.textContent = `${user.firstName} ${user.lastName}`;
-        }
-
-        if (profilePic && user.photo_path) {
-          profilePic.src = user.photo_path;
         }
       }
 
@@ -1020,25 +1015,12 @@
             // Update profile picture
             const profilePic = document.getElementById('profile-picture');
             if (userData.photo_path) {
-              const normalizeUrl = (path) => {
-              const base = 'http://localhost:3000/';
-                return new URL(path.replace(/^\/+/, ''), base).toString();
-              };
+              // Normalize the photo_path to ensure correct URL
+              let photoPath = userData.photo_path.replace(/\\/g, '/').replace(/^\/+/, '');
+              let photoUrl = userData.photo_path.startsWith('http')
+                ? userData.photo_path
+                : `http://localhost:3000/${photoPath}`;
 
-
-              // Handle different photo_path formats
-              let photoUrl = normalizeUrl(userData.photo_path);
-
-              console.log("photoUrl", photoUrl)
-              
-              // If path doesn't start with http or /, assume it's a local path
-              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
-                // Remove any leading slashes or backslashes
-                photoUrl = photoUrl.replace(/^[\\/]+/, '');
-                // Construct full URL
-                photoUrl = `http://localhost:3000${photoUrl}`;
-              }
-              
               profilePic.src = photoUrl;
               console.log("profilePic.src", profilePic.src)
               profilePic.onerror = function() {

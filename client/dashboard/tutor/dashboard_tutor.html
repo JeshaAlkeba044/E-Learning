@@ -774,27 +774,20 @@
             // Update profile picture
             const profilePic = document.getElementById('profile-picture');
             if (userData.photo_path) {
-              // Handle different photo_path formats
-              let photoUrl = `../../../server${userData.photo_path}`;
+              // Normalize the photo_path to ensure correct URL
+              let photoPath = userData.photo_path.replace(/\\/g, '/').replace(/^\/+/, '');
+              let photoUrl = userData.photo_path.startsWith('http')
+                ? userData.photo_path
+                : `http://localhost:3000/${photoPath}`;
 
-              console.log("photoUrl", photoUrl)
-              
-              // If path doesn't start with http or /, assume it's a local path
-              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
-                // Remove any leading slashes or backslashes
-                photoUrl = photoUrl.replace(/^[\\/]+/, '');
-                // Construct full URL
-                photoUrl = `../../../server/${photoUrl}`;
-              }
-              
               profilePic.src = photoUrl;
+              console.log("profilePic.src", profilePic.src)
               profilePic.onerror = function() {
-                // Fallback if image fails to load
-                profilePic.src = "../../../server/uploads/defaultPic.png";
+                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
               };
             } else {
               // Default profile picture if none is set
-              profilePic.src = "../../../server/uploads/defaultPic.png";
+              profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
             }
           }
         } catch (error) {

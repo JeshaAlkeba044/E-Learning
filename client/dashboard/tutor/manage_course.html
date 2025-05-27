@@ -557,8 +557,8 @@
             <span class="profile-name" id="profile-name">Tutor</span>
 
             <div class="profile-dropdown">
-              <a href="settings/profile.html"> <i class="fas fa-user"></i> Profil Saya </a>
-              <a href="../../auth/login/indexLogin.html"> <i class="fas fa-sign-out-alt"></i> Keluar </a>
+              <a href="#"> <i class="fas fa-user"></i> Profil Saya </a>
+              <a href="#"> <i class="fas fa-sign-out-alt"></i> Keluar </a>
             </div>
           </div>
 
@@ -907,6 +907,40 @@
           }
         });
       });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const userData = JSON.parse(localStorage.getItem('user'));
+          console.log("user data", userData)
+          if (userData) {
+            // Update profile name
+            const profileName = document.getElementById('profile-name');
+            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+            
+            // Update profile picture
+            const profilePic = document.getElementById('profile-picture');
+            if (userData.photo_path) {
+              // Normalize the photo_path to ensure correct URL
+              let photoPath = userData.photo_path.replace(/\\/g, '/').replace(/^\/+/, '');
+              let photoUrl = userData.photo_path.startsWith('http')
+                ? userData.photo_path
+                : `http://localhost:3000/${photoPath}`;
+
+              profilePic.src = photoUrl;
+              console.log("profilePic.src", profilePic.src)
+              profilePic.onerror = function() {
+                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
+              };
+            } else {
+              // Default profile picture if none is set
+              profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
+      });
+      
     </script>
   </body>
 </html>
