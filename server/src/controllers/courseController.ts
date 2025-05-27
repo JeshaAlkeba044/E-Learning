@@ -109,7 +109,7 @@ export const getCourseById = async (req: Request, res: Response) => {
     console.log("Fetching course with ID:", id);
     console.log("Request params:", req.params);
 
-    const course = await Course.findByPk(id, {
+    const course = await Course.findByPk(id, {  
       include: [
         {
           model: User,
