@@ -12,16 +12,16 @@ export const getUserProgress = [
     try {
       const user = req.user as User;
 
-      // Cari semua transaksi user yang sudah berhasil (misal status 'verified' atau 'paid')
+      // Ambil transaksi sukses
       const transactions = await Transaction.findAll({
-        where: { id_user: user.id_user, status: 'completed' }, 
+        where: { id_user: user.id_user, status: 'completed' },
         include: [
           {
             model: Course,
             include: [
               {
                 model: User,
-                as: 'instructor_Id', // sesuai relasi Course ke User instructor
+                as: 'instructor_Id',
                 attributes: ['role', 'firstName', 'lastName'],
               },
             ],
@@ -29,61 +29,64 @@ export const getUserProgress = [
         ],
       });
 
-      // Ambil list course dari transaksi user
+      // Kumpulkan progress untuk tiap kursus
       const progress = await Promise.all(
         transactions.map(async (transaction) => {
           const course = transaction.course;
 
-          // Hitung total dan completed materials
-          const totalMaterials = await Material.count({ where: { id_course: course.id_course } });
+          if (!course || !course.instructor_Id) return null;
 
-          const materialIds = await Material.findAll({
+          // Cek role instruktur
+          const decryptedRole = decrypt(course.instructor_Id.role);
+          if (decryptedRole !== 'tutor') return null;
+
+          // Ambil semua materi
+          const materials = await Material.findAll({
             where: { id_course: course.id_course },
             attributes: ['id_material'],
           });
+
+          const totalMaterials = materials.length;
 
           const completedMaterials = await UserMaterialProgress.count({
             where: {
               id_user: user.id_user,
               is_completed: true,
-              id_material: materialIds.map((m) => m.id_material),
+              id_material: materials.map((m) => m.id_material),
             },
           });
-
-          // Decrypt data instructor
-          const decryptedRole = decrypt(course.instructor_Id.role);
-          if (decryptedRole !== 'tutor') {
-            // Jika bukan tutor, abaikan course ini
-            return null;
-          }
 
           const decryptedFirstname = decrypt(course.instructor_Id.firstName);
           const decryptedLastname = decrypt(course.instructor_Id.lastName);
 
           return {
-          courseId: course.id_course,
-          courseTitle: course.title,
-          courseCategory: course.category,
-          thumbnail: course.thumbnail_path || '../../assets/img/course-placeholder.jpg',
-          instructor: `${decryptedFirstname} ${decryptedLastname}`,
-          progress: totalMaterials > 0 ? Math.round((completedMaterials / totalMaterials) * 100) : 0,
-          lastAccessed: transaction.created_at || new Date(),
-          totalHours: Math.round(course.total_duration / 60),
-        };
-
+            courseId: course.id_course,
+            courseTitle: course.title,
+            courseCategory: course.category,
+            thumbnail: course.thumbnail_path || '../../assets/img/course-placeholder.jpg',
+            instructor: `${decryptedFirstname} ${decryptedLastname}`,
+            progress: totalMaterials > 0
+              ? Math.round((completedMaterials / totalMaterials) * 10)
+              : 0,
+            module_done: completedMaterials,
+            total_module: totalMaterials,
+            lastAccessed: transaction.created_at || new Date(),
+            totalHours: Math.round(course.total_duration / 60) || 0,
+          };
         })
       );
 
-      // Filter yang null (course bukan tutor)
+      // Filter null (jika ada yang gagal karena bukan tutor)
       const filteredProgress = progress.filter((p) => p !== null);
 
-      res.json(filteredProgress);
+      res.status(200).json({ success: true, data: filteredProgress });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      console.error('Error in getUserProgress:', error);
+      res.status(500).json({ success: false, message: 'Gagal mengambil progress user' });
     }
   },
 ];
+
 
 
 // Update the updateMaterialProgress function

@@ -819,143 +819,129 @@
       });
 
       async function loadUserData() {
-        try {
-          const response = await fetch("http://localhost:3000/api/auth/profile",
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
+          try {
+            const response = await fetch("http://localhost:3000/api/auth/profile",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+            // console.log("Status:", response.status); // Debug
+
+            if (!response.ok) throw new Error("Failed to load user data");
+
+            const user = await response.json();
+            // console.log("User Data:", user); // Debug
+            renderUserData(user);
+          } catch (error) {
+            console.error(error);
+            if (error.message.includes("401")) {
+              window.location.href = "/auth/login/indexLogin.html";
             }
-          );
-          // console.log("Status:", response.status); // Debug
-
-          if (!response.ok) throw new Error("Failed to load user data");
-
-          const user = await response.json();
-          // console.log("User Data:", user); // Debug
-          renderUserData(user);
-        } catch (error) {
-          console.error(error);
-          if (error.message.includes("401")) {
-            window.location.href = "/auth/login/indexLogin.html";
           }
         }
-      }
 
 
-      function renderUserData(user) {
-        const pageTitle = document.querySelector(".page-title h1");
-        const profileName = document.querySelector(".profile-name");
+        function renderUserData(user) {
+          const pageTitle = document.querySelector(".page-title h1");
+          const profileName = document.querySelector(".profile-name");
 
-        // console.log("User Data:", user.user.firstName); // Debug
-        if (pageTitle) {
-          pageTitle.textContent = `Selamat Datang, ${user.user.firstName}!`;
-        }
+          // console.log("User Data:", user.user.firstName); // Debug
+          if (pageTitle) {
+            pageTitle.textContent = `Selamat Datang, ${user.user.firstName}!`;
+          }
 
-        if (profileName) {
-          profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
-        }
-      }
-
-      async function loadUserCourses() {
-        try {
-          const response = await fetch(
-            "http://localhost:3000/api/learner/progress",
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
-
-          if (!response.ok) throw new Error("Failed to load user courses");
-
-          const user = await response.json();
-          renderUserCourses(user);
-          // console.log("Courses loaded successfully:", user.transactions);
-        } catch (error) {
-          console.error("Course error:", error.message);
-          if (error.message.includes("401")) {
-            window.location.href = "/auth/login/indexLogin.html";
+          if (profileName) {
+            profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
           }
         }
-      }
 
-      function renderUserCourses(courses) {
-        const courseList = document.querySelector(".course-list");
+        async function loadUserCourses() {
+          try {
+            const response = await fetch(
+              "http://localhost:3000/api/learner/progress",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
 
-        if (!courses || courses.length === 0) {
-          courseList.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon"><i class="fas fa-book-open"></i></div>
-            <h3>Anda belum memiliki kursus</h3>
-            <p>Temukan kursus menarik untuk mulai belajar dan tingkatkan keterampilan Anda</p>
-            <a href="courses.html" class="btn-explore">Jelajahi Kursus</a>
-          </div>
-        `;
-          return;
+            if (!response.ok) throw new Error("Failed to load user courses");
+
+            const user = await response.json();
+            renderUserCourses(user);
+            // console.log("Courses loaded successfully:", user.transactions);
+          } catch (error) {
+            console.error("Course error:", error.message);
+            if (error.message.includes("401")) {
+              window.location.href = "/auth/login/indexLogin.html";
+            }
+          }
+        }
+  function renderUserCourses(courses) {
+    const courseList = document.querySelector(".course-list");
+
+    if (!courses || courses.length === 0) {
+      courseList.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+          <h3>Anda belum memiliki kursus</h3>
+          <p>Temukan kursus menarik untuk mulai belajar dan tingkatkan keterampilan Anda</p>
+          <a href="courses.html" class="btn-explore">Jelajahi Kursus</a>
+        </div>
+      `;
+      return;
+    }
+
+    courseList.innerHTML = courses.data
+      .map((course) => {
+        // Default status
+        let status = "in-progress";
+        let badge = '<div class="course-badge">Aktif</div>';
+
+        const moduleDone = course.module_done || 0;
+        const totalModule = course.total_module || 0;
+        const progressJam = course.progress || 0;
+        const totalJam = course.totalHours || 0;
+
+        // Tentukan status berdasarkan progres
+        if (moduleDone >= totalModule && totalModule !== 0) {
+          status = "completed";
+          badge = '<div class="course-badge">Selesai</div>';
         }
 
-        courseList.innerHTML = courses
-          .map((course) => {
-            // Status dan badge
-            let status = "in-progress";
-            let badge = '<div class="course-badge">Aktif</div>';
-            if (course.completed) {
-              status = "completed";
-              badge = '<div class="course-badge">Selesai</div>';
-            } else if (course.saved) {
-              status = "saved";
-              badge = '<div class="course-badge">Tersimpan</div>';
-            }
+        // Meta info
+        const modulInfo = `${moduleDone}/${totalModule} Modul`;
+        const jamInfo = `${progressJam}/${totalJam} Jam`;
 
-            // Meta info
-            let modulInfo = "";
-            let jamInfo = "";
-            if (status === "completed") {
-              modulInfo = `${course.total_module || 0}/${
-                course.total_module || 0
-              } Modul`;
-              jamInfo = `${course.total_duration || 0}/${
-                course.total_duration || 0
-              } Jam`;
-            } else if (status === "saved") {
-              modulInfo = `0/${course.total_module || 0} Modul`;
-              jamInfo = `0/${course.total_duration || 0} Jam`;
-            } else {
-              modulInfo = `${course.module_done || 0}/${
-                course.total_module || 0
-              } Modul`;
-              jamInfo = `${course.duration_done || 0}/${
-                course.total_duration || 0
-              } Jam`;
-            }
-
-            return `
-            <div class="course-item" data-course="${status}">
-              <div class="course-thumbnail">
-                <img src="http://localhost:3000/${course.thumbnail_path}" alt="${course.title}" />
-                ${badge}
+        return `
+          <div class="course-item" data-course="${status}">
+            <div class="course-thumbnail">
+              <img src="http://localhost:3000/${course.thumbnail}" alt="${course.courseTitle}" />
+              ${badge}
+            </div>
+            <div class="course-details">
+              <div class="course-category">${course.courseCategory || ""}</div>
+              <h3 class="course-title">${course.courseTitle || ""}</h3>
+              <p class="course-instructor">Oleh ${course.instructor || ""}</p>
+              <div class="course-meta">
+                <span><i class="fas fa-book"></i> ${modulInfo}</span>
+                <span><i class="fas fa-clock"></i> ${jamInfo}</span>
               </div>
-              <div class="course-details">
-                <div class="course-category">${course.category || ""}</div>
-                <h3 class="course-title">${course.courseTitle || ""}</h3>
-                <p class="course-instructor">Oleh ${course.instructor}</p>
-                <div class="course-meta">
-                  <span><i class="fas fa-book"></i> ${modulInfo}</span>
-                  <span><i class="fas fa-clock"></i> ${jamInfo}</span>
-                </div>
-                <div class="course-actions">
-                  <a href="course_detail.html?id=${course.id_course}" class="btn-continue">Lihat</a>
-                </div>
+              <div class="course-actions">
+                <a href="course_detail.html?id=${course.courseId}" class="btn-continue">Lihat</a>
               </div>
             </div>
-          `;
-          })
-          .join("");
-      }
+          </div>
+        `;
+      })
+      .join("");
+  }
+
 
       function setupTabs() {
         document.querySelectorAll(".tab-btn").forEach((tab) => {

@@ -1020,8 +1020,8 @@
         const progressList = document.querySelector(".progress-list");
 
         // Update dashboard stats
-        const activeCourses = progress.filter((c) => c.progress < 100).length;
-        const completedCourses = progress.filter(
+        const activeCourses = progress.data.filter((c) => c.progress < 100).length;
+        const completedCourses = progress.data.filter(
           (c) => c.progress === 100
         ).length;
 
@@ -1030,11 +1030,11 @@
         ).textContent = activeCourses;
         document.querySelector(
           ".dashboard-card:nth-child(2) .card-value"
-        ).textContent = progress.reduce((sum, c) => sum + c.totalHours, 0);
+        ).textContent = progress.data.reduce((sum, c) => sum + c.totalHours, 0);
 
         console.log("Progress list: ", progress);
         // Render active courses
-        progressList.innerHTML = progress
+        progressList.innerHTML = progress.data
           .filter((c) => c.progress < 100)
           .slice(0, 2) // Show only 2 active courses
           .map(
@@ -1078,7 +1078,14 @@
 
       async function loadRecommendedCourses() {
         try {
-          const response = await fetch("http://localhost:3000/api/learner/courses?sort=newest&limit=3");
+          const response = await fetch("http://localhost:3000/api/learner/coursesRec?limit=3", {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          
           if (!response.ok)
             throw new Error("Failed to load recommended courses");
 
@@ -1092,12 +1099,13 @@
       function renderRecommendedCourses(courses) {
         const courseGrid = document.querySelector(".course-grid");
         
+        console.log("Recommended Courses Data:", courses); // Debug
         courseGrid.innerHTML = courses
           .map(
             (course) => `
               <div class="course-card">
                 <div class="card-image">
-                  <img src="http://localhost:3000/${course.thumbnail_path || '/uploads/course-placeholder.jpg'}" alt="${course.title}">
+                  <img src="http://localhost:3000/${course.thumbnail || '/uploads/course-placeholder.jpg'}" alt="${course.title}">
                   ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
                 </div>
                 
@@ -1107,15 +1115,15 @@
                   
                   <div class="card-meta">
                     <span><i class="fas fa-clock"></i> ${Math.round(
-                      course.total_duration / 60
+                      course.totalHours
                     )} Jam</span>
-                    <span><i class="fas fa-book"></i> ${course.material_count} Materi</span>
+                    <span><i class="fas fa-book"></i> ${course.total_module} Materi</span>
                   </div>
                   
                   <div class="card-footer">
                     <span class="card-price">Rp ${course.price.toLocaleString()}</span>
                     <a href="course_detail.html?id=${
-                      course.id_course
+                      course.courseId
                     }" class="enroll-btn">Daftar</a>
                   </div>
                 </div>

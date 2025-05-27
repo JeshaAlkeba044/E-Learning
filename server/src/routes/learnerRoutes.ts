@@ -3,7 +3,8 @@ import {
   getAllCourses,
   getCourseById,
   getCourseMaterials,
-  getMaterialById
+  getMaterialById,
+  getRecommendationCourses
 } from '../controllers/courseController';
 
 import {
@@ -21,6 +22,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/courses', getAllCourses);
+router.get('/coursesRec', getRecommendationCourses); // Assuming search is handled by the same controller
 router.get('/courses/:id', getCourseById);
 router.get('/courses/:id/materials', getCourseMaterials);
 router.get('/materials/:id', getMaterialById);

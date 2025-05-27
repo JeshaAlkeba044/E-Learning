@@ -604,6 +604,7 @@
       document.addEventListener("DOMContentLoaded", async function () {
         await loadUserData();
         await loadCourses();
+
         document.querySelectorAll(".filter-select").forEach((select) => {
           select.addEventListener("change", loadCourses);
         });
@@ -688,21 +689,15 @@
 
       function renderUserData(user) {
         const pageTitle = document.querySelector(".page-title h1");
-        // const profileName = document.querySelector(".profile-name");
-        // const profilePic = document.querySelector(".profile-pic");
+        const profileName = document.getElementById("profile-name");
 
-        // console.log("User Data:", user.user.firstName); // Debug
+        if (profileName) {
+          profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
+        }
+
         if (pageTitle) {
           pageTitle.textContent = `Selamat Datang, ${user.user.firstName}!`;
         }
-
-        // if (profileName) {
-        //   profileName.textContent = `${user.user.firstName} ${user.user.lastName}`;
-        // }
-
-        // if (profilePic && user.user.photo_path) {
-        //   profilePic.src = user.user.photo_path;
-        // }
       }
 
       function renderCourses(courses) {
@@ -710,70 +705,65 @@
         if (!courseGrid) return;
         if (!courses || courses.length === 0) {
           courseGrid.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">
-          <i class="fas fa-book-open"></i>
-        </div>
-        <h3>Tidak ada kursus yang ditemukan</h3>
-        <p>Coba ubah filter pencarian Anda</p>
-      </div>
-    `;
-          return;
-        }
+          <div class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <h3>Tidak ada kursus yang ditemukan</h3>
+            <p>Coba ubah filter pencarian Anda</p>
+          </div>
+        `;
+        return;
+      }
+
+      console.log("Courses loaded:", courses); // Debug
         courseGrid.innerHTML = courses
           .map(
             (course) => `
-    <div class="course-card">
-      <div class="card-image">
-        <img src="${
-          course.thumbnail_path || "../img/course-placeholder.jpg"
-        }" alt="${course.title}">
-        ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
-      </div>
-      <div class="card-content">
-        <div class="card-category">${course.category}</div>
-        <h3 class="card-title">${course.title}</h3>
-        <p class="card-description">${course.description
-          ? course.description.substring(0, 100)
-          : ""
-        }...</p>
-        <div class="card-meta">
-          <span><i class="fas fa-clock"></i> ${Math.round(
-            course.total_duration / 60
-          )} jam</span>
-          <span><i class="fas fa-star"></i> 4.8 (120)</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-price">Rp ${course.price.toLocaleString()}</span>
-          <a href="course_detail.html?id=${
-            course.id_course
-          }" class="enroll-btn">Daftar</a>
-        </div>
-      </div>
-    </div>
-  `
+            <div class="course-card">
+              <div class="card-image">
+                <img src="http://localhost:3000/${
+                    course.thumbnail_path || "../../assets/img/course-placeholder.jpg"
+                  }" alt="${course.courseTitle}">
+                ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
+              </div>
+              <div class="card-content">
+                <div class="card-category">${course.category}</div>
+                <h3 class="card-title">${course.title}</h3>
+                <p class="card-description">${course.description
+                  ? course.description.substring(0, 100)
+                  : ""
+                }...</p>
+                <div class="card-meta">
+                  <span><i class="fas fa-clock"></i> ${Math.round(
+                    course.total_duration / 60
+                  )} jam</span>
+                  <span><i class="fas fa-star"></i> 4.8 (120)</span>
+                </div>
+                <div class="card-footer">
+                  <span class="card-price">Rp ${course.price.toLocaleString()}</span>
+                  <a href="course_detail.html?id=${
+                    course.id_course
+                  }" class="enroll-btn">Daftar</a>
+                </div>
+              </div>
+            </div>
+          `
           )
           .join("");
       }
 
-            document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", () => {
         try {
           const userData = JSON.parse(localStorage.getItem('user'));
           console.log("user data", userData)
           if (userData) {
-            // Update welcome message
-            const welcomeTitle = document.getElementById('welcome-title');
-            welcomeTitle.textContent = `Selamat Datang, ${userData.firstName}!`;
-            
-            // Update profile name
-            const profileName = document.getElementById('profile-name');
-            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
             
             // Update profile picture
             const profilePic = document.getElementById('profile-picture');
             if (userData.photo_path) {
               // Handle different photo_path formats
-              let photoUrl = `http://localhost:3000/${userData.photo_path}`;
+              let photoUrl = `http://localhost:3000${userData.photo_path}`;
 
               console.log("photoUrl", photoUrl)
               

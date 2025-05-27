@@ -5,10 +5,8 @@ import { v4 } from 'uuid';
 import { Op } from 'sequelize';
 import fs from 'fs';
 import { fn, col } from 'sequelize';
-
-
-// For Learner
-// import { decrypt } from '../utils/encryption'; // Pastikan path ini sesuai dengan lokasi fungsi decrypt-mu
+import { authenticate } from '../middleware/authMiddleware';
+import { Transaction } from '../models/Transaction';
 
 export const getAllCourses = async (req: Request, res: Response) => {
   try {
@@ -101,6 +99,87 @@ export const getAllCourses = async (req: Request, res: Response) => {
   }
 };
 
+export const getRecommendationCourses = [authenticate, async (req: Request, res: Response) => {
+  try {
+    const user = req.user as User;
+    console.log("\n\n\n\n\nUser ID:", user.id_user);
+
+    const { limit } = req.query;
+
+    if (!user.id_user) {
+      res.status(400).json({ message: 'userId diperlukan' });
+      return;
+    }
+
+    const where: any = {};
+    const order: any = [['created_at', 'DESC']];
+    const parsedLimit = limit ? parseInt(limit as string) : undefined;
+
+
+    // 🔥 Ambil semua transaksi si user, jadi tahu course yang udah dimiliki
+    const userTransactions = await Transaction.findAll({
+      where: { id_user: user.id_user },
+      attributes: ['id_course'],
+    });
+
+    const ownedCourseIds = userTransactions.map((trx: any) => trx.id_course);
+
+    // 🔥 Ambil course yang belum dimiliki user
+    const courses = await Course.findAll({
+      where: {
+        ...where,
+        id_course: { [Op.notIn]: ownedCourseIds },
+        is_active: true // Optional: hanya course yang aktif
+      },
+      order,
+      limit: parsedLimit,
+      include: [
+        {
+          model: User,
+          as: 'instructor_Id',
+          attributes: ['firstName', 'lastName', 'photo_path']
+        }
+      ]
+    });
+
+    const courseIds = courses.map(course => course.id_course);
+
+    const materialCounts = await Material.findAll({
+      attributes: ['id_course', [fn('COUNT', col('id_material')), 'material_count']],
+      where: { id_course: { [Op.in]: courseIds } },
+      group: ['id_course']
+    });
+
+    const materialMap: { [key: string]: number } = {};
+    materialCounts.forEach((item: any) => {
+      materialMap[item.id_course] = parseInt(item.getDataValue('material_count'));
+    });
+
+    const recommendations = courses.map(course => {
+      const courseData = course.toJSON();
+      const total_module = materialMap[course.id_course] || 0;
+
+      const instructorFirstName = decrypt(courseData.instructor_Id?.firstName || '');
+      const instructorLastName = decrypt(courseData.instructor_Id?.lastName || '');
+
+      return {
+        courseId: courseData.id_course,
+        title: courseData.title,
+        category: courseData.category,
+        thumbnail: courseData.thumbnail_path,
+        instructor: `${instructorFirstName} ${instructorLastName}`,
+        total_module,
+        totalHours: Math.round(courseData.total_duration / 60),
+        price: courseData.price,
+      };
+    });
+
+    res.json(recommendations);
+  } catch (error) {
+    console.error('[getRecommendationCourses]', error);
+    res.status(500).json({ message: 'Kai error bentar, tapi masih sayang kamu. Tunggu sebentar ya ❤️' });
+  }
+}];
 
 export const getCourseById = async (req: Request, res: Response) => {
   try {
