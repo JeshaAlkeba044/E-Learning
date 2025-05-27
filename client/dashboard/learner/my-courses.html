@@ -650,11 +650,12 @@
         <div class="user-actions">
           <div class="user-profile">
             <img
-              src="../assets/images/profile-placeholder.jpg"
+              src="http://localhost:3000/uploads/defaultPic.png"
               alt="Profile"
               class="profile-pic"
+              id="profile-picture"
             />
-            <span class="profile-name">John Doe</span>
+            <span class="profile-name" id="profile-name">John Doe</span>
 
             <div class="profile-dropdown">
               <a href="settings/profile.html">
@@ -687,13 +688,13 @@
         <div class="course-list">
           <!-- Course 1 -->
           <div class="course-item" data-course="in-progress">
-            <div class="course-thumbnail">
+            <!-- <div class="course-thumbnail">
               <img
                 src="../img/UI UX Design Illustration.jpg"
                 alt="UI/UX Design"
               />
               <div class="course-badge">Aktif</div>
-            </div>
+            </div> -->
 
             <div class="course-details">
               <div class="course-category">Desain</div>
@@ -713,12 +714,12 @@
 
           <!-- Course 2 -->
           <div class="course-item" data-course="in-progress">
-            <div class="course-thumbnail">
+            <!-- <div class="course-thumbnail">
               <img
                 src="../img/Free Vector _ Space icons.jpg"
                 alt="Web Development"
               />
-            </div>
+            </div> -->
 
             <div class="course-details">
               <div class="course-category">Pemrograman</div>
@@ -738,10 +739,10 @@
 
           <!-- Course 3 -->
           <div class="course-item" data-course="completed">
-            <div class="course-thumbnail">
+            <!-- <div class="course-thumbnail">
               <img src="../img/course-datascience.jpg" alt="Data Science" />
               <div class="course-badge">Selesai</div>
-            </div>
+            </div> -->
 
             <div class="course-details">
               <div class="course-category">Data Science</div>
@@ -761,13 +762,13 @@
 
           <!-- Course 4 -->
           <div class="course-item" data-course="saved">
-            <div class="course-thumbnail">
+            <!-- <div class="course-thumbnail">
               <img
                 src="../img/course-digitalmarketing.jpg"
                 alt="Digital Marketing"
               />
               <div class="course-badge">Tersimpan</div>
-            </div>
+            </div> -->
 
             <div class="course-details">
               <div class="course-category">Marketing</div>
@@ -802,79 +803,85 @@
     </main>
 
     <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/auth/login/indexLogin.html";
-      return;
-    }
+      document.addEventListener("DOMContentLoaded", async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/auth/login/indexLogin.html";
+          return;
+        }
 
-    await Promise.all([loadUserCourses(), loadUserData()]);
-    setupTabs();
-    setupSidebarToggle();
-  });
-
-  async function loadUserCourses() {
-    try {
-      const response = await fetch("http://localhost:3000/api/learner/courses", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        await Promise.all([loadUserCourses(), loadUserData()]);
+        setupTabs();
+        setupSidebarToggle();
       });
 
-      if (!response.ok) throw new Error("Failed to load user courses");
+      async function loadUserCourses() {
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/learner/courses",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
 
-      const user = await response.json();
-      renderUserCourses(user);
-      // console.log("Courses loaded successfully:", user.transactions);
-    } catch (error) {
-      console.error("Course error:", error.message);
-      if (error.message.includes("401")) {
-        window.location.href = "/auth/login/indexLogin.html";
+          if (!response.ok) throw new Error("Failed to load user courses");
+
+          const user = await response.json();
+          renderUserCourses(user);
+          // console.log("Courses loaded successfully:", user.transactions);
+        } catch (error) {
+          console.error("Course error:", error.message);
+          if (error.message.includes("401")) {
+            window.location.href = "/auth/login/indexLogin.html";
+          }
+        }
       }
-    }
-  }
 
-  async function loadUserData() {
-    try {
-      const response = await fetch("http://localhost:3000/api/auth/profile", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      async function loadUserData() {
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/auth/profile",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
 
-      if (!response.ok) throw new Error("Failed to load user data");
+          if (!response.ok) throw new Error("Failed to load user data");
 
-      const user = await response.json();
-      renderUserData(user.user);
-    } catch (error) {
-      console.error("Profile error:", error.message);
-      if (error.message.includes("401")) {
-        window.location.href = "/auth/login/indexLogin.html";
+          const user = await response.json();
+          renderUserData(user.user);
+        } catch (error) {
+          console.error("Profile error:", error.message);
+          if (error.message.includes("401")) {
+            window.location.href = "/auth/login/indexLogin.html";
+          }
+        }
       }
-    }
-  }
 
-  function renderUserData(user) {
-    const profileName = document.querySelector(".profile-name");
-    const profilePic = document.querySelector(".profile-pic");
+      function renderUserData(user) {
+        const profileName = document.querySelector(".profile-name");
+        const profilePic = document.querySelector(".profile-pic");
 
-    if (profileName) {
-      profileName.textContent = `${user.firstName} ${user.lastName}`;
-    }
+        if (profileName) {
+          profileName.textContent = `${user.firstName} ${user.lastName}`;
+        }
 
-    if (profilePic && user.photo_path) {
-      profilePic.src = user.photo_path;
-    }
-  }
+        if (profilePic && user.photo_path) {
+          profilePic.src = user.photo_path;
+        }
+      }
 
-    function renderUserCourses(courses) {
-      const courseList = document.querySelector(".course-list");
+      function renderUserCourses(courses) {
+        const courseList = document.querySelector(".course-list");
 
-      if (!courses || courses.length === 0) {
-        courseList.innerHTML = `
+        if (!courses || courses.length === 0) {
+          courseList.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon"><i class="fas fa-book-open"></i></div>
             <h3>Anda belum memiliki kursus</h3>
@@ -882,113 +889,172 @@
             <a href="courses.html" class="btn-explore">Jelajahi Kursus</a>
           </div>
         `;
-        return;
-      }
+          return;
+        }
 
-      courseList.innerHTML = courses
-        .map((course) => {
-          // Status dan badge
-          let status = "in-progress";
-          let badge = '<div class="course-badge">Aktif</div>';
-          if (course.completed) {
-            status = "completed";
-            badge = '<div class="course-badge">Selesai</div>';
-          } else if (course.saved) {
-            status = "saved";
-            badge = '<div class="course-badge">Tersimpan</div>';
-          }
+        courseList.innerHTML = courses
+          .map((course) => {
+            // Status dan badge
+            let status = "in-progress";
+            let badge = '<div class="course-badge">Aktif</div>';
+            if (course.completed) {
+              status = "completed";
+              badge = '<div class="course-badge">Selesai</div>';
+            } else if (course.saved) {
+              status = "saved";
+              badge = '<div class="course-badge">Tersimpan</div>';
+            }
 
-          // Meta info
-          let modulInfo = "";
-          let jamInfo = "";
-          if (status === "completed") {
-            modulInfo = `${course.total_module || 0}/${course.total_module || 0} Modul`;
-            jamInfo = `${course.total_duration || 0}/${course.total_duration || 0} Jam`;
-          } else if (status === "saved") {
-            modulInfo = `0/${course.total_module || 0} Modul`;
-            jamInfo = `0/${course.total_duration || 0} Jam`;
-          } else {
-            modulInfo = `${course.module_done || 0}/${course.total_module || 0} Modul`;
-            jamInfo = `${course.duration_done || 0}/${course.total_duration || 0} Jam`;
-          }
+            // Meta info
+            let modulInfo = "";
+            let jamInfo = "";
+            if (status === "completed") {
+              modulInfo = `${course.total_module || 0}/${
+                course.total_module || 0
+              } Modul`;
+              jamInfo = `${course.total_duration || 0}/${
+                course.total_duration || 0
+              } Jam`;
+            } else if (status === "saved") {
+              modulInfo = `0/${course.total_module || 0} Modul`;
+              jamInfo = `0/${course.total_duration || 0} Jam`;
+            } else {
+              modulInfo = `${course.module_done || 0}/${
+                course.total_module || 0
+              } Modul`;
+              jamInfo = `${course.duration_done || 0}/${
+                course.total_duration || 0
+              } Jam`;
+            }
 
-
-          return `
+            return `
             <div class="course-item" data-course="${status}">
               <div class="course-thumbnail">
-                <img src="${course.thumbnail_path || "../img/course-placeholder.jpg"}" alt="${course.title}" />
+                <img src="http://localhost:3000/${course.thumbnail_path}" alt="${course.title}" />
                 ${badge}
               </div>
               <div class="course-details">
                 <div class="course-category">${course.category || ""}</div>
                 <h3 class="course-title">${course.title || ""}</h3>
-                <p class="course-instructor">Oleh ${course.instructor_Id?.firstName || ""} ${course.instructor_Id?.lastName || ""}</p>
+                <p class="course-instructor">Oleh ${
+                  course.instructor_Id?.firstName || ""
+                } ${course.instructor_Id?.lastName || ""}</p>
                 <div class="course-meta">
                   <span><i class="fas fa-book"></i> ${modulInfo}</span>
                   <span><i class="fas fa-clock"></i> ${jamInfo}</span>
                 </div>
                 <div class="course-actions">
-                  <a href="course-detail.html?id=${course.id_course}" class="btn-continue">Lihat</a>
+                  <a href="course-detail.html?id=${
+                    course.id_course
+                  }" class="btn-continue">Lihat</a>
                 </div>
               </div>
             </div>
           `;
-        })
-        .join("");
-    }
-
-  function setupTabs() {
-    document.querySelectorAll(".tab-btn").forEach((tab) => {
-      tab.addEventListener("click", function () {
-        document.querySelectorAll(".tab-btn").forEach((t) => t.classList.remove("active"));
-        this.classList.add("active");
-
-        const tabType = this.dataset.tab;
-        filterCourses(tabType);
-      });
-    });
-  }
-
-  function filterCourses(tabType) {
-    const courseItems = document.querySelectorAll(".course-item");
-    let visible = 0;
-
-    courseItems.forEach((item) => {
-      if (tabType === "all" || item.dataset.course === tabType) {
-        item.style.display = "block";
-        visible++;
-      } else {
-        item.style.display = "none";
+          })
+          .join("");
       }
-    });
 
-    const emptyState = document.querySelector(".empty-state");
-    if (emptyState) {
-      emptyState.style.display = visible === 0 ? "flex" : "none";
-    }
-  }
+      function setupTabs() {
+        document.querySelectorAll(".tab-btn").forEach((tab) => {
+          tab.addEventListener("click", function () {
+            document
+              .querySelectorAll(".tab-btn")
+              .forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
 
-  function setupSidebarToggle() {
-    const menuToggle = document.querySelector(".menu-toggle");
-    const sidebar = document.querySelector(".sidebar");
+            const tabType = this.dataset.tab;
+            filterCourses(tabType);
+          });
+        });
+      }
 
-    if (menuToggle && sidebar) {
-      menuToggle.addEventListener("click", () => {
-        menuToggle.classList.toggle("active");
-        sidebar.classList.toggle("active");
-      });
+      function filterCourses(tabType) {
+        const courseItems = document.querySelectorAll(".course-item");
+        let visible = 0;
 
-      document.querySelectorAll(".sidebar-nav a").forEach((link) => {
-        link.addEventListener("click", () => {
-          if (window.innerWidth <= 992) {
-            menuToggle.classList.remove("active");
-            sidebar.classList.remove("active");
+        courseItems.forEach((item) => {
+          if (tabType === "all" || item.dataset.course === tabType) {
+            item.style.display = "block";
+            visible++;
+          } else {
+            item.style.display = "none";
           }
         });
-      });
-    }
-  }
-</script>
 
+        const emptyState = document.querySelector(".empty-state");
+        if (emptyState) {
+          emptyState.style.display = visible === 0 ? "flex" : "none";
+        }
+      }
+
+      function setupSidebarToggle() {
+        const menuToggle = document.querySelector(".menu-toggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (menuToggle && sidebar) {
+          menuToggle.addEventListener("click", () => {
+            menuToggle.classList.toggle("active");
+            sidebar.classList.toggle("active");
+          });
+
+          document.querySelectorAll(".sidebar-nav a").forEach((link) => {
+            link.addEventListener("click", () => {
+              if (window.innerWidth <= 992) {
+                menuToggle.classList.remove("active");
+                sidebar.classList.remove("active");
+              }
+            });
+          });
+        }
+      }
+
+      // Load user data from localStorage
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const userData = JSON.parse(localStorage.getItem('user'));
+          console.log("user data", userData)
+          if (userData) {
+            // Update profile name
+            const profileName = document.getElementById('profile-name');
+            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+            
+            // Update profile picture
+            const profilePic = document.getElementById('profile-picture');
+            if (userData.photo_path) {
+              const normalizeUrl = (path) => {
+              const base = 'http://localhost:3000/';
+                return new URL(path.replace(/^\/+/, ''), base).toString();
+              };
+
+
+              // Handle different photo_path formats
+              let photoUrl = normalizeUrl(userData.photo_path);
+
+              console.log("photoUrl", photoUrl)
+              
+              // If path doesn't start with http or /, assume it's a local path
+              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
+                // Remove any leading slashes or backslashes
+                photoUrl = photoUrl.replace(/^[\\/]+/, '');
+                // Construct full URL
+                photoUrl = `http://localhost:3000${photoUrl}`;
+              }
+              
+              profilePic.src = photoUrl;
+              console.log("profilePic.src", profilePic.src)
+              profilePic.onerror = function() {
+                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
+              };
+            } else {
+              // Default profile picture if none is set
+              profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
+      });
+    </script>
   </body>
 </html>

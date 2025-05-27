@@ -611,7 +611,7 @@
         <div class="profile-sidebar">
           <div class="profile-card">
             <img
-              src="../../../assets/images/profile-placeholder.jpg"
+              src="../../../../server/uploads/defaultPic.png"
               alt="Profile"
               class="profile-avatar"
               id="sidebar-avatar"
@@ -630,7 +630,7 @@
               class="settings-link dropdown-item"
             >
               <i class="fas fa-book"></i>
-              <span>My Learnings</span>
+              <span>My Courses</span>
             </a>
             <a
               href="../../../auth/login/indexLogin.html"
@@ -691,7 +691,7 @@
               <label class="form-label">Profile Photo</label>
               <div class="file-upload">
                 <img
-                  src="../../../assets/images/profile-placeholder.jpg"
+                  src="../../../../server/uploads/defaultPic.png"
                   alt="Preview"
                   class="file-preview"
                   id="profilePreview"
@@ -731,94 +731,127 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // DOM Elements
-        const profileForm = document.getElementById("profileForm");
-        const cancelBtn = document.getElementById("cancelBtn");
-        const profilePhoto = document.getElementById("profilePhoto");
-        const profilePreview = document.getElementById("profilePreview");
-        const sidebarAvatar = document.getElementById("sidebar-avatar");
-        const sidebarName = document.getElementById("sidebar-name");
-        const sidebarEmail = document.getElementById("sidebar-email");
-        const firstNameInput = document.getElementById("firstName");
-        const lastNameInput = document.getElementById("lastName");
-        const emailInput = document.getElementById("email");
-        const logoutLink = document.querySelector('a[href*="indexLogin.html"]');
+    // DOM Elements
+    const profileForm = document.getElementById("profileForm");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const profilePhoto = document.getElementById("profilePhoto");
+    const profilePreview = document.getElementById("profilePreview");
+    const sidebarAvatar = document.getElementById("sidebar-avatar");
+    const sidebarName = document.getElementById("sidebar-name");
+    const sidebarEmail = document.getElementById("sidebar-email");
+    const firstNameInput = document.getElementById("firstName");
+    const lastNameInput = document.getElementById("lastName");
+    const emailInput = document.getElementById("email");
+    const logoutLink = document.querySelector('a[href*="indexLogin.html"]');
 
-        // Token dari localStorage
-        const token = localStorage.getItem("token");
-        const userData = JSON.parse(localStorage.getItem("user"));
+    // Token dari localStorage
+    const token = localStorage.getItem("token");
+    const userData = JSON.parse(localStorage.getItem("user"));
 
-        if (!token || !userData) {
-          window.location.href = "../../../auth/login/indexLogin.html";
-          return;
+    if (!token || !userData) {
+      window.location.href = "../../../auth/login/indexLogin.html";
+      return;
+    }
+
+    // Fungsi untuk memuat data profil
+    async function loadProfileData() {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/auth/profile",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile data");
         }
 
-        // Fungsi untuk memuat data profil
-        async function loadProfileData() {
+        const data = await response.json();
+        updateProfileUI(data.user);
+      } catch (error) {
+        console.error("Error loading profile:", error);
+        showToast("Failed to load profile data", "error");
+      }
+    }
+
+    // Fungsi untuk memperbarui UI dengan data profil
+    function updateProfileUI(user) {
+      firstNameInput.value = user.firstName || "";
+      lastNameInput.value = user.lastName || "";
+      emailInput.value = user.email || "";
+
+      sidebarName.textContent = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+      sidebarEmail.textContent = user.email || "";
+
+      // Update profile photo if exists
+      if (user.photo_path) {
+        profilePreview.src = `../../../../server${user.photo_path}`;
+        sidebarAvatar.src = `../../../../server${user.photo_path}`;
+      } else {
+        // Use default image
+        profilePreview.src = "http://localhost:3000/uploads/defaultPic.png";
+        sidebarAvatar.src = "http://localhost:3000/uploads/defaultPic.png";
+      }
+    }
+
+    // Profile Photo Upload
+    if (profilePhoto) {
+      profilePhoto.addEventListener("change", async function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          // Check file size (max 2MB)
+          if (file.size > 2 * 1024 * 1024) {
+            showToast("File size too large. Max 2MB allowed.", "error");
+            return;
+          }
+
+          // Check file type
+          const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+          if (!validTypes.includes(file.type)) {
+            showToast(
+              "Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.",
+              "error"
+            );
+            return;
+          }
+
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            profilePreview.src = event.target.result;
+            sidebarAvatar.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+
+          // Upload the image to server
           try {
+            const formData = new FormData();
+            formData.append("image", file);
+
             const response = await fetch(
-              "http://localhost:3000/api/auth/profile",
+              "http://localhost:3000/api/upload",
               {
-                method: "GET",
+                method: "POST",
                 headers: {
                   Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
                 },
+                body: formData,
               }
             );
 
             if (!response.ok) {
-              throw new Error("Failed to fetch profile data");
+              throw new Error("Failed to upload image");
             }
 
-            const data = await response.json();
-            updateProfileUI(data.user);
-          } catch (error) {
-            console.error("Error loading profile:", error);
-            showToast("Failed to load profile data", "error");
-          }
-        }
+            const result = await response.json();
 
-        // Fungsi untuk memperbarui UI dengan data profil
-        function updateProfileUI(user) {
-          firstNameInput.value = user.firstName || "";
-          lastNameInput.value = user.lastName || "";
-          emailInput.value = user.email || "";
-
-          sidebarName.textContent = `${user.firstName || ""} ${
-            user.lastName || ""
-          }`.trim();
-          sidebarEmail.textContent = user.email || "";
-
-          // Jika ada foto profil, bisa ditambahkan logika untuk menampilkannya
-          // profilePreview.src = user.profilePhoto || '../../../assets/images/profile-placeholder.jpg';
-          // sidebarAvatar.src = user.profilePhoto || '../../../assets/images/profile-placeholder.jpg';
-        }
-
-        // Preview Profile Photo
-        profilePhoto.addEventListener("change", function (e) {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-              profilePreview.src = event.target.result;
-              sidebarAvatar.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-
-        // Form Submission
-        profileForm.addEventListener("submit", async function (e) {
-          e.preventDefault();
-
-          try {
-            const formData = {
-              firstName: firstNameInput.value,
-              lastName: lastNameInput.value,
-            };
-
-            const response = await fetch(
+            // Update profile with new image URL
+            const updateResponse = await fetch(
               "http://localhost:3000/api/auth/profile",
               {
                 method: "PUT",
@@ -826,91 +859,143 @@
                   Authorization: `Bearer ${token}`,
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                  profilePhoto: result.imageUrl,
+                }),
               }
             );
 
-            if (!response.ok) {
-              throw new Error("Failed to update profile");
+            if (!updateResponse.ok) {
+              throw new Error("Failed to update profile with new image");
             }
 
-            const result = await response.json();
+            const updatedData = await updateResponse.json();
+            
+            // Update local storage
+            const updatedUser = {
+              ...userData,
+              firstName: updatedData.user.firstName,
+              lastName: updatedData.user.lastName,
+              photo_path: updatedData.user.photo_path
+            };
+            localStorage.setItem("user", JSON.stringify(updatedUser));
 
-            // Update local storage dengan data terbaru
-            if (result.user) {
-              const updatedUser = {
-                ...userData,
-                firstName: result.user.firstName,
-                lastName: result.user.lastName,
-              };
-              localStorage.setItem("user", JSON.stringify(updatedUser));
-            }
-
-            showToast("Profile updated successfully!", "success");
-            loadProfileData(); // Memuat ulang data untuk memastikan sinkronisasi
+            showToast("Profile picture updated successfully!", "success");
           } catch (error) {
-            console.error("Error updating profile:", error);
-            showToast("Failed to update profile", "error");
+            console.error("Error uploading image:", error);
+            showToast("Failed to upload profile picture", "error");
+            // Reset to previous image if upload fails
+            loadProfileData();
           }
-        });
-
-        // Cancel Button
-        cancelBtn.addEventListener("click", function () {
-          if (confirm("Are you sure you want to discard changes?")) {
-            loadProfileData(); // Memuat ulang data asli dari server
-            profilePreview.src =
-              "../../../assets/images/profile-placeholder.jpg";
-            sidebarAvatar.src =
-              "../../../assets/images/profile-placeholder.jpg";
-          }
-        });
-
-        // Logout Handler
-        logoutLink.addEventListener("click", function (e) {
-          e.preventDefault();
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          window.location.href = "../../../auth/login/indexLogin.html";
-        });
-
-        // Toast Notification
-        function showToast(message, type) {
-          const toast = document.createElement("div");
-          toast.className = `toast toast-${type}`;
-          toast.textContent = message;
-          document.body.appendChild(toast);
-
-          setTimeout(() => {
-            toast.classList.add("show");
-          }, 10);
-
-          setTimeout(() => {
-            toast.classList.remove("show");
-            setTimeout(() => {
-              document.body.removeChild(toast);
-            }, 300);
-          }, 3000);
         }
-
-        // Load initial data
-        loadProfileData();
       });
+    }
 
-      // Improved dropdown behavior
+    // Form Submission
+    if (profileForm) {
+      profileForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        try {
+          const formData = {
+            firstName: firstNameInput.value,
+            lastName: lastNameInput.value,
+          };
+
+          const response = await fetch(
+            "http://localhost:3000/api/auth/profile",
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to update profile");
+          }
+
+          const result = await response.json();
+
+          // Update local storage with new data
+          const updatedUser = {
+            ...userData,
+            firstName: result.user.firstName,
+            lastName: result.user.lastName,
+          };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+
+          showToast("Profile updated successfully!", "success");
+          loadProfileData(); // Reload data to ensure sync
+        } catch (error) {
+          console.error("Error updating profile:", error);
+          showToast("Failed to update profile", "error");
+        }
+      });
+    }
+
+    // Cancel Button
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function () {
+        if (confirm("Are you sure you want to discard changes?")) {
+          loadProfileData(); // Load original data from server
+        }
+      });
+    }
+
+    // Logout Handler
+    if (logoutLink) {
+      logoutLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "../../../auth/login/indexLogin.html";
+      });
+    }
+
+    // Toast Notification
+    function showToast(message, type) {
+      const toast = document.createElement("div");
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+
+    // Load initial data
+    loadProfileData();
+  });
+
+      // Only initialize dropdown behavior if elements exist
       const userMenu = document.querySelector(".user-menu");
       const dropdownMenu = document.querySelector(".dropdown-menu");
 
-      userMenu.addEventListener("mouseenter", () => {
-        dropdownMenu.style.opacity = "1";
-        dropdownMenu.style.visibility = "visible";
-        dropdownMenu.style.transform = "translateY(0)";
-      });
+      if (userMenu && dropdownMenu) {
+        userMenu.addEventListener("mouseenter", () => {
+          dropdownMenu.style.opacity = "1";
+          dropdownMenu.style.visibility = "visible";
+          dropdownMenu.style.transform = "translateY(0)";
+        });
 
-      userMenu.addEventListener("mouseleave", () => {
-        dropdownMenu.style.opacity = "0";
-        dropdownMenu.style.visibility = "hidden";
-        dropdownMenu.style.transform = "translateY(10px)";
-      });
+        userMenu.addEventListener("mouseleave", () => {
+          dropdownMenu.style.opacity = "0";
+          dropdownMenu.style.visibility = "hidden";
+          dropdownMenu.style.transform = "translateY(10px)";
+        });
+      }
     </script>
   </body>
 </html>

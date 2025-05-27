@@ -106,6 +106,9 @@ export const getCourseById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    console.log("Fetching course with ID:", id);
+    console.log("Request params:", req.params);
+
     const course = await Course.findByPk(id, {
       include: [
         {
@@ -148,17 +151,34 @@ export const getCourseMaterials = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getMaterialById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const material = await Material.findByPk(id);
     
     if (!material) {
-        res.status(404).json({ message: 'Material not found' });
-        return 
+      res.status(404).json({ message: 'Material not found' });
+      return;
     }
-    
-    res.json(material);
+
+    // Ensure content is properly formatted
+    let content = material.content;
+    if (typeof content === 'string') {
+      try {
+        content = JSON.parse(content);
+      } catch (e) {
+        content = { blocks: [] };
+      }
+    } else if (!content || !content.blocks) {
+      content = { blocks: [] };
+    }
+
+    // Return material with properly formatted content
+    res.json({
+      ...material.toJSON(),
+      content
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

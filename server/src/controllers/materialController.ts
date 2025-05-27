@@ -48,40 +48,58 @@ export const getMaterialsByCourse = async (req: Request, res: Response) => {
 };
 
 export const updateMaterialContent = async (req: Request, res: Response) => {
-      try {
-
+  try {
     const { id_material } = req.params;
     const { content } = req.body;
     
     // Validate request body
     if (!content || !content.blocks) {
-        res.status(400).json({ error: 'Invalid content format' });
+      res.status(400).json({ error: 'Invalid content format' });
       return;
+    }
+
+    // Validate each block
+    const validTypes = ['text', 'image', 'video', 'heading', 'quiz'];
+    for (const block of content.blocks) {
+      if (!validTypes.includes(block.type)) {
+        res.status(400).json({ 
+          error: `Invalid block type: ${block.type}`,
+          validTypes
+        });
+        return;
+      }
+      
+      // Additional validation for specific block types
+      if (block.type === 'image' || block.type === 'video') {
+        if (!block.content) {
+          res.status(400).json({ 
+            error: `${block.type} block requires content URL`
+          });
+          return;
+        }
+      }
     }
 
     const material = await Material.findByPk(id_material);
     if (!material) {
-        res.status(404).json({ error: 'Material not found' });
+      res.status(404).json({ error: 'Material not found' });
       return;
     }
 
-    // Validate content structure
-    try {
-      material.content = content;
-      await material.save();
-      res.json({ success: true, material });
-      return 
-    } catch (validationError: any) {
-        res.status(400).json({ 
-        error: 'Invalid content structure',
-        details: validationError.errors 
-      });
-        return 
-    }
+    // Update content
+    material.content = content;
+    await material.save();
+    
+    res.json({ 
+      success: true, 
+      material: {
+        ...material.toJSON(),
+        content // Ensure content is properly returned
+      }
+    });
   } catch (error) {
     console.error('Error saving material content:', error);
     res.status(500).json({ error: 'Server error' });
-    return 
   }
 };
 
@@ -213,4 +231,6 @@ export const getMaterialsForLearner = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to get materials' });
     }
 };
+
+
 

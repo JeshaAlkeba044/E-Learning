@@ -698,18 +698,19 @@
       <!-- Header -->
       <div class="main-header">
         <div class="page-title">
-          <h1>Selamat Datang, John!</h1>
+          <h1 id="welcome-title">Selamat Datang, John!</h1>
           <p>Lanjutkan pembelajaran Anda hari ini</p>
         </div>
 
         <div class="user-actions">
           <div class="user-profile">
             <img
-              src="../../assets/img/d4a10452-7b05-4aa8-a2ab-a372b5dc3369.jpg"
+              src="http://localhost:3000/uploads/defaultPic.png"
               alt="Profile"
               class="profile-pic"
+              id="profile-picture"
             />
-            <span class="profile-name">John Doe</span>
+            <span class="profile-name" id="profile-name">John Doe</span>
 
             <div class="profile-dropdown">
               <a href="settings/profile.html">
@@ -964,7 +965,7 @@
         }
 
         if (profilePic && user.user.photo_path) {
-          profilePic.src = user.user.photo_path;
+          profilePic.src = `http://localhost:3000${user.user.photo_path}`;
         }
       }
 
@@ -1038,7 +1039,7 @@
             (course) => `
               <div class="progress-item">
                 <div class="course-image">
-                  <img src="${
+                  <img src="http://localhost:3000/${
                     course.thumbnail || "../../assets/img/course-placeholder.jpg"
                   }" alt="${course.title}">
                 </div>
@@ -1096,9 +1097,7 @@
             (course) => `
               <div class="course-card">
                 <div class="card-image">
-                  <img src="${
-                    course.thumbnail_path || "../img/course-placeholder.jpg"
-                  }" alt="${course.title}">
+                  <img src="http://localhost:3000/${course.thumbnail_path || '/uploads/course-placeholder.jpg'}" alt="${course.title}">
                   ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
                 </div>
                 
@@ -1132,6 +1131,51 @@
           return;
         }
       }
+
+
+      // Load user data from localStorage
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const userData = JSON.parse(localStorage.getItem('user'));
+          console.log("user data", userData)
+          if (userData) {
+            // Update welcome message
+            const welcomeTitle = document.getElementById('welcome-title');
+            welcomeTitle.textContent = `Selamat Datang, ${userData.firstName}!`;
+            
+            // Update profile name
+            const profileName = document.getElementById('profile-name');
+            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
+            
+            // Update profile picture
+            const profilePic = document.getElementById('profile-picture');
+            if (userData.photo_path) {
+              // Handle different photo_path formats
+              let photoUrl = `http://localhost:3000/${userData.photo_path}`;
+
+              console.log("photoUrl", photoUrl)
+              
+              // If path doesn't start with http or /, assume it's a local path
+              if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {
+                // Remove any leading slashes or backslashes
+                photoUrl = photoUrl.replace(/^[\\/]+/, '');
+                // Construct full URL
+                photoUrl = `http://localhost:3000/${photoUrl}`;
+              }
+              
+              profilePic.src = photoUrl;
+              profilePic.onerror = function() {
+                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
+              };
+            } else {
+              // Default profile picture if none is set
+              profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
+      });
     </script>
   </body>
 </html>
