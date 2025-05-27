@@ -183,12 +183,12 @@ export const getRecommendationCourses = [authenticate, async (req: Request, res:
 
 export const getCourseById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id_course } = req.params;
 
-    console.log("Fetching course with ID:", id);
+    console.log("Fetching course with ID:", id_course);
     console.log("Request params:", req.params);
 
-    const course = await Course.findByPk(id, {  
+    const course = await Course.findByPk(id_course, {  
       include: [
         {
           model: User,

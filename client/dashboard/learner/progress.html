@@ -1011,7 +1011,7 @@
 
           const progress = await response.json();
           console.log(progress);
-          renderProgressData(progress);
+          renderProgressData(progress.data);
         } catch (error) {
           console.error(error);
           // Handle error (e.g., redirect to login if unauthorized)
