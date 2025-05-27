@@ -974,9 +974,6 @@
                   <div class="toolbar-btn" data-type="heading">
                     <i class="fas fa-heading"></i> Judul
                   </div>
-                  <div class="toolbar-btn" data-type="quiz">
-                    <i class="fas fa-question-circle"></i> Kuis
-                  </div>
                 </div>
 
                 <div class="content-area" id="content-area">
@@ -1125,12 +1122,16 @@
           this.quillInstances = [];
           this.sortable = null;
           this.currentTab = "content";
+          this.uploadedImageUrl = null;
+          this.currentImageBlockId = null;
 
-          // Bind methods to maintain proper 'this' context
+          // Bind methods
           this.saveMaterialContent = this.saveMaterialContent.bind(this);
           this.loadMaterialContent = this.loadMaterialContent.bind(this);
           this.saveModuleSettings = this.saveModuleSettings.bind(this);
           this.deleteCurrentModule = this.deleteCurrentModule.bind(this);
+          this.handleImageUpload = this.handleImageUpload.bind(this);
+          this.uploadImageFile = this.uploadImageFile.bind(this);
         }
 
         init() {
@@ -1550,7 +1551,8 @@
             const videoUrlInput =
               blockElement.querySelector(".video-url-input");
             if (videoUrlInput) {
-              videoUrlInput.addEventListener("change", (e) => {
+              videoUrlInput.addEventListener("change", (e) => { 
+                e.preventDefault(); 
                 const iframe = blockElement.querySelector("iframe");
                 if (iframe) {
                   iframe.src = this.getVideoEmbedUrl(e.target.value);
@@ -1570,41 +1572,199 @@
           }
         }
 
-        async handleImageUpload(blockId) {
-          const input = document.createElement("input");
-          input.type = "file";
-          input.accept = "image/*";
+        // handleImageUpload(blockId) {
+        //   this.currentImageBlockId = blockId;
+        //   const modal = document.getElementById("imageUploadModal");
+        //   const dropZone = document.getElementById("dropZone");
+        //   const imageInput = document.getElementById("imageInput");
+        //   const previewContainer = document.getElementById("imagePreview");
+        //   const previewImage = document.getElementById("previewImage");
+        //   const selectImageBtn = document.getElementById("selectImageBtn");
+        //   const changeImageBtn = document.getElementById("changeImageBtn");
+        //   const removeImageBtn = document.getElementById("removeImageBtn");
+        //   const confirmUploadBtn = document.getElementById("confirmUploadBtn");
+        //   const cancelUploadBtn = document.getElementById("cancelUploadBtn");
+        //   const closeModal = document.querySelector(".close-modal");
+        //   const imageAltText = document.getElementById("imageAltText");
 
-          input.addEventListener("change", async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+        //   // Reset modal state
+        //   previewContainer.style.display = "none";
+        //   dropZone.style.display = "block";
+        //   confirmUploadBtn.disabled = true;
+        //   imageAltText.value = "";
 
-            try {
-              const formData = new FormData();
-              formData.append("image", file);
+        //   // Get current image data if editing existing image
+        //   const currentBlock = document.querySelector(
+        //     `[data-block-id="${blockId}"]`
+        //   );
+        //   if (currentBlock) {
+        //     const currentImage = currentBlock.querySelector("img");
+        //     if (
+        //       currentImage &&
+        //       currentImage.src &&
+        //       !currentImage.src.includes("placeholder")
+        //     ) {
+        //       previewImage.src = currentImage.src;
+        //       imageAltText.value = currentImage.alt || "";
+        //       previewContainer.style.display = "block";
+        //       dropZone.style.display = "none";
+        //       confirmUploadBtn.disabled = false;
+        //     }
+        //   }
 
-              const response = await fetch("http://localhost:3000/api/upload", {
-                method: "POST",
-                body: formData,
-              }); // API INI TIDAK ADA !!!!!!!!!!!!!!!!!!
-              // HARUS DIBUAT DI TUTOR !!!!!!!!!
+        //   // Show modal
+        //   modal.style.display = "block";
 
-              const result = await response.json();
+        //   // Drag and drop handlers
+        //   ["dragenter", "dragover", "dragleave", "drop"].forEach(
+        //     (eventName) => {
+        //       dropZone.addEventListener(eventName, preventDefaults, false);
+        //     }
+        //   );
 
-              if (result.url) {
-                const blockElement = document.querySelector(
-                  `[data-block-id="${blockId}"]`
-                );
-                blockElement.querySelector("img").src = result.url;
-                this.saveMaterialContent();
-              }
-            } catch (error) {
-              console.error("Error uploading image:", error);
-              alert("Gagal mengunggah gambar");
+        //   function preventDefaults(e) {
+        //     e.preventDefault();
+        //     e.stopPropagation();
+        //   }
+
+        //   ["dragenter", "dragover"].forEach((eventName) => {
+        //     dropZone.addEventListener(eventName, highlight, false);
+        //   });
+
+        //   ["dragleave", "drop"].forEach((eventName) => {
+        //     dropZone.addEventListener(eventName, unhighlight, false);
+        //   });
+
+        //   function highlight() {
+        //     dropZone.classList.add("highlight");
+        //   }
+
+        //   function unhighlight() {
+        //     dropZone.classList.remove("highlight");
+        //   }
+
+        //   dropZone.addEventListener("drop", handleDrop, false);
+
+        //   const self = this;
+        //   function handleDrop(e) {
+        //     const dt = e.dataTransfer;
+        //     const files = dt.files;
+        //     if (files.length > 0 && files[0].type.startsWith("image/")) {
+        //       handleImageFile(files[0]);
+        //     }
+        //   }
+
+        //   // File input handler
+        //   selectImageBtn.addEventListener("click", () => {
+        //     imageInput.click();
+        //   });
+
+        //   imageInput.addEventListener("change", (e) => {
+        //     if (
+        //       e.target.files.length > 0 &&
+        //       e.target.files[0].type.startsWith("image/")
+        //     ) {
+        //       handleImageFile(e.target.files[0]);
+        //     }
+        //   });
+
+        //   // Change image button
+        //   changeImageBtn.addEventListener("click", () => {
+        //     previewContainer.style.display = "none";
+        //     dropZone.style.display = "block";
+        //     imageInput.click();
+        //   });
+
+        //   // Remove image button
+        //   removeImageBtn.addEventListener("click", async () => {
+        //     const block = document.querySelector(
+        //       `[data-block-id="${blockId}"]`
+        //     );
+        //     if (block) {
+        //       const img = block.querySelector("img");
+        //       if (img) {
+        //         // Reset to placeholder
+        //         img.src = "https://via.placeholder.com/800x400";
+        //         img.alt = "";
+        //       }
+        //     }
+        //     modal.style.display = "none";
+        //     self.saveMaterialContent();
+        //   });
+
+        //   // Confirm upload button
+        //   confirmUploadBtn.addEventListener("click", async () => {
+        //     if (!self.uploadedImageUrl) {
+        //       alert("Silakan unggah gambar terlebih dahulu");
+        //       return;
+        //     }
+
+        //     const block = document.querySelector(
+        //       `[data-block-id="${blockId}"]`
+        //     );
+        //     if (block) {
+        //       const img = block.querySelector("img");
+        //       if (img) {
+        //         img.src = self.uploadedImageUrl;
+        //         img.alt = imageAltText.value;
+        //       }
+        //     }
+
+        //     modal.style.display = "none";
+        //     self.saveMaterialContent();
+        //   });
+
+        //   // Cancel and close handlers
+        //   cancelUploadBtn.addEventListener("click", () => {
+        //     modal.style.display = "none";
+        //   });
+
+        //   closeModal.addEventListener("click", () => {
+        //     modal.style.display = "none";
+        //   });
+
+        //   // Handle image file selection
+        //   function handleImageFile(file) {
+        //     const reader = new FileReader();
+        //     reader.onload = (e) => {
+        //       previewImage.src = e.target.result;
+        //       previewContainer.style.display = "block";
+        //       dropZone.style.display = "none";
+
+        //       // Upload the file to server
+        //       self.uploadImageFile(file);
+        //     };
+        //     reader.readAsDataURL(file);
+        //   }
+        // }
+
+        async uploadImageFile(file) {
+          const formData = new FormData();
+          formData.append("image", file);
+
+          try {
+            const response = await fetch("http://localhost:3000/api/upload", {
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error(await response.text());
             }
-          });
 
-          input.click();
+            const result = await response.json();
+            this.uploadedImageUrl = result.imageUrl;
+            document.getElementById("confirmUploadBtn").disabled = false;
+          } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("Gagal mengunggah gambar");
+            document.getElementById("previewImage").src = "";
+            document.getElementById("imagePreview").style.display = "none";
+            document.getElementById("dropZone").style.display = "block";
+          }
         }
 
         async addNewMaterial() {
@@ -2178,225 +2338,358 @@
           this.saveMaterialContent();
         }
 
+        // Handle Image Upload terbaru:
+        handleImageUpload(blockId) {
+  this.currentImageBlockId = blockId;
+  const modal = document.getElementById("imageUploadModal");
+  const dropZone = document.getElementById("dropZone");
+  const imageInput = document.getElementById("imageInput");
+  const previewContainer = document.getElementById("imagePreview");
+  const previewImage = document.getElementById("previewImage");
+  const selectImageBtn = document.getElementById("selectImageBtn");
+  const changeImageBtn = document.getElementById("changeImageBtn");
+  const removeImageBtn = document.getElementById("removeImageBtn");
+  const confirmUploadBtn = document.getElementById("confirmUploadBtn");
+  const cancelUploadBtn = document.getElementById("cancelUploadBtn");
+  const closeModal = document.querySelector(".close-modal");
+  const imageAltText = document.getElementById("imageAltText");
+
+  const self = this;
+
+  // Reset modal state
+  previewContainer.style.display = "none";
+  dropZone.style.display = "block";
+  confirmUploadBtn.disabled = true;
+  imageAltText.value = "";
+  imageInput.value = "";
+
+  const currentBlock = document.querySelector(`[data-block-id="${blockId}"]`);
+  if (currentBlock) {
+    const currentImage = currentBlock.querySelector("img");
+    if (currentImage && currentImage.src && !currentImage.src.includes("placeholder")) {
+      previewImage.src = currentImage.src;
+      imageAltText.value = currentImage.alt || "";
+      previewContainer.style.display = "block";
+      dropZone.style.display = "none";
+      confirmUploadBtn.disabled = false;
+    }
+  }
+
+  modal.style.display = "block";
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function highlight() {
+    dropZone.classList.add("highlight");
+  }
+
+  function unhighlight() {
+    dropZone.classList.remove("highlight");
+  }
+
+  function handleImageFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImage.src = e.target.result;
+      previewContainer.style.display = "block";
+      dropZone.style.display = "none";
+      self.uploadImageFile(file);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0 && files[0].type.startsWith("image/")) {
+      handleImageFile(files[0]);
+    }
+  }
+
+  ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+    dropZone.addEventListener(eventName, preventDefaults, false);
+  });
+
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropZone.addEventListener(eventName, highlight, false);
+  });
+
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropZone.addEventListener(eventName, unhighlight, false);
+  });
+
+  dropZone.addEventListener("drop", handleDrop, false);
+
+  selectImageBtn.onclick = () => imageInput.click();
+  changeImageBtn.onclick = () => {
+    previewContainer.style.display = "none";
+    dropZone.style.display = "block";
+    imageInput.click();
+  };
+  imageInput.onchange = (e) => {
+    if (e.target.files.length > 0 && e.target.files[0].type.startsWith("image/")) {
+      handleImageFile(e.target.files[0]);
+    }
+  };
+  removeImageBtn.onclick = () => {
+    const block = document.querySelector(`[data-block-id="${blockId}"]`);
+    if (block) {
+      const img = block.querySelector("img");
+      if (img) {
+        img.src = "https://via.placeholder.com/800x400";
+        img.alt = "";
+      }
+    }
+    modal.style.display = "none";
+    self.saveMaterialContent();
+  };
+  confirmUploadBtn.onclick = () => {
+    if (!self.uploadedImageUrl) {
+      alert("Silakan unggah gambar terlebih dahulu.");
+      return;
+    }
+    const block = document.querySelector(`[data-block-id="${blockId}"]`);
+    if (block) {
+      const img = block.querySelector("img");
+      if (img) {
+        img.src = self.uploadedImageUrl;
+        img.alt = imageAltText.value;
+      }
+    }
+    modal.style.display = "none";
+    self.saveMaterialContent();
+  };
+  cancelUploadBtn.onclick = () => {
+    modal.style.display = "none";
+  };
+  closeModal.onclick = () => {
+    modal.style.display = "none";
+  };
+}
+
+
         // Di dalam class CourseContentEditor, tambahkan method baru:
 
-        handleImageUpload(blockId) {
-          this.currentImageBlockId = blockId;
-          const modal = document.getElementById("imageUploadModal");
-          const dropZone = document.getElementById("dropZone");
-          const imageInput = document.getElementById("imageInput");
-          const previewContainer = document.getElementById("imagePreview");
-          const previewImage = document.getElementById("previewImage");
-          const selectImageBtn = document.getElementById("selectImageBtn");
-          const changeImageBtn = document.getElementById("changeImageBtn");
-          const removeImageBtn = document.getElementById("removeImageBtn");
-          const confirmUploadBtn = document.getElementById("confirmUploadBtn");
-          const cancelUploadBtn = document.getElementById("cancelUploadBtn");
-          const closeModal = document.querySelector(".close-modal");
-          const imageAltText = document.getElementById("imageAltText");
+        // handleImageUpload(blockId) {
+        //   this.currentImageBlockId = blockId;
+        //   const modal = document.getElementById("imageUploadModal");
+        //   const dropZone = document.getElementById("dropZone");
+        //   const imageInput = document.getElementById("imageInput");
+        //   const previewContainer = document.getElementById("imagePreview");
+        //   const previewImage = document.getElementById("previewImage");
+        //   const selectImageBtn = document.getElementById("selectImageBtn");
+        //   const changeImageBtn = document.getElementById("changeImageBtn");
+        //   const removeImageBtn = document.getElementById("removeImageBtn");
+        //   const confirmUploadBtn = document.getElementById("confirmUploadBtn");
+        //   const cancelUploadBtn = document.getElementById("cancelUploadBtn");
+        //   const closeModal = document.querySelector(".close-modal");
+        //   const imageAltText = document.getElementById("imageAltText");
 
-          // Reset modal state
-          previewContainer.style.display = "none";
-          dropZone.style.display = "block";
-          confirmUploadBtn.disabled = true;
-          imageAltText.value = "";
+        //   // Reset modal state
+        //   previewContainer.style.display = "none";
+        //   dropZone.style.display = "block";
+        //   confirmUploadBtn.disabled = true;
+        //   imageAltText.value = "";
 
-          // Get current image data if editing existing image
-          const currentBlock = document.querySelector(
-            `[data-block-id="${blockId}"]`
-          );
-          if (currentBlock) {
-            const currentImage = currentBlock.querySelector("img");
-            if (
-              currentImage &&
-              currentImage.src &&
-              !currentImage.src.includes("placeholder")
-            ) {
-              previewImage.src = currentImage.src;
-              imageAltText.value = currentImage.alt || "";
-              previewContainer.style.display = "block";
-              dropZone.style.display = "none";
-              confirmUploadBtn.disabled = false;
-            }
-          }
+        //   // Get current image data if editing existing image
+        //   const currentBlock = document.querySelector(
+        //     `[data-block-id="${blockId}"]`
+        //   );
+        //   if (currentBlock) {
+        //     const currentImage = currentBlock.querySelector("img");
+        //     if (
+        //       currentImage &&
+        //       currentImage.src &&
+        //       !currentImage.src.includes("placeholder")
+        //     ) {
+        //       previewImage.src = currentImage.src;
+        //       imageAltText.value = currentImage.alt || "";
+        //       previewContainer.style.display = "block";
+        //       dropZone.style.display = "none";
+        //       confirmUploadBtn.disabled = false;
+        //     }
+        //   }
 
-          // Show modal
-          modal.style.display = "block";
+        //   // Show modal
+        //   modal.style.display = "block";
 
-          // Drag and drop handlers
-          ["dragenter", "dragover", "dragleave", "drop"].forEach(
-            (eventName) => {
-              dropZone.addEventListener(eventName, preventDefaults, false);
-            }
-          );
+        //   // Drag and drop handlers
+        //   ["dragenter", "dragover", "dragleave", "drop"].forEach(
+        //     (eventName) => {
+        //       dropZone.addEventListener(eventName, preventDefaults, false);
+        //     }
+        //   );
 
-          function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
+        //   function preventDefaults(e) {
+        //     e.preventDefault();
+        //     e.stopPropagation();
+        //   }
 
-          ["dragenter", "dragover"].forEach((eventName) => {
-            dropZone.addEventListener(eventName, highlight, false);
-          });
+        //   ["dragenter", "dragover"].forEach((eventName) => {
+        //     dropZone.addEventListener(eventName, highlight, false);
+        //   });
 
-          ["dragleave", "drop"].forEach((eventName) => {
-            dropZone.addEventListener(eventName, unhighlight, false);
-          });
+        //   ["dragleave", "drop"].forEach((eventName) => {
+        //     dropZone.addEventListener(eventName, unhighlight, false);
+        //   });
 
-          function highlight() {
-            dropZone.classList.add("highlight");
-          }
+        //   function highlight() {
+        //     dropZone.classList.add("highlight");
+        //   }
 
-          function unhighlight() {
-            dropZone.classList.remove("highlight");
-          }
+        //   function unhighlight() {
+        //     dropZone.classList.remove("highlight");
+        //   }
 
-          dropZone.addEventListener("drop", handleDrop, false);
+        //   dropZone.addEventListener("drop", handleDrop, false);
 
-          function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            if (files.length > 0 && files[0].type.startsWith("image/")) {
-              handleImageFile(files[0]);
-            }
-          }
+        //   function handleDrop(e) {
+        //     const dt = e.dataTransfer;
+        //     const files = dt.files;
+        //     if (files.length > 0 && files[0].type.startsWith("image/")) {
+        //       handleImageFile(files[0]);
+        //     }
+        //   }
 
-          // File input handler
-          selectImageBtn.addEventListener("click", () => {
-            imageInput.click();
-          });
+        //   // File input handler
+        //   selectImageBtn.addEventListener("click", () => {
+        //     imageInput.click();
+        //   });
 
-          imageInput.addEventListener("change", (e) => {
-            if (
-              e.target.files.length > 0 &&
-              e.target.files[0].type.startsWith("image/")
-            ) {
-              handleImageFile(e.target.files[0]);
-            }
-          });
+        //   imageInput.addEventListener("change", (e) => {
+        //     if (
+        //       e.target.files.length > 0 &&
+        //       e.target.files[0].type.startsWith("image/")
+        //     ) {
+        //       handleImageFile(e.target.files[0]);
+        //     }
+        //   });
 
-          // Change image button
-          changeImageBtn.addEventListener("click", () => {
-            previewContainer.style.display = "none";
-            dropZone.style.display = "block";
-            imageInput.click();
-          });
+        //   // Change image button
+        //   changeImageBtn.addEventListener("click", () => {
+        //     previewContainer.style.display = "none";
+        //     dropZone.style.display = "block";
+        //     imageInput.click();
+        //   });
 
-          // Remove image button
-          removeImageBtn.addEventListener("click", async () => {
-            const block = document.querySelector(
-              `[data-block-id="${blockId}"]`
-            );
-            if (block) {
-              const img = block.querySelector("img");
-              if (img && img.src) {
-                try {
-                  // Extract filename from URL
-                  const filename = img.src.split("/").pop();
+        //   // Remove image button
+        //   removeImageBtn.addEventListener("click", async () => {
+        //     const block = document.querySelector(
+        //       `[data-block-id="${blockId}"]`
+        //     );
+        //     if (block) {
+        //       const img = block.querySelector("img");
+        //       if (img && img.src) {
+        //         try {
+        //           // Extract filename from URL
+        //           const filename = img.src.split("/").pop();
 
-                  // Call delete endpoint
-                  const response = await fetch(`/api/upload/${filename}`, {
-                    method: "DELETE",
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  });
+        //           // Call delete endpoint
+        //           const response = await fetch(`http://localhost:3000/api/upload/${filename}`, {
+        //             method: "DELETE",
+        //             headers: {
+        //               Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //             },
+        //           });
 
-                  if (!response.ok) {
-                    throw new Error("Failed to delete image");
-                  }
+        //           if (!response.ok) {
+        //             throw new Error("Failed to delete image");
+        //           }
 
-                  // Reset image to placeholder
-                  img.src = "https://via.placeholder.com/800x400";
-                  img.alt = "";
+        //           // Reset image to placeholder
+        //           img.src = "https://via.placeholder.com/800x400";
+        //           img.alt = "";
 
-                  // Close modal
-                  modal.style.display = "none";
+        //           // Close modal
+        //           modal.style.display = "none";
 
-                  // Save changes
-                  this.saveMaterialContent();
-                } catch (error) {
-                  console.error("Error deleting image:", error);
-                  alert("Gagal menghapus gambar");
-                }
-              }
-            }
-          });
+        //           // Save changes
+        //           this.saveMaterialContent();
+        //         } catch (error) {
+        //           console.error("Error deleting image:", error);
+        //           alert("Gagal menghapus gambar");
+        //         }
+        //       }
+        //     }
+        //   });
 
-          // Confirm upload button
-          confirmUploadBtn.addEventListener("click", async () => {
-            if (!this.uploadedImageUrl) {
-              alert("Silakan unggah gambar terlebih dahulu");
-              return;
-            }
+        //   // Confirm upload button
+        //   confirmUploadBtn.addEventListener("click", async () => {
+        //     if (!this.uploadedImageUrl) {
+        //       alert("Silakan unggah gambar terlebih dahulu");
+        //       return;
+        //     }
 
-            const block = document.querySelector(
-              `[data-block-id="${blockId}"]`
-            );
-            if (block) {
-              const img = block.querySelector("img");
-              if (img) {
-                img.src = this.uploadedImageUrl;
-                img.alt = imageAltText.value;
-              }
-            }
+        //     const block = document.querySelector(
+        //       `[data-block-id="${blockId}"]`
+        //     );
+        //     if (block) {
+        //       const img = block.querySelector("img");
+        //       if (img) {
+        //         img.src = this.uploadedImageUrl;
+        //         img.alt = imageAltText.value;
+        //       }
+        //     }
 
-            modal.style.display = "none";
-            this.saveMaterialContent();
-          });
+        //     modal.style.display = "none";
+        //     this.saveMaterialContent();
+        //   });
 
-          // Cancel and close handlers
-          cancelUploadBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-          });
+        //   // Cancel and close handlers
+        //   cancelUploadBtn.addEventListener("click", () => {
+        //     modal.style.display = "none";
+        //   });
 
-          closeModal.addEventListener("click", () => {
-            modal.style.display = "none";
-          });
+        //   closeModal.addEventListener("click", () => {
+        //     modal.style.display = "none";
+        //   });
 
-          // Handle image file selection
-          const handleImageFile = (file) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              previewImage.src = e.target.result;
-              previewContainer.style.display = "block";
-              dropZone.style.display = "none";
+        //   // Handle image file selection
+        //   const handleImageFile = (file) => {
+        //     const reader = new FileReader();
+        //     reader.onload = (e) => {
+        //       previewImage.src = e.target.result;
+        //       previewContainer.style.display = "block";
+        //       dropZone.style.display = "none";
 
-              // Upload the file to server
-              this.uploadImageFile(file);
-            };
-            reader.readAsDataURL(file);
-          };
-        }
+        //       // Upload the file to server
+        //       this.uploadImageFile(file);
+        //     };
+        //     reader.readAsDataURL(file);
+        //   };
+        // }
 
         async uploadImageFile(file) {
-          const formData = new FormData();
-          formData.append("image", file);
+  const formData = new FormData();
+  formData.append("image", file);
 
-          try {
-            const response = await fetch("/api/upload", {
-              method: "POST",
-              body: formData,
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
+  try {
+    const response = await fetch("http://localhost:3000/api/upload", {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-            if (!response.ok) {
-              throw new Error(await response.text());
-            }
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
 
-            const result = await response.json();
-            this.uploadedImageUrl = result.url;
-            document.getElementById("confirmUploadBtn").disabled = false;
-          } catch (error) {
-            console.error("Error uploading image:", error);
-            alert("Gagal mengunggah gambar");
-            document.getElementById("previewImage").src = "";
-            document.getElementById("imagePreview").style.display = "none";
-            document.getElementById("dropZone").style.display = "block";
-          }
-        }
+    const result = await response.json();
+    console.log("Image uploaded successfully:", result.imageUrl);
+    alert("Image uploaded successfully:"+ result.imageUrl);
+    this.uploadedImageUrl = result.imageUrl;
+    document.getElementById("confirmUploadBtn").disabled = false;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    alert("Gagal mengunggah gambar");
+  }
+}
+
       }
 
       // Update Profile Picture
@@ -2432,6 +2725,9 @@
           console.error("Error loading user data:", error);
         }
       });
+
+
+      
     </script>
   </body>
 </html>

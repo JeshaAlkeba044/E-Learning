@@ -885,17 +885,18 @@
   function renderUserCourses(courses) {
     const courseList = document.querySelector(".course-list");
 
-    if (!courses || courses.length === 0) {
-      courseList.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon"><i class="fas fa-book-open"></i></div>
-          <h3>Anda belum memiliki kursus</h3>
-          <p>Temukan kursus menarik untuk mulai belajar dan tingkatkan keterampilan Anda</p>
-          <a href="courses.html" class="btn-explore">Jelajahi Kursus</a>
-        </div>
-      `;
-      return;
-    }
+        if (!courses || courses.length === 0) {
+          courseList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+            <h3>Anda belum memiliki kursus</h3>
+            <p>Temukan kursus menarik untuk mulai belajar dan tingkatkan keterampilan Anda</p>
+            <a href="courses.html" class="btn-explore">Jelajahi Kursus</a>
+          </div>
+        `;
+          return;
+        }
+
 
     courseList.innerHTML = courses.data
       .map((course) => {
@@ -918,30 +919,29 @@
         const modulInfo = `${moduleDone}/${totalModule} Modul`;
         const jamInfo = `${progressJam}/${totalJam} Jam`;
 
-        return `
-          <div class="course-item" data-course="${status}">
-            <div class="course-thumbnail">
-              <img src="http://localhost:3000/${course.thumbnail}" alt="${course.courseTitle}" />
-              ${badge}
-            </div>
-            <div class="course-details">
-              <div class="course-category">${course.courseCategory || ""}</div>
-              <h3 class="course-title">${course.courseTitle || ""}</h3>
-              <p class="course-instructor">Oleh ${course.instructor || ""}</p>
-              <div class="course-meta">
-                <span><i class="fas fa-book"></i> ${modulInfo}</span>
-                <span><i class="fas fa-clock"></i> ${jamInfo}</span>
+            return `
+            <div class="course-item" data-course="${status}">
+              <div class="course-thumbnail">
+                <img src="http://localhost:3000/${course.thumbnail}" alt="${course.title}" />
+                ${badge}
               </div>
-              <div class="course-actions">
-                <a href="course_detail.html?id=${course.courseId}" class="btn-continue">Lihat</a>
+              <div class="course-details">
+                <div class="course-category">${course.category || ""}</div>
+                <h3 class="course-title">${course.courseTitle || ""}</h3>
+                <p class="course-instructor">Oleh ${course.instructor}</p>
+                <div class="course-meta">
+                  <span><i class="fas fa-book"></i> ${modulInfo}</span>
+                  <span><i class="fas fa-clock"></i> ${jamInfo}</span>
+                </div>
+                <div class="course-actions">
+                  <a href="course_detail.html?id=${course.id_course}" class="btn-continue">Lihat</a>
+                </div>
               </div>
             </div>
-          </div>
-        `;
-      })
-      .join("");
-  }
-
+          `;
+          })
+          .join("");
+      }
 
       function setupTabs() {
         document.querySelectorAll(".tab-btn").forEach((tab) => {
