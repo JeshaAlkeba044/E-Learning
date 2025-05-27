@@ -1398,6 +1398,9 @@
       document.querySelector(".course-title h1").textContent = course.title;
       document.querySelector(".course-price").textContent = formatPrice(course.price);
 
+      // Store course price in data attribute for later use
+      document.querySelector(".course-price").setAttribute("data-price", course.price);
+
       // Update progress section
       updateProgressUI(progress);
 
@@ -1884,20 +1887,33 @@
     const confirmCheckbox = document.getElementById("confirm");
     const bayarBtn = document.getElementById("bayarBtn");
     
+    // Get course price from data attribute or element text
+    const coursePriceElement = document.querySelector(".course-price");
+    let coursePrice = coursePriceElement.getAttribute("data-price");
+    
+    // Fallback to text content if data attribute not set
+    if (!coursePrice) {
+      coursePrice = coursePriceElement.textContent.replace(/\D/g, "");
+    }
+
     // Set nominal based on plan type
     let amount = 0;
+    let displayAmount = "";
+    
     if (planType === "monthly") {
       amount = 250000;
-      nominalInput.value = "Rp250.000";
+      displayAmount = "Rp250.000";
     } else if (planType === "yearly") {
       amount = 900000;
-      nominalInput.value = "Rp900.000";
+      displayAmount = "Rp900.000";
     } else {
       // Single course purchase
-      const coursePrice = document.querySelector(".course-price").textContent;
-      amount = parseInt(coursePrice.replace(/\D/g, ""));
-      nominalInput.value = coursePrice;
+      amount = parseInt(coursePrice);
+      displayAmount = formatPrice(amount);
     }
+
+    // Set nominal value
+    nominalInput.value = displayAmount;
 
     // Reset form
     document.getElementById("paymentForm").reset();

@@ -78,6 +78,8 @@ export const getUserTransactions = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id_user;
     const { courseId } = req.query;
+
+    console.log("\n\n\n\n\n\ncourseId", courseId);
     
     const whereClause: any = { id_user: userId };
     if (courseId) {
@@ -92,6 +94,8 @@ export const getUserTransactions = async (req: Request, res: Response) => {
       }],
       order: [['transaction_date', 'DESC']]
     });
+
+    console.log("n\n\n\n\n=========\ntransactions", transactions);
 
     if (!transactions || transactions.length === 0) {
       res.status(404).json({ 
