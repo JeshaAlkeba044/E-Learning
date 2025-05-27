@@ -290,24 +290,61 @@ export const createCourse = async (req: Request & { file?: Express.Multer.File }
 };
 
 export const getCoursesByInstructor = async (req: Request & { file?: Express.Multer.File }, res: Response) => {
-    try {
-        const { id_user } = req.params;
-        const courses = await Course.findAll({
-            where: { id_user },
-            include: [
-                {
-                    model: Material,
-                    as: 'materials_id'
-                }
-            ]
-        });
+  try {
+    const { id_user } = req.params;
 
-        res.json(courses);
-    } catch (error) {
-        console.error('Error fetching courses:', error);
-        res.status(500).json({ error: 'Failed to fetch courses' });
+    // 1. Ambil semua course milik instructor
+    const courses = await Course.findAll({
+      where: { id_user },
+      include: [
+        {
+          model: Material,
+          as: 'materials_id'
+        }
+      ]
+    });
+
+    const courseIds = courses.map(course => course.id_course);
+
+    // 2. Ambil semua transaksi 'completed' untuk course tersebut
+    const completedTransactions = await Transaction.findAll({
+      where: {
+        id_course: { [Op.in]: courseIds },
+        status: 'completed'
+      },
+      attributes: ['id_course', 'id_user']
+    });
+
+    // 3. Hitung student unik per course
+    const studentCountMap: Record<string, Set<string>> = {};
+    for (const tx of completedTransactions) {
+      const courseId = tx.id_course;
+      const userId = tx.id_user;
+
+      if (!studentCountMap[courseId]) {
+        studentCountMap[courseId] = new Set();
+      }
+
+      studentCountMap[courseId].add(userId);
     }
+
+    // 4. Tambahkan properti `totalStudents` ke setiap course
+    const enrichedCourses = courses.map(course => {
+      const courseId = course.id_course;
+      const studentCount = studentCountMap[courseId]?.size || 0;
+      return {
+        ...course.toJSON(),
+        totalStudents: studentCount
+      };
+    });
+
+    res.json(enrichedCourses);
+  } catch (error) {
+    console.error('Error fetching courses:', error);
+    res.status(500).json({ error: 'Failed to fetch courses' });
+  }
 };
+
 
 export const updateCourse = async (req: Request & { file?: Express.Multer.File }, res: Response) => {
     try {
