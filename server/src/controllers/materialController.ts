@@ -47,6 +47,7 @@ export const getMaterialsByCourse = async (req: Request, res: Response) => {
     }
 };
 
+// Update the updateMaterialContent function
 export const updateMaterialContent = async (req: Request, res: Response) => {
   try {
     const { id_material } = req.params;
@@ -59,7 +60,7 @@ export const updateMaterialContent = async (req: Request, res: Response) => {
     }
 
     // Validate each block
-    const validTypes = ['text', 'image', 'video', 'heading', 'quiz'];
+    const validTypes = ['text', 'image', 'video', 'heading', 'resource'];
     for (const block of content.blocks) {
       if (!validTypes.includes(block.type)) {
         res.status(400).json({ 
@@ -70,7 +71,7 @@ export const updateMaterialContent = async (req: Request, res: Response) => {
       }
       
       // Additional validation for specific block types
-      if (block.type === 'image' || block.type === 'video') {
+      if (block.type === 'image' || block.type === 'video' || block.type === 'resource') {
         if (!block.content) {
           res.status(400).json({ 
             error: `${block.type} block requires content URL`

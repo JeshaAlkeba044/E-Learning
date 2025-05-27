@@ -1065,12 +1065,14 @@
         }
 
         // Render dinamis dari backend
+
+        console.log("Progress Data:", progress);
         tableBody.innerHTML = progress.map((course) => `
           <tr>
             <td>
               <div class="course-info">
                 <div class="course-thumb">
-                  <img src="${course.thumbnail || "../img/course-placeholder.jpg"}" alt="${course.courseTitle}">
+                  <img src="http://localhost:3000/${course.thumbnail || "../img/course-placeholder.jpg"}" alt="${course.courseTitle}">
                 </div>
                 <div>
                   <div class="course-name">${course.courseTitle}</div>

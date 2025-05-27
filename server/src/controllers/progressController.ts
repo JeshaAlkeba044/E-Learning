@@ -86,21 +86,38 @@ export const getUserProgress = [
 ];
 
 
+// Update the updateMaterialProgress function
 export const updateMaterialProgress = async (req: Request, res: Response) => {
   try {
     const { materialId } = req.params;
     const { isCompleted } = req.body;
     const userId = req.user?.id_user;
     
+    if (!userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return 
+    }
+
     // Find or create progress record
     const [progress, created] = await UserMaterialProgress.findOrCreate({
       where: { id_user: userId, id_material: materialId },
-      defaults: { is_completed: isCompleted }
+      defaults: { 
+        is_completed: isCompleted,
+        last_accessed: new Date()
+      }
     });
     
     if (!created) {
       progress.is_completed = isCompleted;
+      progress.last_accessed = new Date();
       await progress.save();
+    }
+
+    // Update course total progress
+    const material = await Material.findByPk(materialId);
+    if (material) {
+      const courseId = material.id_course;
+      await updateCourseProgress(userId, courseId);
     }
     
     res.json(progress);
@@ -109,6 +126,29 @@ export const updateMaterialProgress = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+async function updateCourseProgress(userId: string, courseId: string) {
+  // Calculate new progress for the course
+  const totalMaterials = await Material.count({
+    where: { id_course: courseId }
+  });
+
+  const completedMaterials = await UserMaterialProgress.count({
+    where: {
+      id_user: userId,
+      is_completed: true,
+      id_material: {
+        [Op.in]: sequelize.literal(`(SELECT id_material FROM materials WHERE id_course = '${courseId}')`)
+      }
+    }
+  });
+
+  return {
+    totalMaterials,
+    completedMaterials,
+    progress: totalMaterials > 0 ? Math.round((completedMaterials / totalMaterials) * 100) : 0
+  };
+}
 
 
 export const getDashboardLearner = [
