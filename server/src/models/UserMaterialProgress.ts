@@ -3,7 +3,7 @@ import { User } from './User';
 import { Material } from './Material';
 import { v4 } from 'uuid';
 
-@Table({ tableName: 'user_material_progress' })
+@Table({ tableName: 'user_material_progress', timestamps: false })
 export class UserMaterialProgress extends Model {
   @Column({
     type: DataType.UUID,
