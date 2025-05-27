@@ -760,7 +760,7 @@
             </div>
           </div>
 
-          <h2 style="margin-bottom: var(--space-lg)">Aktivitas Terkini</h2>
+          <!-- <h2 style="margin-bottom: var(--space-lg)">Aktivitas Terkini</h2>
 
           <div class="progress-timeline">
             <div class="timeline-item">
@@ -791,7 +791,7 @@
                 <p class="timeline-desc">Kursus Data Science untuk Pemula</p>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <!-- Course Progress -->
@@ -1027,34 +1027,34 @@
 
       function renderProgressData(progress) {
         const tableBody = document.querySelector(".progress-table tbody");
-        const timeline = document.querySelector(".progress-timeline");
+        // const timeline = document.querySelector(".progress-timeline");
 
-        // Handle timeline kosong
-        if (timeline) {
-          if (!progress || progress.length === 0) {
-            timeline.innerHTML = `<p class="empty-state">Belum ada progres yang tercatat 😴</p>`;
-          } else {
-            timeline.innerHTML = progress.map((item) => {
-              const date = new Date(item.lastAccessed);
-              const formattedDate = date.toLocaleDateString("id-ID", {
-                weekday: "long",
-                hour: "2-digit",
-                minute: "2-digit",
-              });
+        // // Handle timeline kosong
+        // if (timeline) {
+        //   if (!progress || progress.length === 0) {
+        //     timeline.innerHTML = `<p class="empty-state">Belum ada progres yang tercatat 😴</p>`;
+        //   } else {
+        //     timeline.innerHTML = progress.map((item) => {
+        //       const date = new Date(item.lastAccessed);
+        //       const formattedDate = date.toLocaleDateString("id-ID", {
+        //         weekday: "long",
+        //         hour: "2-digit",
+        //         minute: "2-digit",
+        //       });
 
-              return `
-                <div class="timeline-item">
-                  <div class="timeline-dot"></div>
-                  <div class="timeline-content">
-                    <div class="timeline-date">${formattedDate}</div>
-                    <h3 class="timeline-title">${item.progress}%</h3>
-                    <p class="timeline-desc">${item.courseTitle}</p>
-                  </div>
-                </div>
-              `;
-            }).join("");
-          }
-        }
+        //       return `
+        //         <div class="timeline-item">
+        //           <div class="timeline-dot"></div>
+        //           <div class="timeline-content">
+        //             <div class="timeline-date">${formattedDate}</div>
+        //             <h3 class="timeline-title">${item.progress}%</h3>
+        //             <p class="timeline-desc">${item.courseTitle}</p>
+        //           </div>
+        //         </div>
+        //       `;
+        //     }).join("");
+        //   }
+        // }
 
         // Handle tabel kosong
         if (!tableBody) return;
@@ -1073,7 +1073,7 @@
                 </div>
                 <div>
                   <div class="course-name">${course.courseTitle}</div>
-                  <div class="course-category">Kategori belum tersedia</div>
+                  <div class="course-category">${course.courseCategory}</div>
                 </div>
               </div>
             </td>

@@ -765,7 +765,7 @@
           </div>
 
           <div class="progress-list">
-            <!-- <div class="progress-item">
+            <div class="progress-item">
               <div class="course-image">
                 <img
                   src="../../assets/img/c1591799-131d-45da-bec4-7f9fce0baa92.jpg"
@@ -799,7 +799,7 @@
                   >Lanjutkan Belajar</a
                 >
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
 
@@ -970,7 +970,7 @@
 
       async function loadActiveCourses() {
         try {
-          const response = await fetch("http://localhost:3000/api/learner/progress",{
+          const response = await fetch("http://localhost:3000/api/learner/courses",{
               method: "GET",
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -984,6 +984,37 @@
         } catch (error) {
           console.error(error);
         }
+      }
+
+      
+      function renderActiveCourses(courses) {
+        const container= document.querySelector(".progress-list");
+        container.innerHTML = ""; // Clear previous data
+
+        if (courses.length === 0) {
+          container.innerHTML =`
+              <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
+            `;
+          return;
+        }
+
+        courses.forEach((course) => {
+          const courseItem = document.createElement("div");
+          courseItem.className = "progress-item";
+
+          courseItem.innerHTML = `
+            <div class="course-image">
+              <img src="${course.thumbnail || '../../assets/img/default-thumbnail.jpg'}" alt="${course.title}" />
+            </div>
+            <div class="course-info">
+              <h3 class="course-title">${course.title}</h3>
+              <p class="course-instructor">Oleh ${course.instructor_Id ? `${course.instructor_Id.firstName} ${course.instructor_Id.lastName}` : "Tidak diketahui"}</p>
+              <a href="course_detail.html?id=${course.id_course}" class="continue-btn">Lanjutkan Belajar</a>
+            </div>
+          `;
+
+          container.appendChild(courseItem);
+        });
       }
 
       async function loadDashboardData() {
@@ -1014,64 +1045,64 @@
       }
 
 
-      function renderActiveCourses(progress) {
-        const progressList = document.querySelector(".progress-list");
+      // function renderActiveCourses(progress) {
+      //   const progressList = document.querySelector(".progress-list");
 
-        // Update dashboard stats
-        const activeCourses = progress.filter((c) => c.progress < 100).length;
-        const completedCourses = progress.filter(
-          (c) => c.progress === 100
-        ).length;
+      //   // Update dashboard stats
+      //   const activeCourses = progress.filter((c) => c.progress < 100).length;
+      //   const completedCourses = progress.filter(
+      //     (c) => c.progress === 100
+      //   ).length;
 
-        document.querySelector(
-          ".dashboard-card:nth-child(1) .card-value"
-        ).textContent = activeCourses;
-        document.querySelector(
-          ".dashboard-card:nth-child(2) .card-value"
-        ).textContent = progress.reduce((sum, c) => sum + c.totalHours, 0);
+      //   document.querySelector(
+      //     ".dashboard-card:nth-child(1) .card-value"
+      //   ).textContent = activeCourses;
+      //   document.querySelector(
+      //     ".dashboard-card:nth-child(2) .card-value"
+      //   ).textContent = progress.reduce((sum, c) => sum + c.totalHours, 0);
 
-        // Render active courses
-        progressList.innerHTML = progress
-          .filter((c) => c.progress < 100)
-          .slice(0, 2) // Show only 2 active courses
-          .map(
-            (course) => `
-              <div class="progress-item">
-                <div class="course-image">
-                  <img src="${
-                    course.thumbnail || "../../assets/img/course-placeholder.jpg"
-                  }" alt="${course.title}">
-                </div>
+      //   // Render active courses
+      //   progressList.innerHTML = progress
+      //     .filter((c) => c.progress < 100)
+      //     .slice(0, 2) // Show only 2 active courses
+      //     .map(
+      //       (course) => `
+      //         <div class="progress-item">
+      //           <div class="course-image">
+      //             <img src="${
+      //               course.thumbnail || "../../assets/img/course-placeholder.jpg"
+      //             }" alt="${course.title}">
+      //           </div>
                 
-                <div class="course-info">
-                  <h3 class="course-title">${course.title}</h3>
-                  <p class="course-instructor">Oleh ${course.instructor}</p>
+      //           <div class="course-info">
+      //             <h3 class="course-title">${course.title}</h3>
+      //             <p class="course-instructor">Oleh ${course.instructor}</p>
                   
-                  <div class="progress-container">
-                    <div class="progress-bar">
-                      <div class="progress-fill" style="width: ${
-                        course.progress
-                      }%"></div>
-                    </div>
-                    <span class="progress-percent">${course.progress}%</span>
-                  </div>
+      //             <div class="progress-container">
+      //               <div class="progress-bar">
+      //                 <div class="progress-fill" style="width: ${
+      //                   course.progress
+      //                 }%"></div>
+      //               </div>
+      //               <span class="progress-percent">${course.progress}%</span>
+      //             </div>
                   
-                  <a href="course_detail.html?id=${
-                    course.id
-                  }" class="continue-btn">Lanjutkan Belajar</a>
-                </div>
-              </div>
-            `
-          )
-          .join("");
+      //             <a href="course_detail.html?id=${
+      //               course.id
+      //             }" class="continue-btn">Lanjutkan Belajar</a>
+      //           </div>
+      //         </div>
+      //       `
+      //     )
+      //     .join("");
 
-          if (progressList.innerHTML.trim() === "") {
-            progressList.innerHTML = `
-              <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
-            `;
-          }
+      //     if (progressList.innerHTML.trim() === "") {
+      //       progressList.innerHTML = `
+      //         <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
+      //       `;
+      //     }
 
-      }
+      // }
 
       async function loadRecommendedCourses() {
         try {

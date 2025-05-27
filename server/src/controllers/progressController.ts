@@ -5,9 +5,6 @@ import { Transaction } from '../models/Transaction';
 import { authenticate, authorize } from '../middleware/authMiddleware';
 import { decrypt, encrypt, hashEmail } from '../utils/cryptoUtil';
 
-// import { Op } from 'sequelize';
-// import { v4 } from 'uuid';
-// import { UserMaterialProgress } from '../models/UserMaterialProgress';
 export const getUserProgress = [
   authenticate,
   async (req: Request, res: Response) => {
@@ -16,7 +13,7 @@ export const getUserProgress = [
 
       // Cari semua transaksi user yang sudah berhasil (misal status 'verified' atau 'paid')
       const transactions = await Transaction.findAll({
-        where: { id_user: user.id_user, status: 'verified' }, // sesuaikan status transaksi yang valid
+        where: { id_user: user.id_user, status: 'completed' }, // sesuaikan status transaksi yang valid
         include: [
           {
             model: Course,
@@ -38,16 +35,18 @@ export const getUserProgress = [
 
           // Hitung total dan completed materials
           const totalMaterials = await Material.count({ where: { id_course: course.id_course } });
-          const completedMaterials = await Material.count({
+
+          const materialIds = await Material.findAll({
             where: { id_course: course.id_course },
-            include: [
-              {
-                model: UserMaterialProgress,
-                as: 'user_progress',
-                where: { id_user: user.id_user, is_completed: true },
-                required: true,
-              },
-            ],
+            attributes: ['id_material'],
+          });
+
+          const completedMaterials = await UserMaterialProgress.count({
+            where: {
+              id_user: user.id_user,
+              is_completed: true,
+              id_material: materialIds.map((m) => m.id_material),
+            },
           });
 
           // Decrypt data instructor
@@ -61,14 +60,16 @@ export const getUserProgress = [
           const decryptedLastname = decrypt(course.instructor_Id.lastName);
 
           return {
-            id: course.id_course,
-            title: course.title,
-            thumbnail: course.thumbnail_path || '../../assets/img/course-placeholder.jpg',
-            instructor: `${decryptedFirstname} ${decryptedLastname}`,
-            progress: totalMaterials > 0 ? Math.round((completedMaterials / totalMaterials) * 100) : 0,
-            lastAccessed: transaction.created_at || new Date(),
-            totalHours: Math.round(course.total_duration / 60),
-          };
+          courseId: course.id_course,
+          courseTitle: course.title,
+          courseCategory: course.category,
+          thumbnail: course.thumbnail_path || '../../assets/img/course-placeholder.jpg',
+          instructor: `${decryptedFirstname} ${decryptedLastname}`,
+          progress: totalMaterials > 0 ? Math.round((completedMaterials / totalMaterials) * 100) : 0,
+          lastAccessed: transaction.created_at || new Date(),
+          totalHours: Math.round(course.total_duration / 60),
+        };
+
         })
       );
 
@@ -122,24 +123,27 @@ export const getDashboardLearner = [
       const transactions = await Transaction.findAll({
         where: {
           id_user: user.id_user,
-          status: "success",
+          status: "completed",
         },
         include: [
           {
             model: Course,
             as: "course",
-            where: { is_active: true },
           },
         ],
       });
 
-      const activeCourses = transactions.length;
-      const studyHours = transactions.reduce((total, trx) => {
+      const activeTransactions = transactions.filter((trx) => {
+        const course = trx.course as Course;
+        return course?.is_active;
+      });
+
+      const activeCourses = activeTransactions.length;
+      const studyHours = activeTransactions.reduce((total, trx) => {
         const course = trx.course as Course;
         return total + (course?.total_duration || 0);
       }, 0);
 
-      // // 🔥 Tambahan untuk total modul diselesaikan
       const totalModuleCompleted = await UserMaterialProgress.count({
         where: {
           id_user: user.id_user,
@@ -149,7 +153,7 @@ export const getDashboardLearner = [
 
       res.json({
         activeCourses,
-        studyHours: Math.floor(studyHours / 60), // dari menit ke jam
+        studyHours: Math.floor(studyHours / 60),
         moduleCompleted: totalModuleCompleted,
       });
     } catch (error: any) {
@@ -158,3 +162,4 @@ export const getDashboardLearner = [
     }
   },
 ];
+
