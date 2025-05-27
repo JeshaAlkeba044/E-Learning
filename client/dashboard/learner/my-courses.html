@@ -898,6 +898,7 @@
           return;
         }
 
+
         courseList.innerHTML = courses
           .map((course) => {
             // Status dan badge
@@ -933,10 +934,11 @@
               } Jam`;
             }
 
+
             return `
             <div class="course-item" data-course="${status}">
               <div class="course-thumbnail">
-                <img src="http://localhost:3000/${course.thumbnail_path}" alt="${course.title}" />
+                <img src="http://localhost:3000/${course.thumbnail}" alt="${course.title}" />
                 ${badge}
               </div>
               <div class="course-details">
