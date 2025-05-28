@@ -66,7 +66,7 @@ export const getUserProgress = [
             thumbnail: course.thumbnail_path || '../../assets/img/course-placeholder.jpg',
             instructor: `${decryptedFirstname} ${decryptedLastname}`,
             progress: totalMaterials > 0
-              ? Math.round((completedMaterials / totalMaterials) * 10)
+              ? Math.round((completedMaterials / totalMaterials) * 100)
               : 0,
             module_done: completedMaterials,
             total_module: totalMaterials,
@@ -78,6 +78,8 @@ export const getUserProgress = [
 
       // Filter null (jika ada yang gagal karena bukan tutor)
       const filteredProgress = progress.filter((p) => p !== null);
+
+      console.log('\n\n\n\nUser progress:', filteredProgress);
 
       res.status(200).json({ success: true, data: filteredProgress });
     } catch (error) {
