@@ -1141,7 +1141,7 @@
           </div>
 
           <div class="content-body">
-            <div class="video-container">
+            <!-- <div class="video-container">
               <div id="videoPlaceholder"></div>
               <div class="preview-overlay" id="previewOverlay">
                 <i class="fas fa-lock"></i>
@@ -1154,15 +1154,11 @@
                   Daftar Sekarang
                 </button>
               </div>
-            </div>
+            </div> -->
 
             <div id="dynamicContent">
               <!-- Content will be loaded here -->
-            </div>
-
-            <div class="resources-section" id="resourcesSection">
-              <h3><i class="fas fa-paperclip"></i> Materi Pendukung</h3>
-              <div id="resourcesList"></div>
+               
             </div>
 
             <div class="completion-section" id="completionSection">
@@ -1174,21 +1170,6 @@
                 <label for="markComplete">Tandai sebagai selesai</label>
               </div>
             </div>
-          </div>
-
-          <!-- [Previous HTML remains the same until the content-body section] -->
-
-          <div class="content-body" id="dynamicContent">
-            <!-- Content will be loaded dynamically here -->
-          </div>
-
-          <div class="content-footer">
-            <a href="#" class="btn btn-outline">
-              <i class="fas fa-arrow-left"></i> Sebelumnya
-            </a>
-            <a href="#" class="btn btn-primary" id="nextButton">
-              Selanjutnya <i class="fas fa-arrow-right"></i>
-            </a>
           </div>
         </main>
       </div>
@@ -1422,10 +1403,7 @@
           progressSection: document.getElementById("progressSection"),
           enrollSection: document.getElementById("enrollSection"),
           subscriptionSection: document.getElementById("subscriptionSection"),
-          previewOverlay: document.getElementById("previewOverlay"),
-          resourcesSection: document.getElementById("resourcesSection"),
           completionSection: document.getElementById("completionSection"),
-          nextButton: document.getElementById("nextButton"),
           lockedModules: document.querySelectorAll(".module-item.locked"),
           videoPlayer: document.getElementById("courseVideo"),
           enrollBtn: document.getElementById("enrollBtn"),
@@ -1436,8 +1414,6 @@
           elements.progressSection.style.display = "block";
           elements.enrollSection.style.display = "none";
           elements.subscriptionSection.style.display = "none";
-          elements.previewOverlay.style.display = "none";
-          elements.resourcesSection.style.display = "block";
           elements.completionSection.style.display = "flex";
 
           // Unlock all modules
@@ -1451,18 +1427,12 @@
           if (elements.videoPlayer) {
             elements.videoPlayer.style.pointerEvents = "auto";
           }
-
-          // Enable next button
-          elements.nextButton.style.opacity = "1";
-          elements.nextButton.style.cursor = "pointer";
-          elements.nextButton.onclick = null; // Remove any previous click handler
         } else {
           // Show not enrolled state
           elements.progressSection.style.display = "none";
           elements.enrollSection.style.display = "block";
           elements.subscriptionSection.style.display = "block";
           elements.previewOverlay.style.display = "flex";
-          elements.resourcesSection.style.display = "none";
           elements.completionSection.style.display = "none";
 
           // Disable video player interactions
@@ -1470,10 +1440,6 @@
             elements.videoPlayer.style.pointerEvents = "none";
           }
 
-          // Disable next button
-          elements.nextButton.style.opacity = "0.5";
-          elements.nextButton.style.cursor = "not-allowed";
-          elements.nextButton.onclick = (e) => e.preventDefault();
         }
       }
 
@@ -1636,8 +1602,6 @@
       // Render material content
       function renderMaterialContent(material) {
         const dynamicContent = document.getElementById("dynamicContent");
-        const videoPlaceholder = document.getElementById("videoPlaceholder");
-        const resourcesList = document.getElementById("resourcesList");
         const contentTitle = document.querySelector(".contentTitle");
 
         if (!dynamicContent || !contentTitle) return;
@@ -1648,8 +1612,6 @@
 
         // Clear existing content
         dynamicContent.innerHTML = "";
-        videoPlaceholder.innerHTML = "";
-        resourcesList.innerHTML = "";
 
         // Parse content
         let content = material.content;
@@ -1685,18 +1647,18 @@
         // Render video blocks first
         if (videoBlocks.length > 0) {
           const videoBlock = videoBlocks[0]; // Show only the first video
-          videoPlaceholder.innerHTML = `
-      <div class="video-wrapper">
-        <iframe src="${getVideoEmbedUrl(videoBlock.content)}" 
-                allowfullscreen 
-                class="content-video"></iframe>
-        ${
-          videoBlock.metadata?.description
-            ? `<p class="video-description">${videoBlock.metadata.description}</p>`
-            : ""
-        }
-      </div>
-    `;
+    //       videoPlaceholder.innerHTML = `
+    //   <div class="video-wrapper">
+    //     <iframe src="${getVideoEmbedUrl(videoBlock.content)}" 
+    //             allowfullscreen 
+    //             class="content-video"></iframe>
+    //     ${
+    //       videoBlock.metadata?.description
+    //         ? `<p class="video-description">${videoBlock.metadata.description}</p>`
+    //         : ""
+    //     }
+    //   </div>
+    // `;
         }
 
         // Render other content blocks
@@ -1745,29 +1707,6 @@
 
           dynamicContent.insertAdjacentHTML("beforeend", blockHTML);
         });
-
-        // Render resources if any
-        if (resourceBlocks.length > 0) {
-          resourceBlocks.forEach((resource) => {
-            const resourceHTML = `
-        <div class="resource-item">
-          <div class="resource-icon">
-            <i class="fas fa-file-${resource.metadata?.type || "pdf"}"></i>
-          </div>
-          <div class="resource-info">
-            <h4>${resource.metadata?.title || "Unduhan"}</h4>
-            <p>${resource.metadata?.description || ""}</p>
-          </div>
-          <a href="${resource.content}" class="download-btn" download>
-            <i class="fas fa-download"></i>
-          </a>
-        </div>
-      `;
-            resourcesList.insertAdjacentHTML("beforeend", resourceHTML);
-          });
-        } else {
-          resourcesSection.style.display = "none";
-        }
 
         // Apply Quill styles to text content
         document.querySelectorAll(".quill-content").forEach((el) => {
@@ -1902,11 +1841,11 @@
       });
 
       // Enroll from preview click handler
-      document
-        .getElementById("enrollFromPreview")
-        .addEventListener("click", () => {
-          showPaymentModal("single");
-        });
+      // document
+      //   .getElementById("enrollFromPreview")
+      //   .addEventListener("click", () => {
+      //     showPaymentModal("single");
+      //   });
 
       // Show payment modal
       function showPaymentModal(planType) {

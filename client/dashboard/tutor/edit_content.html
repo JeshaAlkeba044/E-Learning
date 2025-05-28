@@ -1104,6 +1104,33 @@
       </div>
     </div>
 
+    <!-- Video URL Modal -->
+    <div id="videoUrlModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Tambah Video</h3>
+          <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="videoUrlInput">URL Video (YouTube atau URL langsung)</label>
+            <input
+              type="text"
+              id="videoUrlInput"
+              placeholder="Masukkan URL video YouTube"
+            />
+            <small class="form-text text-muted">Contoh: https://www.youtube.com/watch?v=VIDEO_ID</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="cancelVideoBtn">Batal</button>
+          <button class="btn btn-primary" id="confirmVideoBtn">
+            Simpan Video
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Include Quill library -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <!-- Include SortableJS for drag and drop -->
@@ -1124,14 +1151,7 @@
           this.currentTab = "content";
           this.uploadedImageUrl = null;
           this.currentImageBlockId = null;
-
-          // Bind methods
-          this.saveMaterialContent = this.saveMaterialContent.bind(this);
-          this.loadMaterialContent = this.loadMaterialContent.bind(this);
-          this.saveModuleSettings = this.saveModuleSettings.bind(this);
-          this.deleteCurrentModule = this.deleteCurrentModule.bind(this);
-          this.handleImageUpload = this.handleImageUpload.bind(this);
-          this.uploadImageFile = this.uploadImageFile.bind(this);
+          this.currentVideoBlockId = null;
         }
 
         init() {
@@ -1153,22 +1173,20 @@
 
           try {
             const response = await fetch(
-              `http://localhost:3000/api/learner/courses/${this.courseId}/materials`,
-
+              `http://localhost:3000/api/tutor/courses/${this.courseId}`,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
               }
             );
-            const materials = await response.json();
-
-            console.log("\n\n\nLoaded materials:", materials, "\n\n\n"); // Debug log
+            const course = await response.json();
 
             if (!response.ok) {
-              throw new Error("Failed to load materials");
+              throw new Error("Failed to load course content");
             }
 
+            const materials = course.materials_id || [];
             this.renderMaterialsList(materials);
 
             if (materials.length > 0) {
@@ -1280,7 +1298,6 @@
         }
 
         async loadMaterialContent(material) {
-          console.log("Material from parameter:", material); // Debug log
           if (!material?.id_material) {
             console.error("Invalid material object:", material);
             alert("Material tidak valid - silakan pilih modul lain");
@@ -1288,7 +1305,6 @@
           }
 
           this.currentMaterialId = material.id_material;
-          console.log("Set currentMaterialId to:", this.currentMaterialId); // Debug log
 
           document.getElementById("module-title").textContent = `${
             material.title
@@ -1317,6 +1333,7 @@
           // Clear and render content
           const contentArea = document.getElementById("content-area");
           contentArea.innerHTML = "";
+          this.quillInstances = [];
 
           if (material.content?.blocks) {
             material.content.blocks.forEach((block) => {
@@ -1373,9 +1390,9 @@
                     </div>
                   </div>
                   <img src="${
-                    block.content || "https://via.placeholder.com/800x400"
+                    block.content || "http://localhost:3000/uploads/defaultPic.png"
                   }" alt="${block.metadata?.alt || ""}">
-                  <button class="change-image-btn">Ganti Gambar</button>
+                  <button class="btn btn-outline change-image-btn">Ganti Gambar</button>
                 </div>
               `;
               break;
@@ -1403,9 +1420,7 @@
                       block.content
                     )}" allowfullscreen></iframe>
                   </div>
-                  <input type="text" class="video-url-input" value="${
-                    block.content || ""
-                  }" placeholder="Masukkan URL video">
+                  <button class="btn btn-outline change-video-btn">Ganti Video</button>
                 </div>
               `;
               break;
@@ -1548,18 +1563,11 @@
 
           // Handle video block specific events
           if (blockElement.classList.contains("video-block")) {
-            const videoUrlInput =
-              blockElement.querySelector(".video-url-input");
-            if (videoUrlInput) {
-              videoUrlInput.addEventListener("change", (e) => { 
-                e.preventDefault(); 
-                const iframe = blockElement.querySelector("iframe");
-                if (iframe) {
-                  iframe.src = this.getVideoEmbedUrl(e.target.value);
-                  this.saveMaterialContent();
-                }
+            blockElement
+              .querySelector(".change-video-btn")
+              .addEventListener("click", () => {
+                this.handleVideoUrl(blockId);
               });
-            }
           }
 
           // Handle heading block specific events
@@ -1572,207 +1580,11 @@
           }
         }
 
-        // handleImageUpload(blockId) {
-        //   this.currentImageBlockId = blockId;
-        //   const modal = document.getElementById("imageUploadModal");
-        //   const dropZone = document.getElementById("dropZone");
-        //   const imageInput = document.getElementById("imageInput");
-        //   const previewContainer = document.getElementById("imagePreview");
-        //   const previewImage = document.getElementById("previewImage");
-        //   const selectImageBtn = document.getElementById("selectImageBtn");
-        //   const changeImageBtn = document.getElementById("changeImageBtn");
-        //   const removeImageBtn = document.getElementById("removeImageBtn");
-        //   const confirmUploadBtn = document.getElementById("confirmUploadBtn");
-        //   const cancelUploadBtn = document.getElementById("cancelUploadBtn");
-        //   const closeModal = document.querySelector(".close-modal");
-        //   const imageAltText = document.getElementById("imageAltText");
-
-        //   // Reset modal state
-        //   previewContainer.style.display = "none";
-        //   dropZone.style.display = "block";
-        //   confirmUploadBtn.disabled = true;
-        //   imageAltText.value = "";
-
-        //   // Get current image data if editing existing image
-        //   const currentBlock = document.querySelector(
-        //     `[data-block-id="${blockId}"]`
-        //   );
-        //   if (currentBlock) {
-        //     const currentImage = currentBlock.querySelector("img");
-        //     if (
-        //       currentImage &&
-        //       currentImage.src &&
-        //       !currentImage.src.includes("placeholder")
-        //     ) {
-        //       previewImage.src = currentImage.src;
-        //       imageAltText.value = currentImage.alt || "";
-        //       previewContainer.style.display = "block";
-        //       dropZone.style.display = "none";
-        //       confirmUploadBtn.disabled = false;
-        //     }
-        //   }
-
-        //   // Show modal
-        //   modal.style.display = "block";
-
-        //   // Drag and drop handlers
-        //   ["dragenter", "dragover", "dragleave", "drop"].forEach(
-        //     (eventName) => {
-        //       dropZone.addEventListener(eventName, preventDefaults, false);
-        //     }
-        //   );
-
-        //   function preventDefaults(e) {
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        //   }
-
-        //   ["dragenter", "dragover"].forEach((eventName) => {
-        //     dropZone.addEventListener(eventName, highlight, false);
-        //   });
-
-        //   ["dragleave", "drop"].forEach((eventName) => {
-        //     dropZone.addEventListener(eventName, unhighlight, false);
-        //   });
-
-        //   function highlight() {
-        //     dropZone.classList.add("highlight");
-        //   }
-
-        //   function unhighlight() {
-        //     dropZone.classList.remove("highlight");
-        //   }
-
-        //   dropZone.addEventListener("drop", handleDrop, false);
-
-        //   const self = this;
-        //   function handleDrop(e) {
-        //     const dt = e.dataTransfer;
-        //     const files = dt.files;
-        //     if (files.length > 0 && files[0].type.startsWith("image/")) {
-        //       handleImageFile(files[0]);
-        //     }
-        //   }
-
-        //   // File input handler
-        //   selectImageBtn.addEventListener("click", () => {
-        //     imageInput.click();
-        //   });
-
-        //   imageInput.addEventListener("change", (e) => {
-        //     if (
-        //       e.target.files.length > 0 &&
-        //       e.target.files[0].type.startsWith("image/")
-        //     ) {
-        //       handleImageFile(e.target.files[0]);
-        //     }
-        //   });
-
-        //   // Change image button
-        //   changeImageBtn.addEventListener("click", () => {
-        //     previewContainer.style.display = "none";
-        //     dropZone.style.display = "block";
-        //     imageInput.click();
-        //   });
-
-        //   // Remove image button
-        //   removeImageBtn.addEventListener("click", async () => {
-        //     const block = document.querySelector(
-        //       `[data-block-id="${blockId}"]`
-        //     );
-        //     if (block) {
-        //       const img = block.querySelector("img");
-        //       if (img) {
-        //         // Reset to placeholder
-        //         img.src = "https://via.placeholder.com/800x400";
-        //         img.alt = "";
-        //       }
-        //     }
-        //     modal.style.display = "none";
-        //     self.saveMaterialContent();
-        //   });
-
-        //   // Confirm upload button
-        //   confirmUploadBtn.addEventListener("click", async () => {
-        //     if (!self.uploadedImageUrl) {
-        //       alert("Silakan unggah gambar terlebih dahulu");
-        //       return;
-        //     }
-
-        //     const block = document.querySelector(
-        //       `[data-block-id="${blockId}"]`
-        //     );
-        //     if (block) {
-        //       const img = block.querySelector("img");
-        //       if (img) {
-        //         img.src = self.uploadedImageUrl;
-        //         img.alt = imageAltText.value;
-        //       }
-        //     }
-
-        //     modal.style.display = "none";
-        //     self.saveMaterialContent();
-        //   });
-
-        //   // Cancel and close handlers
-        //   cancelUploadBtn.addEventListener("click", () => {
-        //     modal.style.display = "none";
-        //   });
-
-        //   closeModal.addEventListener("click", () => {
-        //     modal.style.display = "none";
-        //   });
-
-        //   // Handle image file selection
-        //   function handleImageFile(file) {
-        //     const reader = new FileReader();
-        //     reader.onload = (e) => {
-        //       previewImage.src = e.target.result;
-        //       previewContainer.style.display = "block";
-        //       dropZone.style.display = "none";
-
-        //       // Upload the file to server
-        //       self.uploadImageFile(file);
-        //     };
-        //     reader.readAsDataURL(file);
-        //   }
-        // }
-
-        async uploadImageFile(file) {
-          const formData = new FormData();
-          formData.append("image", file);
-
-          try {
-            const response = await fetch("http://localhost:3000/api/upload", {
-              method: "POST",
-              body: formData,
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
-
-            if (!response.ok) {
-              throw new Error(await response.text());
-            }
-
-            const result = await response.json();
-            this.uploadedImageUrl = result.imageUrl;
-            document.getElementById("confirmUploadBtn").disabled = false;
-          } catch (error) {
-            console.error("Error uploading image:", error);
-            alert("Gagal mengunggah gambar");
-            document.getElementById("previewImage").src = "";
-            document.getElementById("imagePreview").style.display = "none";
-            document.getElementById("dropZone").style.display = "block";
-          }
-        }
-
         async addNewMaterial() {
           const title = prompt("Masukkan judul modul baru:");
           if (!title) return;
 
           try {
-            // Get the token from localStorage or sessionStorage
             const token =
               localStorage.getItem("token") || sessionStorage.getItem("token");
             if (!token) {
@@ -1847,15 +1659,14 @@
                     content = quill ? quill.root.innerHTML : "";
                     break;
                   case "image":
-                    content = blockElement.querySelector("img")?.src || "";
+                    content = blockElement.querySelector("img")?.src || "http://localhost:3000/uploads/defaultPic.png";
                     metadata = {
-                      alt: blockElement.querySelector("img")?.alt || "",
+                      alt: blockElement.querySelector("img")?.alt || "Default Image",
                     };
                     break;
                   case "video":
-                    content =
-                      blockElement.querySelector(".video-url-input")?.value ||
-                      "";
+                    const iframe = blockElement.querySelector("iframe");
+                    content = iframe ? iframe.src : "";
                     break;
                   case "heading":
                     content =
@@ -1866,11 +1677,6 @@
                 return { id: blockId, type: blockType, content, metadata };
               }
             );
-
-            // Validate we have at least one block
-            if (blocks.length === 0) {
-              throw new Error("No content blocks to save");
-            }
 
             const response = await fetch(
               `http://localhost:3000/api/tutor/materials/${this.currentMaterialId}/content`,
@@ -1952,12 +1758,10 @@
                 break;
 
               case "video":
-                const videoUrl =
-                  blockElement.querySelector(".video-url-input").value;
-                const embedUrl = this.getVideoEmbedUrl(videoUrl);
+                const videoUrl = blockElement.querySelector("iframe").src;
                 blockHtml = `
                   <div class="preview-video-container">
-                    <iframe src="${embedUrl}" allowfullscreen></iframe>
+                    <iframe src="${videoUrl}" allowfullscreen></iframe>
                   </div>
                 `;
                 break;
@@ -1973,25 +1777,6 @@
               previewContainer.insertAdjacentHTML("beforeend", blockHtml);
             }
           });
-
-          // Add resources section (if needed)
-          // previewContainer.insertAdjacentHTML("beforeend", `
-          //   <div class="preview-resources-section">
-          //     <h3><i class="fas fa-paperclip"></i> Materi Pendukung</h3>
-          //     <div class="preview-resource-item">
-          //       <div class="preview-resource-icon">
-          //         <i class="fas fa-file-pdf"></i>
-          //       </div>
-          //       <div class="preview-resource-info">
-          //         <h4>Slide Presentasi</h4>
-          //         <p>PDF • 2.4 MB</p>
-          //       </div>
-          //       <a href="#" class="preview-download-btn">
-          //         <i class="fas fa-download"></i>
-          //       </a>
-          //     </div>
-          //   </div>
-          // `);
 
           // Update preview area
           previewArea.innerHTML = "";
@@ -2248,8 +2033,8 @@
                       </div>
                     </div>
                   </div>
-                  <img src="https://via.placeholder.com/800x400" alt="Placeholder image">
-                  <button class="change-image-btn">Ganti Gambar</button>
+                  <img src="http://localhost:3000/uploads/defaultPic.png" alt="Default Picture">
+                  <button class="btn btn-outline change-image-btn">Ganti Gambar</button>
                 </div>
               `;
               break;
@@ -2273,7 +2058,7 @@
                   <div class="video-container">
                     <iframe src="" allowfullscreen></iframe>
                   </div>
-                  <input type="text" class="video-url-input" placeholder="Masukkan URL video">
+                  <button class="btn btn-outline change-video-btn">Ganti Video</button>
                 </div>
               `;
               break;
@@ -2338,383 +2123,317 @@
           this.saveMaterialContent();
         }
 
-        // Handle Image Upload terbaru:
         handleImageUpload(blockId) {
-  this.currentImageBlockId = blockId;
-  const modal = document.getElementById("imageUploadModal");
-  const dropZone = document.getElementById("dropZone");
-  const imageInput = document.getElementById("imageInput");
-  const previewContainer = document.getElementById("imagePreview");
-  const previewImage = document.getElementById("previewImage");
-  const selectImageBtn = document.getElementById("selectImageBtn");
-  const changeImageBtn = document.getElementById("changeImageBtn");
-  const removeImageBtn = document.getElementById("removeImageBtn");
-  const confirmUploadBtn = document.getElementById("confirmUploadBtn");
-  const cancelUploadBtn = document.getElementById("cancelUploadBtn");
-  const closeModal = document.querySelector(".close-modal");
-  const imageAltText = document.getElementById("imageAltText");
+          this.currentImageBlockId = blockId;
+          const modal = document.getElementById("imageUploadModal");
+          const dropZone = document.getElementById("dropZone");
+          const imageInput = document.getElementById("imageInput");
+          const previewContainer = document.getElementById("imagePreview");
+          const previewImage = document.getElementById("previewImage");
+          const confirmUploadBtn = document.getElementById("confirmUploadBtn");
+          const imageAltText = document.getElementById("imageAltText");
 
-  const self = this;
+          // Reset modal state
+          previewContainer.style.display = "none";
+          dropZone.style.display = "block";
+          confirmUploadBtn.disabled = true;
+          imageAltText.value = "";
+          imageInput.value = "";
 
-  // Reset modal state
-  previewContainer.style.display = "none";
-  dropZone.style.display = "block";
-  confirmUploadBtn.disabled = true;
-  imageAltText.value = "";
-  imageInput.value = "";
+          // Check if editing existing image
+          const currentBlock = document.querySelector(
+            `[data-block-id="${blockId}"]`
+          );
+          if (currentBlock) {
+            const currentImage = currentBlock.querySelector("img");
+            if (currentImage && currentImage.src) {
+              previewImage.src = currentImage.src;
+              imageAltText.value = currentImage.alt || "";
+              previewContainer.style.display = "block";
+              dropZone.style.display = "none";
+              confirmUploadBtn.disabled = false;
+            }
+          }
 
-  const currentBlock = document.querySelector(`[data-block-id="${blockId}"]`);
-  if (currentBlock) {
-    const currentImage = currentBlock.querySelector("img");
-    if (currentImage && currentImage.src && !currentImage.src.includes("placeholder")) {
-      previewImage.src = currentImage.src;
-      imageAltText.value = currentImage.alt || "";
-      previewContainer.style.display = "block";
-      dropZone.style.display = "none";
-      confirmUploadBtn.disabled = false;
-    }
-  }
+          // Show modal
+          modal.style.display = "block";
 
-  modal.style.display = "block";
+          // Setup drag and drop
+          const preventDefaults = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          };
 
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
+          const highlight = () => dropZone.classList.add("highlight");
+          const unhighlight = () => dropZone.classList.remove("highlight");
 
-  function highlight() {
-    dropZone.classList.add("highlight");
-  }
+          const handleDrop = (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0 && files[0].type.startsWith("image/")) {
+              this.handleImageFile(files[0]);
+            }
+          };
 
-  function unhighlight() {
-    dropZone.classList.remove("highlight");
-  }
+          // Add event listeners
+          ["dragenter", "dragover", "dragleave", "drop"].forEach(
+            (eventName) => {
+              dropZone.addEventListener(eventName, preventDefaults, false);
+            }
+          );
 
-  function handleImageFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      previewImage.src = e.target.result;
-      previewContainer.style.display = "block";
-      dropZone.style.display = "none";
-      self.uploadImageFile(file);
-    };
-    reader.readAsDataURL(file);
-  }
+          ["dragenter", "dragover"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, highlight, false);
+          });
 
-  function handleDrop(e) {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    if (files.length > 0 && files[0].type.startsWith("image/")) {
-      handleImageFile(files[0]);
-    }
-  }
+          ["dragleave", "drop"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+          });
 
-  ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-    dropZone.addEventListener(eventName, preventDefaults, false);
-  });
+          dropZone.addEventListener("drop", handleDrop, false);
 
-  ["dragenter", "dragover"].forEach((eventName) => {
-    dropZone.addEventListener(eventName, highlight, false);
-  });
+          // Setup button event listeners
+          document.getElementById("selectImageBtn").onclick = () => {
+            imageInput.click();
+          };
 
-  ["dragleave", "drop"].forEach((eventName) => {
-    dropZone.addEventListener(eventName, unhighlight, false);
-  });
+          imageInput.onchange = (e) => {
+            if (e.target.files && e.target.files[0]) {
+              this.handleImageFile(e.target.files[0]);
+            }
+          };
 
-  dropZone.addEventListener("drop", handleDrop, false);
+          document.getElementById("changeImageBtn").onclick = () => {
+            imageInput.click();
+          };
 
-  selectImageBtn.onclick = () => imageInput.click();
-  changeImageBtn.onclick = () => {
-    previewContainer.style.display = "none";
-    dropZone.style.display = "block";
-    imageInput.click();
-  };
-  imageInput.onchange = (e) => {
-    if (e.target.files.length > 0 && e.target.files[0].type.startsWith("image/")) {
-      handleImageFile(e.target.files[0]);
-    }
-  };
-  removeImageBtn.onclick = () => {
-    const block = document.querySelector(`[data-block-id="${blockId}"]`);
-    if (block) {
-      const img = block.querySelector("img");
-      if (img) {
-        img.src = "https://via.placeholder.com/800x400";
-        img.alt = "";
-      }
-    }
-    modal.style.display = "none";
-    self.saveMaterialContent();
-  };
-  confirmUploadBtn.onclick = () => {
-    if (!self.uploadedImageUrl) {
-      alert("Silakan unggah gambar terlebih dahulu.");
-      return;
-    }
-    const block = document.querySelector(`[data-block-id="${blockId}"]`);
-    if (block) {
-      const img = block.querySelector("img");
-      if (img) {
-        img.src = self.uploadedImageUrl;
-        img.alt = imageAltText.value;
-      }
-    }
-    modal.style.display = "none";
-    self.saveMaterialContent();
-  };
-  cancelUploadBtn.onclick = () => {
-    modal.style.display = "none";
-  };
-  closeModal.onclick = () => {
-    modal.style.display = "none";
-  };
-}
+          document.getElementById("removeImageBtn").onclick = () => {
+            const block = document.querySelector(
+              `[data-block-id="${blockId}"]`
+            );
+            if (block) {
+              const img = block.querySelector("img");
+              if (img) {
+                img.src = "http://localhost:3000/uploads/defaultPic.png";
+                img.alt = "Default Image";
+              }
+            }
+            modal.style.display = "none";
+            this.saveMaterialContent();
+          };
 
+          document.getElementById("confirmUploadBtn").onclick = () => {
+            if (!this.uploadedImageUrl) {
+              alert("Silakan unggah gambar terlebih dahulu");
+              return;
+            }
 
-        // Di dalam class CourseContentEditor, tambahkan method baru:
+            const block = document.querySelector(
+              `[data-block-id="${blockId}"]`
+            );
+            if (block) {
+              const img = block.querySelector("img");
+              if (img) {
+                img.src = this.uploadedImageUrl;
+                img.alt = imageAltText.value || "Course Image";
+              }
+            }
+            modal.style.display = "none";
+            this.saveMaterialContent();
+          };
 
-        // handleImageUpload(blockId) {
-        //   this.currentImageBlockId = blockId;
-        //   const modal = document.getElementById("imageUploadModal");
-        //   const dropZone = document.getElementById("dropZone");
-        //   const imageInput = document.getElementById("imageInput");
-        //   const previewContainer = document.getElementById("imagePreview");
-        //   const previewImage = document.getElementById("previewImage");
-        //   const selectImageBtn = document.getElementById("selectImageBtn");
-        //   const changeImageBtn = document.getElementById("changeImageBtn");
-        //   const removeImageBtn = document.getElementById("removeImageBtn");
-        //   const confirmUploadBtn = document.getElementById("confirmUploadBtn");
-        //   const cancelUploadBtn = document.getElementById("cancelUploadBtn");
-        //   const closeModal = document.querySelector(".close-modal");
-        //   const imageAltText = document.getElementById("imageAltText");
+          document.getElementById("cancelUploadBtn").onclick = () => {
+            modal.style.display = "none";
+          };
 
-        //   // Reset modal state
-        //   previewContainer.style.display = "none";
-        //   dropZone.style.display = "block";
-        //   confirmUploadBtn.disabled = true;
-        //   imageAltText.value = "";
+          document.querySelector("#imageUploadModal .close-modal").onclick = () => {
+            modal.style.display = "none";
+          };
+        }
 
-        //   // Get current image data if editing existing image
-        //   const currentBlock = document.querySelector(
-        //     `[data-block-id="${blockId}"]`
-        //   );
-        //   if (currentBlock) {
-        //     const currentImage = currentBlock.querySelector("img");
-        //     if (
-        //       currentImage &&
-        //       currentImage.src &&
-        //       !currentImage.src.includes("placeholder")
-        //     ) {
-        //       previewImage.src = currentImage.src;
-        //       imageAltText.value = currentImage.alt || "";
-        //       previewContainer.style.display = "block";
-        //       dropZone.style.display = "none";
-        //       confirmUploadBtn.disabled = false;
-        //     }
-        //   }
+        handleImageFile(file) {
+          const previewImage = document.getElementById("previewImage");
+          const previewContainer = document.getElementById("imagePreview");
+          const dropZone = document.getElementById("dropZone");
+          const confirmUploadBtn = document.getElementById("confirmUploadBtn");
 
-        //   // Show modal
-        //   modal.style.display = "block";
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            previewContainer.style.display = "block";
+            dropZone.style.display = "none";
+          };
+          reader.readAsDataURL(file);
 
-        //   // Drag and drop handlers
-        //   ["dragenter", "dragover", "dragleave", "drop"].forEach(
-        //     (eventName) => {
-        //       dropZone.addEventListener(eventName, preventDefaults, false);
-        //     }
-        //   );
+          // Upload the file
+          this.uploadImageFile(file)
+            .then((imageUrl) => {
+              this.uploadedImageUrl = imageUrl;
+              confirmUploadBtn.disabled = false;
+            })
+            .catch((error) => {
+              console.error("Upload error:", error);
+              alert("Gagal mengunggah gambar: " + error.message);
+              previewContainer.style.display = "none";
+              dropZone.style.display = "block";
+            });
+        }
 
-        //   function preventDefaults(e) {
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        //   }
+        handleImageFile(file) {
+          const previewImage = document.getElementById("previewImage");
+          const previewContainer = document.getElementById("imagePreview");
+          const confirmUploadBtn = document.getElementById("confirmUploadBtn");
 
-        //   ["dragenter", "dragover"].forEach((eventName) => {
-        //     dropZone.addEventListener(eventName, highlight, false);
-        //   });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            previewContainer.style.display = "block";
+            document.getElementById("dropZone").style.display = "none";
 
-        //   ["dragleave", "drop"].forEach((eventName) => {
-        //     dropZone.addEventListener(eventName, unhighlight, false);
-        //   });
-
-        //   function highlight() {
-        //     dropZone.classList.add("highlight");
-        //   }
-
-        //   function unhighlight() {
-        //     dropZone.classList.remove("highlight");
-        //   }
-
-        //   dropZone.addEventListener("drop", handleDrop, false);
-
-        //   function handleDrop(e) {
-        //     const dt = e.dataTransfer;
-        //     const files = dt.files;
-        //     if (files.length > 0 && files[0].type.startsWith("image/")) {
-        //       handleImageFile(files[0]);
-        //     }
-        //   }
-
-        //   // File input handler
-        //   selectImageBtn.addEventListener("click", () => {
-        //     imageInput.click();
-        //   });
-
-        //   imageInput.addEventListener("change", (e) => {
-        //     if (
-        //       e.target.files.length > 0 &&
-        //       e.target.files[0].type.startsWith("image/")
-        //     ) {
-        //       handleImageFile(e.target.files[0]);
-        //     }
-        //   });
-
-        //   // Change image button
-        //   changeImageBtn.addEventListener("click", () => {
-        //     previewContainer.style.display = "none";
-        //     dropZone.style.display = "block";
-        //     imageInput.click();
-        //   });
-
-        //   // Remove image button
-        //   removeImageBtn.addEventListener("click", async () => {
-        //     const block = document.querySelector(
-        //       `[data-block-id="${blockId}"]`
-        //     );
-        //     if (block) {
-        //       const img = block.querySelector("img");
-        //       if (img && img.src) {
-        //         try {
-        //           // Extract filename from URL
-        //           const filename = img.src.split("/").pop();
-
-        //           // Call delete endpoint
-        //           const response = await fetch(`http://localhost:3000/api/upload/${filename}`, {
-        //             method: "DELETE",
-        //             headers: {
-        //               Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //             },
-        //           });
-
-        //           if (!response.ok) {
-        //             throw new Error("Failed to delete image");
-        //           }
-
-        //           // Reset image to placeholder
-        //           img.src = "https://via.placeholder.com/800x400";
-        //           img.alt = "";
-
-        //           // Close modal
-        //           modal.style.display = "none";
-
-        //           // Save changes
-        //           this.saveMaterialContent();
-        //         } catch (error) {
-        //           console.error("Error deleting image:", error);
-        //           alert("Gagal menghapus gambar");
-        //         }
-        //       }
-        //     }
-        //   });
-
-        //   // Confirm upload button
-        //   confirmUploadBtn.addEventListener("click", async () => {
-        //     if (!this.uploadedImageUrl) {
-        //       alert("Silakan unggah gambar terlebih dahulu");
-        //       return;
-        //     }
-
-        //     const block = document.querySelector(
-        //       `[data-block-id="${blockId}"]`
-        //     );
-        //     if (block) {
-        //       const img = block.querySelector("img");
-        //       if (img) {
-        //         img.src = this.uploadedImageUrl;
-        //         img.alt = imageAltText.value;
-        //       }
-        //     }
-
-        //     modal.style.display = "none";
-        //     this.saveMaterialContent();
-        //   });
-
-        //   // Cancel and close handlers
-        //   cancelUploadBtn.addEventListener("click", () => {
-        //     modal.style.display = "none";
-        //   });
-
-        //   closeModal.addEventListener("click", () => {
-        //     modal.style.display = "none";
-        //   });
-
-        //   // Handle image file selection
-        //   const handleImageFile = (file) => {
-        //     const reader = new FileReader();
-        //     reader.onload = (e) => {
-        //       previewImage.src = e.target.result;
-        //       previewContainer.style.display = "block";
-        //       dropZone.style.display = "none";
-
-        //       // Upload the file to server
-        //       this.uploadImageFile(file);
-        //     };
-        //     reader.readAsDataURL(file);
-        //   };
-        // }
+            // Upload the file to server
+            this.uploadImageFile(file);
+          };
+          reader.readAsDataURL(file);
+        }
 
         async uploadImageFile(file) {
-  const formData = new FormData();
-  formData.append("image", file);
+          const formData = new FormData();
+          formData.append("image", file);
 
-  try {
-    const response = await fetch("http://localhost:3000/api/upload", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+          try {
+            const response = await fetch("http://localhost:3000/api/upload", {
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
 
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
+            if (!response.ok) {
+              throw new Error(await response.text());
+            }
 
-    const result = await response.json();
-    console.log("Image uploaded successfully:", result.imageUrl);
-    alert("Image uploaded successfully:"+ result.imageUrl);
-    this.uploadedImageUrl = result.imageUrl;
-    document.getElementById("confirmUploadBtn").disabled = false;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    alert("Gagal mengunggah gambar");
-  }
-}
+            const result = await response.json();
+            return result.imageUrl;
+          } catch (error) {
+            console.error("Upload error:", error);
+            throw error;
+          }
+        }
 
+        handleVideoUrl(blockId) {
+          this.currentVideoBlockId = blockId;
+          const modal = document.getElementById("videoUrlModal");
+          const videoUrlInput = document.getElementById("videoUrlInput");
+          const confirmVideoBtn = document.getElementById("confirmVideoBtn");
+
+          // Check if editing existing video
+          const currentBlock = document.querySelector(
+            `[data-block-id="${blockId}"]`
+          );
+          if (currentBlock) {
+            const iframe = currentBlock.querySelector("iframe");
+            if (iframe && iframe.src) {
+              // Extract original YouTube URL if it's an embed URL
+              const embedMatch = iframe.src.match(/youtube\.com\/embed\/([^\/\?]+)/);
+              if (embedMatch) {
+                videoUrlInput.value = `https://www.youtube.com/watch?v=${embedMatch[1]}`;
+              } else {
+                videoUrlInput.value = iframe.src;
+              }
+            }
+          }
+
+          // Show modal
+          modal.style.display = "block";
+
+          // Setup event listeners
+          document.getElementById("cancelVideoBtn").onclick = () => {
+            modal.style.display = "none";
+          };
+
+          document.querySelector("#videoUrlModal .close-modal").onclick = () => {
+            modal.style.display = "none";
+          };
+
+          confirmVideoBtn.onclick = () => {
+            const videoUrl = videoUrlInput.value.trim();
+            if (!videoUrl) {
+              alert("Silakan masukkan URL video");
+              return;
+            }
+
+            const embedUrl = this.getVideoEmbedUrl(videoUrl);
+            if (!embedUrl) {
+              alert("URL video tidak valid. Harap masukkan URL YouTube yang valid.");
+              return;
+            }
+
+            const block = document.querySelector(
+              `[data-block-id="${blockId}"]`
+            );
+            if (block) {
+              const iframe = block.querySelector("iframe");
+              if (iframe) {
+                iframe.src = embedUrl;
+              }
+            }
+
+            modal.style.display = "none";
+            this.saveMaterialContent();
+          };
+        }
+
+
+        getVideoEmbedUrl(url) {
+          if (!url) return null;
+
+          // Handle YouTube URLs
+          if (url.includes("youtube.com") || url.includes("youtu.be")) {
+            // Extract video ID from various YouTube URL formats
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            
+            if (match && match[2].length === 11) {
+              return `https://www.youtube.com/embed/${match[2]}`;
+            }
+          }
+
+          // For direct video URLs
+          if (url.match(/\.(mp4|webm|ogg)$/i)) {
+            return url;
+          }
+
+          return null;
+        }
       }
 
       // Update Profile Picture
- document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", () => {
         try {
-          const userData = JSON.parse(localStorage.getItem('user'));
-          console.log("user data", userData)
+          const userData = JSON.parse(localStorage.getItem("user"));
+          console.log("user data", userData);
           if (userData) {
             // Update profile name
-            const profileName = document.getElementById('profile-name');
+            const profileName = document.getElementById("profile-name");
             profileName.textContent = `${userData.firstName} ${userData.lastName}`;
-            
+
             // Update profile picture
-            const profilePic = document.getElementById('profile-picture');
+            const profilePic = document.getElementById("profile-picture");
             if (userData.photo_path) {
               // Normalize the photo_path to ensure correct URL
-              let photoPath = userData.photo_path.replace(/\\/g, '/').replace(/^\/+/, '');
-              let photoUrl = userData.photo_path.startsWith('http')
+              let photoPath = userData.photo_path
+                .replace(/\\/g, "/")
+                .replace(/^\/+/, "");
+              let photoUrl = userData.photo_path.startsWith("http")
                 ? userData.photo_path
                 : `http://localhost:3000/${photoPath}`;
 
               profilePic.src = photoUrl;
-              console.log("profilePic.src", profilePic.src)
-              profilePic.onerror = function() {
-                profilePic.src = 'http://localhost:3000/uploads/defaultPic.png';
+              console.log("profilePic.src", profilePic.src);
+              profilePic.onerror = function () {
+                profilePic.src = "http://localhost:3000/uploads/defaultPic.png";
               };
             } else {
               // Default profile picture if none is set
@@ -2725,9 +2444,6 @@
           console.error("Error loading user data:", error);
         }
       });
-
-
-      
     </script>
   </body>
 </html>

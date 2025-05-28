@@ -661,7 +661,7 @@
               <a href="settings/profile.html">
                 <i class="fas fa-user"></i> Profil Saya
               </a>
-              <a href="../../auth/login/indexLogin.html">
+              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
                 <i class="fas fa-sign-out-alt"></i> Keluar
               </a>
             </div>
@@ -897,7 +897,7 @@
           return;
         }
 
-
+        console.log("Courses data:", courses.data); // Debug
     courseList.innerHTML = courses.data
       .map((course) => {
         // Default status
@@ -906,7 +906,7 @@
 
         const moduleDone = course.module_done || 0;
         const totalModule = course.total_module || 0;
-        const progressJam = course.progress || 0;
+        const progressJam = (course.totalHours * course.progress / 100) || 0;
         const totalJam = course.totalHours || 0;
 
         // Tentukan status berdasarkan progres
@@ -926,7 +926,7 @@
                 ${badge}
               </div>
               <div class="course-details">
-                <div class="course-category">${course.category || ""}</div>
+                <div class="course-category">${course.courseCategory || ""}</div>
                 <h3 class="course-title">${course.courseTitle || ""}</h3>
                 <p class="course-instructor">Oleh ${course.instructor}</p>
                 <div class="course-meta">
@@ -934,7 +934,7 @@
                   <span><i class="fas fa-clock"></i> ${jamInfo}</span>
                 </div>
                 <div class="course-actions">
-                  <a href="course_detail.html?id=${course.id_course}" class="btn-continue">Lihat</a>
+                  <a href="course_detail.html?id=${course.courseId}" class="btn-continue">Lihat</a>
                 </div>
               </div>
             </div>

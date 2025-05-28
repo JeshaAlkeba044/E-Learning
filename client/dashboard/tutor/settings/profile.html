@@ -635,6 +635,7 @@
             <a
               href="../../../auth/login/indexLogin.html"
               class="settings-link dropdown-item"
+              onclick="localStorage.removeItem('token'); localStorage.removeItem('user');"
             >
               <i class="fas fa-sign-out-alt"></i>
               <span>Logout</span>

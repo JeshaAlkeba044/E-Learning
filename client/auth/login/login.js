@@ -10,6 +10,27 @@ import { setupFormSubmit } from '../shared/auth-form.js';
 document.addEventListener('DOMContentLoaded', function() {
   // Setup password toggle
   setupPasswordToggle('password', 'togglePassword');
+
+  if (localStorage.getItem('token') && localStorage.getItem('user')) {
+    // User is already logged in, redirect to appropriate dashboard
+    const user = JSON.parse(localStorage.getItem('user'));
+    let redirectUrl;
+    
+    switch(user.role) {
+      case 'tutor':
+        redirectUrl = '../../dashboard/tutor/dashboard_tutor.html';
+        break;
+      case 'learner':
+        redirectUrl = '../../dashboard/learner/LearnerDashboard.html';
+        break;
+      default:
+        redirectUrl = '../../index.html';
+    }
+    
+    window.location.href = redirectUrl;
+    
+  }
+  
   
   // Form validation and submission
   setupFormSubmit('loginForm', 'login', {
