@@ -1174,57 +1174,6 @@
         </main>
       </div>
 
-      <!-- Subscription Section (Hidden when enrolled) -->
-      <div class="subscription-section" id="subscriptionSection">
-        <div class="section-title">
-          <h2>Mulai Belajar Sekarang</h2>
-          <p>
-            Berlangganan untuk mengakses semua materi kursus dan fitur premium
-          </p>
-        </div>
-
-        <div class="pricing-grid">
-          <div class="plan-card">
-            <h3>Perbulan</h3>
-            <p class="price">Rp250.000 <span>/bulan</span></p>
-            <p class="sub-price">Akses semua kursus selama 1 bulan</p>
-
-            <ul class="benefits">
-              <li>Akses materi tanpa batas</li>
-              <li>Materi berkualitas tinggi</li>
-              <li>Diskusi langsung dengan tutor</li>
-              <li>Sertifikat penyelesaian</li>
-            </ul>
-
-            <div class="button-group">
-              <button class="btn btn-primary btn-subscribe" data-plan="monthly">
-                Berlangganan
-              </button>
-            </div>
-          </div>
-
-          <div class="plan-card popular">
-            <h3>Pertahun</h3>
-            <p class="price">Rp900.000 <span>/tahun</span></p>
-            <p class="sub-price">Akses semua kursus selama 1 tahun</p>
-
-            <ul class="benefits">
-              <li>Hemat 70% dibanding bulanan</li>
-              <li>Materi berkualitas tinggi</li>
-              <li>Akses tanpa batas ke semua kursus</li>
-              <li>Diskusi langsung dengan tutor</li>
-              <li>Sertifikat penyelesaian</li>
-            </ul>
-
-            <div class="button-group">
-              <button class="btn btn-primary btn-subscribe" data-plan="yearly">
-                Berlangganan
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Payment Modal -->
       <div class="modal" id="paymentModal">
         <div class="modal-content">
@@ -1402,7 +1351,6 @@
         const elements = {
           progressSection: document.getElementById("progressSection"),
           enrollSection: document.getElementById("enrollSection"),
-          subscriptionSection: document.getElementById("subscriptionSection"),
           completionSection: document.getElementById("completionSection"),
           lockedModules: document.querySelectorAll(".module-item.locked"),
           videoPlayer: document.getElementById("courseVideo"),
@@ -1413,7 +1361,6 @@
           // Show enrolled state
           elements.progressSection.style.display = "block";
           elements.enrollSection.style.display = "none";
-          elements.subscriptionSection.style.display = "none";
           elements.completionSection.style.display = "flex";
 
           // Unlock all modules
@@ -1431,8 +1378,6 @@
           // Show not enrolled state
           elements.progressSection.style.display = "none";
           elements.enrollSection.style.display = "block";
-          elements.subscriptionSection.style.display = "block";
-          elements.previewOverlay.style.display = "flex";
           elements.completionSection.style.display = "none";
 
           // Disable video player interactions
