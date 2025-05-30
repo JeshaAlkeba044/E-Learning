@@ -35,9 +35,9 @@ const router = express.Router();
 // Course routes
 router.post('/courses', upload.single('thumbnail'), createCourse);
 router.get('/courses/instructor/:id_user', getCoursesByInstructor);
-router.put('/courses/:id_course', upload.single('thumbnail'), updateCourse);
-router.get('/courses/:id_course', getCourseById);
-router.delete('/courses/:id_course', deleteCourse);
+router.put('/courses/:id', upload.single('thumbnail'), updateCourse);
+router.get('/courses/:id', getCourseById);
+router.delete('/courses/:id', deleteCourse);
 
 // Material routes
 router.post('/courses/:id_course/materials', createMaterial);
