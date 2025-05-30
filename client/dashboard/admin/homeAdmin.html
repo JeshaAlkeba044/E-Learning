@@ -214,6 +214,9 @@
     <script src="../../assets/js/admin/getStatistic.js"></script>
     <script src="../../assets/js/admin/getDashBoard.js"></script>
     <script src="../../assets/js/admin/getUnverifiedTutor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 
     <script>
     const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
@@ -233,6 +236,112 @@
     dropdown.classList.toggle('show');
     });
     
+    const yearFilter = document.getElementById("yearFilter");
+    const monthFilter = document.getElementById("monthFilter");
+    const refreshBtn = document.getElementById("refreshData");
+
+    const totalTransactions = document.getElementById("totalTransactions");
+    const totalRevenue = document.getElementById("totalRevenue");
+    const avgMonthly = document.getElementById("avgMonthly");
+    const bestMonth = document.getElementById("bestMonth");
+
+    const transactionsTableBody = document.getElementById("transactionsTableBody");
+
+    const revenueChartCanvas = document.getElementById("revenueChart").getContext("2d");
+    const transactionsChartCanvas = document.getElementById("transactionsChart").getContext("2d");
+
+    let revenueChart, transactionsChart;
+    
+    async function fetchData() {
+        const year = yearFilter.value;
+        const month = monthFilter.value;
+        let url = `http://localhost:3000/api/transactions/statistik`;
+
+        const params = [];
+        if (year !== "all") params.push(`year=${year}`);
+        if (month !== "all") params.push(`month=${month}`);
+        if (params.length > 0) url += `?${params.join("&")}`;
+
+        try {
+            const res = await fetch(url);
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            const data = await res.json();
+
+            updateSummary(data.summary);
+            updateTable(data.table);
+            updateCharts(data.chart);
+
+        } catch (error) {
+            console.error("Gagal ambil data 😢:", error);
+        }
+    }
+
+    function updateSummary(summary) {
+        totalTransactions.textContent = summary.totalTransactions;
+        totalRevenue.textContent = formatRupiah(summary.totalRevenue);
+        avgMonthly.textContent = formatRupiah(summary.avgMonthly);
+        bestMonth.textContent = summary.bestMonth;
+    }
+
+    function updateTable(rows) {
+        transactionsTableBody.innerHTML = "";
+
+        rows.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${row.monthName}</td>
+                <td>${row.transactionCount}</td>
+                <td>${formatRupiah(row.totalRevenue)}</td>
+                <td>${formatRupiah(row.avgPerTransaction)}</td>
+            `;
+            transactionsTableBody.appendChild(tr);
+        });
+    }
+
+    function updateCharts(chartData) {
+        if (revenueChart) revenueChart.destroy();
+        if (transactionsChart) transactionsChart.destroy();
+
+        revenueChart = new Chart(revenueChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: chartData.months,
+                datasets: [{
+                    label: 'Pendapatan',
+                    data: chartData.revenue,
+                    backgroundColor: '#4CAF50'
+                }]
+            }
+        });
+
+        transactionsChart = new Chart(transactionsChartCanvas, {
+            type: 'line',
+            data: {
+                labels: chartData.months,
+                datasets: [{
+                    label: 'Jumlah Transaksi',
+                    data: chartData.transactions,
+                    backgroundColor: 'rgba(33, 150, 243, 0.5)',
+                    borderColor: '#2196F3',
+                    fill: true
+                }]
+            }
+        });
+    }
+
+    function formatRupiah(number) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(number);
+    }
+
+    refreshBtn.addEventListener("click", fetchData);
+    window.addEventListener("DOMContentLoaded", fetchData);
+
     </script>
 
 </body>

@@ -1,5 +1,104 @@
 import { Request, Response } from 'express';
-import { Transaction, Course, User } from '../models';
+import { Transaction, Course } from '../models';
+import { Sequelize, Op } from 'sequelize';
+
+export const getStatistik = async (req: Request, res: Response) => {
+  const { year, month } = req.query;
+
+  const parsedYear = parseInt(year as string);
+  const parsedMonth = parseInt(month as string);
+
+  const whereClause: any = {};
+  if (!isNaN(parsedYear)) {
+    whereClause[Op.and] = [
+      Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('created_at')), parsedYear),
+    ];
+    if (month && !isNaN(parsedMonth)) {
+      whereClause[Op.and].push(
+        Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('created_at')), parsedMonth)
+      );
+    }
+  }
+
+  try {
+    const transactions = await Transaction.findAll({ where: whereClause });
+
+    if (!transactions.length) {
+      res.json({
+        summary: {
+          totalTransactions: 0,
+          totalRevenue: 0,
+          avgMonthly: 0,
+          bestMonth: "-",
+        },
+        table: [],
+        chart: {
+          months: [],
+          revenue: [],
+          transactions: [],
+        }
+      });
+    }
+
+    const summary = {
+      totalTransactions: transactions.length,
+      totalRevenue: transactions.reduce((acc, t: any) => acc + (t.amount || 0), 0),
+      avgMonthly: 0,
+      bestMonth: '',
+    };
+
+    // Kelompokkan transaksi per bulan
+    const grouped = transactions.reduce((acc: any, t: any) => {
+      const date = new Date(t.created_at);
+      const m = date.getMonth() + 1;
+      const y = date.getFullYear();
+      const key = `${m}-${y}`;
+
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(t);
+      return acc;
+    }, {});
+
+    // Buat data untuk tabel
+    const table = Object.entries(grouped).map(([key, txs]) => {
+      const [m, y] = key.split("-");
+      const transactionsArray = txs as any[];
+      const revenue = transactionsArray.reduce((acc: number, t: any) => acc + (t.amount || 0), 0);
+      const avg = revenue / transactionsArray.length;
+
+      return {
+        monthName: `${getMonthName(+m)} ${y}`,
+        transactionCount: transactionsArray.length,
+        totalRevenue: revenue,
+        avgPerTransaction: Math.round(avg),
+      };
+    });
+
+    // Bulan terbaik berdasarkan total revenue
+    const sortedByRevenue = [...table].sort((a, b) => b.totalRevenue - a.totalRevenue);
+    summary.bestMonth = sortedByRevenue[0].monthName;
+    summary.avgMonthly = Math.round(summary.totalRevenue / Object.keys(grouped).length);
+
+    const chart = {
+      months: table.map(row => row.monthName),
+      revenue: table.map(row => row.totalRevenue),
+      transactions: table.map(row => row.transactionCount),
+    };
+
+    res.json({ summary, table, chart });
+
+  } catch (error) {
+    console.error("💥 Error getStatistik:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+function getMonthName(month: number) {
+  return [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ][month - 1] || '';
+}
 
 export const createTransaction = async (req: Request, res: Response) => {
   try {
@@ -7,15 +106,6 @@ export const createTransaction = async (req: Request, res: Response) => {
     const userId = req.user?.id_user; // From auth middleware
     
     console.log("fdsfsfs", req.body);
-
-    // Validate required fields
-    // if (!id || !paymentMethod || !amount) {
-    //   res.status(400).json({ 
-    //     success: false,
-    //     message: 'Missing required fields' 
-    //   });
-    //   return 
-    // }
 
     // Check if course exists
     const course = await Course.findByPk(id);
