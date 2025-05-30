@@ -1131,12 +1131,8 @@
               Komposisi Visual: Prinsip Penataan Elemen dalam Karya Seni
             </h2>
             <div class="content-meta">
-              <span><i class="far fa-clock"></i> 1 jam pembelajaran</span>
-              <span><i class="fas fa-chart-line"></i> Tingkat: Menengah</span>
-              <span
-                ><i class="far fa-calendar-alt"></i> Terakhir diakses: Hari
-                ini</span
-              >
+              <span class="waktu"><p class="far fa-clock"></p></span>
+              <span><p class="fas fa-chart-line tingkat"></p>Menengah</span>
             </div>
           </div>
 
@@ -1172,57 +1168,6 @@
             </div>
           </div>
         </main>
-      </div>
-
-      <!-- Subscription Section (Hidden when enrolled) -->
-      <div class="subscription-section" id="subscriptionSection">
-        <div class="section-title">
-          <h2>Mulai Belajar Sekarang</h2>
-          <p>
-            Berlangganan untuk mengakses semua materi kursus dan fitur premium
-          </p>
-        </div>
-
-        <div class="pricing-grid">
-          <div class="plan-card">
-            <h3>Perbulan</h3>
-            <p class="price">Rp250.000 <span>/bulan</span></p>
-            <p class="sub-price">Akses semua kursus selama 1 bulan</p>
-
-            <ul class="benefits">
-              <li>Akses materi tanpa batas</li>
-              <li>Materi berkualitas tinggi</li>
-              <li>Diskusi langsung dengan tutor</li>
-              <li>Sertifikat penyelesaian</li>
-            </ul>
-
-            <div class="button-group">
-              <button class="btn btn-primary btn-subscribe" data-plan="monthly">
-                Berlangganan
-              </button>
-            </div>
-          </div>
-
-          <div class="plan-card popular">
-            <h3>Pertahun</h3>
-            <p class="price">Rp900.000 <span>/tahun</span></p>
-            <p class="sub-price">Akses semua kursus selama 1 tahun</p>
-
-            <ul class="benefits">
-              <li>Hemat 70% dibanding bulanan</li>
-              <li>Materi berkualitas tinggi</li>
-              <li>Akses tanpa batas ke semua kursus</li>
-              <li>Diskusi langsung dengan tutor</li>
-              <li>Sertifikat penyelesaian</li>
-            </ul>
-
-            <div class="button-group">
-              <button class="btn btn-primary btn-subscribe" data-plan="yearly">
-                Berlangganan
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Payment Modal -->
@@ -1327,9 +1272,8 @@
 
           // Update course info
           document.querySelector(".course-title h1").textContent = course.title;
-          document.querySelector(".course-price").textContent = formatPrice(
-            course.price
-          );
+          document.querySelector(".course-price").textContent = formatPrice(course.price);
+          document.getElementById("nominal").value = formatPrice(course.price);
 
           // Store course price in data attribute for later use
           document
@@ -1402,7 +1346,6 @@
         const elements = {
           progressSection: document.getElementById("progressSection"),
           enrollSection: document.getElementById("enrollSection"),
-          subscriptionSection: document.getElementById("subscriptionSection"),
           completionSection: document.getElementById("completionSection"),
           lockedModules: document.querySelectorAll(".module-item.locked"),
           videoPlayer: document.getElementById("courseVideo"),
@@ -1413,7 +1356,6 @@
           // Show enrolled state
           elements.progressSection.style.display = "block";
           elements.enrollSection.style.display = "none";
-          elements.subscriptionSection.style.display = "none";
           elements.completionSection.style.display = "flex";
 
           // Unlock all modules
@@ -1431,8 +1373,6 @@
           // Show not enrolled state
           elements.progressSection.style.display = "none";
           elements.enrollSection.style.display = "block";
-          elements.subscriptionSection.style.display = "block";
-          elements.previewOverlay.style.display = "flex";
           elements.completionSection.style.display = "none";
 
           // Disable video player interactions
@@ -1603,12 +1543,15 @@
       function renderMaterialContent(material) {
         const dynamicContent = document.getElementById("dynamicContent");
         const contentTitle = document.querySelector(".contentTitle");
+        const tingkat = document.querySelector(".tingkat");
+        const waktu = document.querySelector(".waktu");
 
         if (!dynamicContent || !contentTitle) return;
 
         // Update titles
         document.getElementById("moduleTitle").textContent = material.title;
         contentTitle.textContent = material.title;
+        waktu.textContent = ` ${material.duration/60} jam pembelajaran`;
 
         // Clear existing content
         dynamicContent.innerHTML = "";
@@ -1849,51 +1792,53 @@
 
       // Show payment modal
       function showPaymentModal(planType) {
-        const modal = document.getElementById("paymentModal");
-        const nominalInput = document.getElementById("nominal");
-        const confirmCheckbox = document.getElementById("confirm");
-        const bayarBtn = document.getElementById("bayarBtn");
+  const modal = document.getElementById("paymentModal");
+  const nominalInput = document.getElementById("nominal");
+  const confirmCheckbox = document.getElementById("confirm");
+  const bayarBtn = document.getElementById("bayarBtn");
+  const paymentForm = document.getElementById("paymentForm");
 
-        // Get course price from data attribute or element text
-        const coursePriceElement = document.querySelector(".course-price");
-        let coursePrice = coursePriceElement.getAttribute("data-price");
+  // Get course price from data attribute or element text
+  const coursePriceElement = document.querySelector(".course-price");
+  let coursePrice = coursePriceElement.getAttribute("data-price");
 
-        // Fallback to text content if data attribute not set
-        if (!coursePrice) {
-          coursePrice = coursePriceElement.textContent.replace(/\D/g, "");
-        }
+  // Fallback to text content if data attribute not set
+  if (!coursePrice) {
+    coursePrice = coursePriceElement.textContent.replace(/\D/g, "");
+  }
 
-        // Set nominal based on plan type
-        let amount = 0;
-        let displayAmount = "";
+  // Set nominal based on plan type
+  let amount = 0;
+  let displayAmount = "";
 
-        if (planType === "monthly") {
-          amount = 250000;
-          displayAmount = "Rp250.000";
-        } else if (planType === "yearly") {
-          amount = 900000;
-          displayAmount = "Rp900.000";
-        } else {
-          // Single course purchase
-          amount = parseInt(coursePrice);
-          displayAmount = formatPrice(amount);
-        }
+  if (planType === "monthly") {
+    amount = 250000;
+    displayAmount = "Rp250.000";
+  } else if (planType === "yearly") {
+    amount = 900000;
+    displayAmount = "Rp900.000";
+  } else {
+    // Single course purchase
+    amount = parseInt(coursePrice);
+    displayAmount = formatPrice(amount);
+  }
 
-        // Set nominal value
-        nominalInput.value = displayAmount;
+  // Reset form first so value is not cleared after setting
+  paymentForm.reset();
 
-        // Reset form
-        document.getElementById("paymentForm").reset();
-        bayarBtn.disabled = true;
+  // Set nominal value after reset
+  nominalInput.value = displayAmount;
 
-        // Show modal
-        modal.classList.add("show");
+  bayarBtn.disabled = true;
 
-        // Confirm checkbox handler
-        confirmCheckbox.onchange = () => {
-          bayarBtn.disabled = !confirmCheckbox.checked;
-        };
-      }
+  // Show modal
+  modal.classList.add("show");
+
+  // Confirm checkbox handler
+  confirmCheckbox.onchange = () => {
+    bayarBtn.disabled = !confirmCheckbox.checked;
+  };
+}
 
       // Close modal handler
       document.getElementById("closeModal").addEventListener("click", () => {
