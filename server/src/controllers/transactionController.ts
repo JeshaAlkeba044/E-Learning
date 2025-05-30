@@ -77,13 +77,13 @@ export const createTransaction = async (req: Request, res: Response) => {
 export const getUserTransactions = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id_user;
-    const { courseId } = req.query;
+    const { id } = req.query;
 
-    console.log("\n\n\n\n\n\ncourseId", courseId);
+    console.log("\n\n\n\n\n\nid", id);
     
     const whereClause: any = { id_user: userId };
-    if (courseId) {
-      whereClause.id_course = courseId;
+    if (id) {
+      whereClause.id_course = id;
     }
 
     const transactions = await Transaction.findAll({
