@@ -1,7 +1,6 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/app.ts",
@@ -39,5 +38,6 @@
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
-  }
+  },
+  "description": ""
 }

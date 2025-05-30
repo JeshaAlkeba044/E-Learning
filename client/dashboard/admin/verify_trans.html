@@ -43,9 +43,22 @@
                 <h1>Verifikasi Transaksi</h1>
                 <p>Kelola dan verifikasi pembayaran pengguna</p>
             </div>
-            <div class="user-profile">
-                <img src="../../assets/img/pisi.jpeg" alt="Admin Avatar" class="admin-avatar" />
+            
+            <img
+              src="http://localhost:3000/uploads/defaultPic.png"
+              alt="Profile"
+              class="profile-pic"
+              id="profile-picture"
+            />
+            <span class="profile-name" id="profile-name">John Doe</span>
 
+            <div class="profile-dropdown">
+              <a href="settings/profile.html">
+                <i class="fas fa-user"></i> Profil Saya
+              </a>
+              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+              </a>
             </div>
         </div>
 
