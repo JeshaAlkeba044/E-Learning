@@ -54,7 +54,7 @@ export const createTransaction = async (req: Request, res: Response) => {
       id_course: id,
       amount: finalAmount,
       payment_method: paymentMethod,
-      status: 'completed' // In real app, you'd verify payment first
+      status: 'pending' // In real app, you'd verify payment first
     });
     
     res.status(201).json({
