@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { User, Course, Material, sequelize } from '../models';
 import { UserMaterialProgress } from '../models/UserMaterialProgress';
 import { Transaction } from '../models/Transaction';
-import { authenticate, authorize } from '../middleware/authMiddleware';
-import { decrypt, encrypt, hashEmail } from '../utils/cryptoUtil';
+import { authenticate } from '../middleware/authMiddleware';
+import { decrypt } from '../utils/cryptoUtil';
 import { Op } from 'sequelize';
 
 export const getUserProgress = [
@@ -56,6 +56,16 @@ export const getUserProgress = [
             },
           });
 
+          // Ambil lastAccessed dari UserMaterialProgress
+          const lastMaterialIds = materials.map((m) => m.id_material);
+          const lastProgress = await UserMaterialProgress.findOne({
+            where: {
+              id_user: user.id_user,
+              id_material: { [Op.in]: lastMaterialIds },
+            },
+            order: [['last_accessed', 'DESC']],
+          });
+
           const decryptedFirstname = decrypt(course.instructor_Id.firstName);
           const decryptedLastname = decrypt(course.instructor_Id.lastName);
 
@@ -70,7 +80,7 @@ export const getUserProgress = [
               : 0,
             module_done: completedMaterials,
             total_module: totalMaterials,
-            lastAccessed: transaction.created_at || new Date(),
+            lastAccessed: lastProgress?.last_accessed,
             totalHours: Math.round(course.total_duration / 60) || 0,
           };
         })

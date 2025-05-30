@@ -1551,7 +1551,7 @@
         // Update titles
         document.getElementById("moduleTitle").textContent = material.title;
         contentTitle.textContent = material.title;
-        waktu.textContent = ` ${material.duration/60} jam pembelajaran`;
+        waktu.textContent = ` ${formatDuration(material.duration)} pembelajaran`;
 
         // Clear existing content
         dynamicContent.innerHTML = "";
