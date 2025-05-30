@@ -218,10 +218,10 @@ export const deleteMaterial = async (req: Request, res: Response) => {
 // Get materials for a course (learner view)
 export const getMaterialsForLearner = async (req: Request, res: Response) => {
     try {
-        const { courseId } = req.params;
+        const { id_course } = req.params;
 
         const materials = await Material.findAll({
-            where: { id_course: courseId },
+            where: { id_course: id_course },
             order: [['sequence_order', 'ASC']],
             attributes: ['id_material', 'title', 'topic', 'duration', 'sequence_order', 'is_free', 'is_locked']
         });
