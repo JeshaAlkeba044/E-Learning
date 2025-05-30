@@ -965,12 +965,6 @@
                   <div class="toolbar-btn" data-type="text">
                     <i class="fas fa-paragraph"></i> Teks
                   </div>
-                  <div class="toolbar-btn" data-type="image">
-                    <i class="fas fa-image"></i> Gambar
-                  </div>
-                  <div class="toolbar-btn" data-type="video">
-                    <i class="fas fa-video"></i> Video
-                  </div>
                   <div class="toolbar-btn" data-type="heading">
                     <i class="fas fa-heading"></i> Judul
                   </div>
@@ -1049,86 +1043,8 @@
         </div>
       </div>
     </main>
-
-    <!-- Image Upload Modal -->
-    <div id="imageUploadModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Unggah Gambar</h3>
-          <span class="close-modal">&times;</span>
-        </div>
-        <div class="modal-body">
-          <div class="upload-area" id="dropZone">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <p>Seret dan lepas gambar di sini atau</p>
-            <button class="btn btn-outline" id="selectImageBtn">
-              Pilih Gambar
-            </button>
-            <input
-              type="file"
-              id="imageInput"
-              accept="image/*"
-              style="display: none"
-            />
-          </div>
-          <div
-            class="preview-container"
-            id="imagePreview"
-            style="display: none"
-          >
-            <img id="previewImage" src="" alt="Preview" />
-            <div class="preview-actions">
-              <button class="btn btn-outline" id="changeImageBtn">
-                Ganti Gambar
-              </button>
-              <button class="btn btn-danger" id="removeImageBtn">
-                <i class="fas fa-trash"></i> Hapus
-              </button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="imageAltText">Teks Alternatif</label>
-            <input
-              type="text"
-              id="imageAltText"
-              placeholder="Deskripsi gambar untuk aksesibilitas"
-            />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-outline" id="cancelUploadBtn">Batal</button>
-          <button class="btn btn-primary" id="confirmUploadBtn" disabled>
-            Simpan Gambar
-          </button>
-        </div>
-      </div>
     </div>
 
-    <!-- Video URL Modal -->
-    <div id="videoUrlModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Tambah Video</h3>
-          <span class="close-modal">&times;</span>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="videoUrlInput">URL Video (YouTube atau URL langsung)</label>
-            <input
-              type="text"
-              id="videoUrlInput"
-              placeholder="Masukkan URL video YouTube"
-            />
-            <small class="form-text text-muted">Contoh: https://www.youtube.com/watch?v=VIDEO_ID</small>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-outline" id="cancelVideoBtn">Batal</button>
-          <button class="btn btn-primary" id="confirmVideoBtn">
-            Simpan Video
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- Include Quill library -->
