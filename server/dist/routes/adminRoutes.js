@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const adminController_1 = require("../controllers/adminController");
+const router = (0, express_1.Router)();
+router.get("/pendingPayment", adminController_1.getPendingTransactions);
+router.put("/payment/:id", adminController_1.verifyPayment);
+router.get("/allTutors", adminController_1.getTutors);
+router.delete("/deleteTutors/:id", adminController_1.deleteTutor);
+router.get("/transactionMonthtly", adminController_1.getMonthlyTransactionStats);
+router.put("/verifyTutor/:id", adminController_1.verifyTutor);
+router.get("/unverifiedTutor", adminController_1.getUnverifiedTutors);
+router.get("/dashboardSummary", adminController_1.getDashboardSummary);
+exports.default = router;

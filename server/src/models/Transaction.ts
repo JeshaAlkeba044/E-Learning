@@ -9,7 +9,7 @@ export class Transaction extends Model {
   @Column({
     type: DataType.UUIDV4,
     primaryKey: true,
-    defaultValue: v4(),
+    defaultValue: DataType.UUIDV4,
   })
   id_transaction!: string;
 
