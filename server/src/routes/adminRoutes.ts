@@ -9,7 +9,8 @@
     getUnverifiedTutors,
     getDashboardSummary,
     getStatistik,
-    getAll
+    getAll,
+    addAdmin
   } from "../controllers/adminController";
 
   const router = Router();
@@ -24,6 +25,7 @@
 
   router.get('/statistik', getStatistik);
   router.get('/getAll', getAll);
+  router.post('/addAdmin', addAdmin);
 
 
   export default router;

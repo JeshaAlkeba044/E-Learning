@@ -2,10 +2,50 @@ import { Request, Response } from 'express';
 import { User } from '../models/User';
 import { Transaction } from '../models/Transaction';
 import { Course } from '../models/Course';
-import { decrypt, encrypt } from '../utils/cryptoUtil';
+import { decrypt, encrypt, hashEmail } from '../utils/cryptoUtil';
 import { Op } from 'sequelize';
 import dayjs from 'dayjs'; 
 import Sequelize from 'sequelize';
+import bcrypt from 'bcryptjs';
+
+export const addAdmin = async (req: Request, res: Response) => {
+  try {
+    const { firstName, lastName, email, password, phone_number } = req.body;
+
+    if (!firstName || !lastName || !email || !password) {
+      res.status(400).json({ message: "Data tidak lengkap" });
+    }
+
+    const encryptedEmail = encrypt(email);
+    const hashedEmail = hashEmail(email);
+
+    const existing = await User.findOne({ where: { encryptedEmail } });
+    if (existing) {
+      res.status(409).json({ message: "Email sudah terdaftar" });
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    const newAdmin = await User.create({
+      firstName: encrypt(firstName),
+      lastName: encrypt(lastName),
+      hashEmail: hashedEmail,
+      encryptedEmail,
+      password: hashPassword,
+      phone_number: encrypt(phone_number),
+      role: "admin",
+      statusUser: "verified",
+    });
+
+    res.status(201).json({ message: "Admin berhasil ditambahkan", admin: newAdmin });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Gagal menambahkan admin" });
+  }
+};
+
+
+
 
 export const getTutors = async (req: Request, res: Response) => {
   try {
@@ -284,7 +324,6 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
   }
 };
 
-
 const getMonthName = (month: number): string => {
   const months = [
     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -298,14 +337,13 @@ export const getStatistik = async (req: Request, res: Response) => {
 
   console.log('Headers:', req.headers); // Log headers yang diterima
   console.log('Query:', req.query); // Log parameter query
-  
 
   const yearParam = year as string;
   const monthParam = month as string;
 
   const whereClause: any = {};
 
-  if (yearParam && yearParam !== 'all' && !isNaN(parseInt(yearParam))) {
+  if (yearParam && yearParam !== 'al  l' && !isNaN(parseInt(yearParam))) {
     const parsedYear = parseInt(yearParam);
     whereClause[Op.and] = [
       Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('created_at')), parsedYear)
@@ -323,6 +361,9 @@ export const getStatistik = async (req: Request, res: Response) => {
     const transactions = await Transaction.findAll({ where: whereClause });
 
     if (!transactions.length) {
+      // Jika tidak ada transaksi, tetap kirimkan 12 bulan kosong
+      const currentYear = parseInt(yearParam) || new Date().getFullYear();
+      const months = Array.from({ length: 12 }, (_, i) => `${getMonthName(i + 1)} ${currentYear}`);
       res.json({
         summary: {
           totalTransactions: 0,
@@ -330,11 +371,16 @@ export const getStatistik = async (req: Request, res: Response) => {
           avgMonthly: 0,
           bestMonth: "-",
         },
-        table: [],
+        table: months.map(month => ({
+          monthName: month,
+          transactionCount: 0,
+          totalRevenue: 0,
+          avgPerTransaction: 0,
+        })),
         chart: {
-          months: [],
-          revenue: [],
-          transactions: [],
+          months,
+          revenue: Array(12).fill(0),
+          transactions: Array(12).fill(0),
         }
       });
     }
@@ -346,6 +392,7 @@ export const getStatistik = async (req: Request, res: Response) => {
       bestMonth: '',
     };
 
+    // Group transaksi per bulan
     const grouped = transactions.reduce((acc: any, t: any) => {
       const date = new Date(t.created_at);
       const m = date.getMonth() + 1;
@@ -357,23 +404,46 @@ export const getStatistik = async (req: Request, res: Response) => {
       return acc;
     }, {});
 
-    const table = Object.entries(grouped).map(([key, txs]) => {
-      const [m, y] = key.split("-");
-      const transactionsArray = txs as any[];
-      const revenue = transactionsArray.reduce((acc: number, t: any) => acc + (t.amount || 0), 0);
-      const avg = revenue / transactionsArray.length;
+    // Bangun data bulanan untuk 12 bulan
+    const allMonths = Array.from({ length: 12 }, (_, i) => i + 1);
+    const yearForStats = parseInt(yearParam) || new Date().getFullYear();
 
-      return {
-        monthName: `${getMonthName(+m)} ${y}`,
-        transactionCount: transactionsArray.length,
+    const monthMap: Record<string, {
+      monthName: string,
+      transactionCount: number,
+      totalRevenue: number,
+      avgPerTransaction: number
+    }> = {};
+
+    for (const m of allMonths) {
+      const key = `${m}-${yearForStats}`;
+      const txs = grouped[key] || [];
+
+      const revenue = txs.reduce((acc: number, t: any) => acc + (t.amount || 0), 0);
+      const avg = txs.length ? revenue / txs.length : 0;
+
+      monthMap[key] = {
+        monthName: `${getMonthName(m)} ${yearForStats}`,
+        transactionCount: txs.length,
         totalRevenue: revenue,
         avgPerTransaction: Math.round(avg),
       };
+    }
+
+    const table = allMonths.map(m => {
+      const key = `${m}-${yearForStats}`;
+      return monthMap[key];
     });
 
-    const sortedByRevenue = [...table].sort((a, b) => b.totalRevenue - a.totalRevenue);
-    summary.bestMonth = sortedByRevenue[0].monthName;
-    summary.avgMonthly = Math.round(summary.totalRevenue / Object.keys(grouped).length);
+    const monthsWithData = table.filter(row => row.transactionCount > 0);
+    if (monthsWithData.length > 0) {
+      const sortedByRevenue = [...monthsWithData].sort((a, b) => b.totalRevenue - a.totalRevenue);
+      summary.bestMonth = sortedByRevenue[0].monthName;
+      summary.avgMonthly = Math.round(summary.totalRevenue / monthsWithData.length);
+    } else {
+      summary.bestMonth = "-";
+      summary.avgMonthly = 0;
+    }
 
     const chart = {
       months: table.map(row => row.monthName),
@@ -396,7 +466,6 @@ export const getAll = async (req: Request, res: Response) => {
       include: [
         {
           model: User,
-          where: { role: 'learner' }, // kalau kamu mau filter user learner aja
           attributes: ['id_user', 'firstName', 'lastName', 'role'],
         },
         {
@@ -433,8 +502,8 @@ export const getAll = async (req: Request, res: Response) => {
         updated_at: trx.updated_at,
         learner: {
           id_user: learner.id_user,
-          firstName: encrypt(learner.firstName),
-          lastName: encrypt(learner.lastName),
+          firstName: decrypt(learner.firstName),
+          lastName: decrypt(learner.lastName),
           role: learner.role,
         },
         course: {
@@ -443,8 +512,8 @@ export const getAll = async (req: Request, res: Response) => {
           instructor: instructor
             ? {
                 id_user: instructor.id_user,
-                firstName: encrypt(instructor.firstName),
-                lastName: encrypt(instructor.lastName),
+                firstName: decrypt(instructor.firstName),
+                lastName: decrypt(instructor.lastName),
               }
             : null,
         },
