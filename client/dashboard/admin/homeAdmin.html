@@ -1,292 +1,301 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Home - Admin</title>
-    <link rel="stylesheet" href="../../assets/css/pages/_admin.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <title>Home - Admin</title>
+        <link rel="stylesheet" href="../../assets/css/pages/_admin.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo-container">
-            <span class="logo-text">EduPlus</span>
-        </div>
-        
-        <a href="homeAdmin.html" class="menu-item">
-            <div class="menu-icon">🏠</div>
-            <span>Dashboard</span>
-        </a>
-        
-        <a href="verify_trans.html" class="menu-item">
-            <div class="menu-icon">💳</div>
-            <span>Verifikasi Transaksi</span>
-        </a>
-        
-        <a href="list_tutor.html" class="menu-item">
-            <div class="menu-icon">👨‍🏫</div>
-            <span>List Tutor</span>
-        </a>
-        
-        <a href="settings/profile.html" class="menu-item">
-            <div class="menu-icon">⚙️</div>
-            <span>Pengaturan</span>
-        </a>
-
-        <!-- <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button> -->
-
-    </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Header with welcome message and admin profile -->
-        <div class="main-header">
-
-            <div class="welcome-text">
-                <h1>Selamat Datang, Admin!</h1>
-                <p>Pantau aktivitas platform EduPlus Anda hari ini</p>
+    </head>
+    <body>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <span class="logo-text">EduPlus</span>
             </div>
             
-            <img
-              src="http://localhost:3000/uploads/defaultPic.png"
-              alt="Profile"
-              class="profile-pic"
-              id="profile-picture"
-            />
-            <span class="profile-name" id="profile-name">John Doe</span>
+            <a href="homeAdmin.html" class="menu-item">
+                <div class="menu-icon">🏠</div>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="verify_trans.html" class="menu-item">
+                <div class="menu-icon">💳</div>
+                <span>Verifikasi Transaksi</span>
+            </a>
+            
+            <a href="list_tutor.html" class="menu-item">
+                <div class="menu-icon">👨‍🏫</div>
+                <span>List Tutor</span>
+            </a>
+            
+            <a href="settings/profile.html" class="menu-item">
+                <div class="menu-icon">⚙️</div>
+                <span>Pengaturan</span>
+            </a>
 
-            <div class="profile-dropdown">
-              <a href="settings/profile.html">
-                <i class="fas fa-user"></i> Profil Saya
-              </a>
-              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
-                <i class="fas fa-sign-out-alt"></i> Keluar
-              </a>
-            </div>
-        </div>
+            <a href="list_transaksi.html" class="menu-item">
+                <div class="menu-icon">👨</div>
+                <span>List Transaksi</span>
+            </a>
 
-        <!-- Dashboard Stats Summary -->
-        <div class="stats-summary">
-        <div class="stat-card">
-            <div class="stat-info">
-            <div class="stat-value" id="totalCourses">0</div>
-            <div class="stat-label">Total Kursus</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-info">
-            <div class="stat-value" id="totalLearners">0</div>
-            <div class="stat-label">Total Pengguna</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-info">
-            <div class="stat-value" id="totalTransactions">0</div>
-            <div class="stat-label">Transaksi Bulan Ini</div>
-            </div>
+            <!-- <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button> -->
+
         </div>
         </div>
 
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header with welcome message and admin profile -->
+            <div class="main-header">
 
-        <!-- Active Verifications -->
-        <!-- Updated Verifikasi Tutor Section -->
-    <div class="verification-section">
-    <div class="section-header">
-        <h2 class="section-title"> Verifikasi Tutor Terbaru</h2>
+                <div class="welcome-text">
+                    <h1>Selamat Datang, Admin!</h1>
+                    <p>Pantau aktivitas platform EduPlus Anda hari ini</p>
+                </div>
+                
+                <img
+                src="http://localhost:3000/uploads/defaultPic.png"
+                alt="Profile"
+                class="profile-pic"
+                id="profile-picture"
+                />
+                <span class="profile-name" id="profile-name">John Doe</span>
+
+                <div class="profile-dropdown">
+                <a href="settings/profile.html">
+                    <i class="fas fa-user"></i> Profil Saya
+                </a>
+                <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </a>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats Summary -->
+            <div class="stats-summary">
+            <div class="stat-card">
+                <div class="stat-info">
+                <div class="stat-value" id="totalCourses">0</div>
+                <div class="stat-label">Total Kursus</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                <div class="stat-value" id="totalLearners">0</div>
+                <div class="stat-label">Total Pengguna</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                <div class="stat-value" id="totalTransactionss">0</div>
+                <div class="stat-label">Transaksi Bulan Ini</div>
+                </div>
+            </div>
+            </div>
+
+
+            <!-- Active Verifications -->
+            <!-- Updated Verifikasi Tutor Section -->
+        <div class="verification-section">
+        <div class="section-header">
+            <h2 class="section-title"> Verifikasi Tutor Terbaru</h2>
+        </div>
+        <div class="verification-list">
+            <!-- <div class="verification-card">
+                <img src="/api/placeholder/80/80" alt="Tutor 1" class="verification-image" />
+                <div class="verification-info">
+                    <h3 class="verification-name">Ahmad Fauzi</h3>
+                    <p class="verification-subject">Matematika & Fisika</p>
+                </div>
+                <button class="verify-btn">Verifikasi</button>
+            </div> -->
+        </div>
     </div>
-    <div class="verification-list">
-        <!-- <div class="verification-card">
-            <img src="/api/placeholder/80/80" alt="Tutor 1" class="verification-image" />
-            <div class="verification-info">
-                <h3 class="verification-name">Ahmad Fauzi</h3>
-                <p class="verification-subject">Matematika & Fisika</p>
-            </div>
-            <button class="verify-btn">Verifikasi</button>
-        </div> -->
-    </div>
-</div>
 
-        <section class="stats-section">
-            <div class="stats-header">
-                <h2>Statistik Transaksi</h2>
-                <div class="stats-filters">
-                    <div class="filter-group">
-                        <label for="yearFilter">Tahun</label>
-                        <select id="yearFilter">
-                            <option value="all">Semua Tahun</option>
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                        </select>
+            <section class="stats-section">
+                <div class="stats-header">
+                    <h2>Statistik Transaksi</h2>
+                    <div class="stats-filters">
+                        <div class="filter-group">
+                            <label for="yearFilter">Tahun</label>
+                            <select id="yearFilter">
+                                <option value="all">Semua Tahun</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="monthFilter">Bulan</label>
+                            <select id="monthFilter">
+                                <option value="all">Semua Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <!-- <button class="refresh-btn" id="refreshData">
+                            Refresh Data
+                        </button> -->
                     </div>
-                    <div class="filter-group">
-                        <label for="monthFilter">Bulan</label>
-                        <select id="monthFilter">
-                            <option value="all">Semua Bulan</option>
-                            <option value="1">Januari</option>
-                            <option value="2">Februari</option>
-                            <option value="3">Maret</option>
-                            <option value="4">April</option>
-                            <option value="5">Mei</option>
-                            <option value="6">Juni</option>
-                            <option value="7">Juli</option>
-                            <option value="8">Agustus</option>
-                            <option value="9">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
+                </div>
+
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>Total Transaksi</h3>
+                        <div class="value" id="totalTransactions">0</div>
                     </div>
-                    <button class="refresh-btn" id="refreshData">
-                        Refresh Data
-                    </button>
+                    <div class="summary-card">
+                        <h3>Total Pendapatan</h3>
+                        <div class="value" id="totalRevenue">Rp 0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Rata-rata per Bulan</h3>
+                        <div class="value" id="avgMonthly">Rp 0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Bulan Terbaik</h3>
+                        <div class="value" id="bestMonth">-</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="summary-cards">
-                <div class="summary-card">
-                    <h3>Total Transaksi</h3>
-                    <div class="value" id="totalTransactions">245</div>
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <h3>Pendapatan Bulanan</h3>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h3>Jumlah Transaksi</h3>
+                        <canvas id="transactionsChart"></canvas>
+                    </div>
                 </div>
-                <div class="summary-card">
-                    <h3>Total Pendapatan</h3>
-                    <div class="value" id="totalRevenue">Rp 24.750.000</div>
+
+                <div class="transactions-table-container">
+                    <h3>Detail Transaksi Bulanan</h3>
+                    <table class="transactions-table" id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Bulan</th>
+                                <th>Jumlah Transaksi</th>
+                                <th>Total Pendapatan</th>
+                                <th>Rata-rata per Transaksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <tr>
+                                <td>Mei 2025</td>
+                                <td>105</td>
+                                <td>Rp 12.600.000</td>
+                                <td>Rp 120.000</td>
+                            </tr>
+                            <tr>
+                                <td>April 2025</td>
+                                <td>85</td>
+                                <td>Rp 8.075.000</td>
+                                <td>Rp 95.000</td>
+                            </tr>
+                            <tr>
+                                <td>Maret 2025</td>
+                                <td>55</td>
+                                <td>Rp 4.075.000</td>
+                                <td>Rp 74.090</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="summary-card">
-                    <h3>Rata-rata per Bulan</h3>
-                    <div class="value" id="avgMonthly">Rp 8.250.000</div>
-                </div>
-                <div class="summary-card">
-                    <h3>Bulan Terbaik</h3>
-                    <div class="value" id="bestMonth">Mei 2025</div>
-                </div>
-            </div>
+            </section>
+        </div>
 
-            <div class="charts-container">
-                <div class="chart-box">
-                    <h3>Pendapatan Bulanan</h3>
-                    <canvas id="revenueChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h3>Jumlah Transaksi</h3>
-                    <canvas id="transactionsChart"></canvas>
-                </div>
-            </div>
-
-            <div class="transactions-table-container">
-                <h3>Detail Transaksi Bulanan</h3>
-                <table class="transactions-table" id="transactionsTable">
-                    <thead>
-                        <tr>
-                            <th>Bulan</th>
-                            <th>Jumlah Transaksi</th>
-                            <th>Total Pendapatan</th>
-                            <th>Rata-rata per Transaksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionsTableBody">
-                        <tr>
-                            <td>Mei 2025</td>
-                            <td>105</td>
-                            <td>Rp 12.600.000</td>
-                            <td>Rp 120.000</td>
-                        </tr>
-                        <tr>
-                            <td>April 2025</td>
-                            <td>85</td>
-                            <td>Rp 8.075.000</td>
-                            <td>Rp 95.000</td>
-                        </tr>
-                        <tr>
-                            <td>Maret 2025</td>
-                            <td>55</td>
-                            <td>Rp 4.075.000</td>
-                            <td>Rp 74.090</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </div>
-
-    <script src="../../assets/js/admin/getStatistic.js"></script>
-    <script src="../../assets/js/admin/getDashBoard.js"></script>
-    <script src="../../assets/js/admin/getUnverifiedTutor.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="../../assets/js/admin/getStatistic.js"></script>
+        <script src="../../assets/js/admin/getDashBoard.js"></script>
+        <script src="../../assets/js/admin/getUnverifiedTutor.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 
-    <script>
-    const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
+        <script>
+        const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
 
-    const menuItems = document.querySelectorAll('.menu-item');
+        const menuItems = document.querySelectorAll('.menu-item');
 
-    menuItems.forEach(item => {
-        if (item.getAttribute("href") === path) {
-        item.classList.add('active');
-        }
-    });
+        menuItems.forEach(item => {
+            if (item.getAttribute("href") === path) {
+            item.classList.add('active');
+            }
+        });
 
-    const profilePic = document.getElementById('profile-picture');
-    const dropdown = document.querySelector('.profile-dropdown');
+        const profilePic = document.getElementById('profile-picture');
+        const dropdown = document.querySelector('.profile-dropdown');
 
-    profilePic.addEventListener('click', () => {
-    dropdown.classList.toggle('show');
-    });
-    
-    const yearFilter = document.getElementById("yearFilter");
-    const monthFilter = document.getElementById("monthFilter");
-    const refreshBtn = document.getElementById("refreshData");
+        profilePic.addEventListener('click', () => {
+        dropdown.classList.toggle('show');
+        });
+        
+        const yearFilter = document.getElementById("yearFilter");
+        const monthFilter = document.getElementById("monthFilter");
+        // const refreshBtn = document.getElementById("refreshData");
 
-    const totalTransactions = document.getElementById("totalTransactions");
-    const totalRevenue = document.getElementById("totalRevenue");
-    const avgMonthly = document.getElementById("avgMonthly");
-    const bestMonth = document.getElementById("bestMonth");
+        const totalTransactions = document.getElementById("totalTransactionss");
+        const totalRevenue = document.getElementById("totalRevenue");
+        const avgMonthly = document.getElementById("avgMonthly");
+        const bestMonth = document.getElementById("bestMonth");
 
-    const transactionsTableBody = document.getElementById("transactionsTableBody");
+        const transactionsTableBody = document.getElementById("transactionsTableBody");
 
-    const revenueChartCanvas = document.getElementById("revenueChart").getContext("2d");
-    const transactionsChartCanvas = document.getElementById("transactionsChart").getContext("2d");
+        const revenueChartCanvas = document.getElementById("revenueChart").getContext("2d");
+        const transactionsChartCanvas = document.getElementById("transactionsChart").getContext("2d");
 
-    let revenueChart, transactionsChart;
-    
+        let revenueChart, transactionsChart;
+        // File: assets/js/admin/getStatistic.js
+    function formatRupiah(number) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(number);
+    }
+
     async function fetchData() {
-        const year = yearFilter.value;
-        const month = monthFilter.value;
-        let url = `http://localhost:3000/api/transactions/statistik`;
-
-        const params = [];
-        if (year !== "all") params.push(`year=${year}`);
-        if (month !== "all") params.push(`month=${month}`);
-        if (params.length > 0) url += `?${params.join("&")}`;
-
+        const year = document.getElementById("yearFilter").value;
+        const month = document.getElementById("monthFilter").value;
+        
         try {
-            const res = await fetch(url);
+            const res = await fetch(`http://localhost:3000/api/admin/statistik?year=${year}&month=${month}`);
+            
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
             }
+            
             const data = await res.json();
-
             updateSummary(data.summary);
             updateTable(data.table);
             updateCharts(data.chart);
 
         } catch (error) {
-            console.error("Gagal ambil data 😢:", error);
+            console.error("Gagal ambil data:", error);
         }
     }
 
     function updateSummary(summary) {
-        totalTransactions.textContent = summary.totalTransactions;
-        totalRevenue.textContent = formatRupiah(summary.totalRevenue);
-        avgMonthly.textContent = formatRupiah(summary.avgMonthly);
-        bestMonth.textContent = summary.bestMonth;
+        document.getElementById("totalTransactionss").textContent = summary.totalTransactions;
+        document.getElementById("totalRevenue").textContent = formatRupiah(summary.totalRevenue);
+        document.getElementById("avgMonthly").textContent = formatRupiah(summary.avgMonthly);
+        document.getElementById("bestMonth").textContent = summary.bestMonth;
     }
 
     function updateTable(rows) {
-        transactionsTableBody.innerHTML = "";
+        const tbody = document.getElementById("transactionsTableBody");
+        tbody.innerHTML = "";
 
         rows.forEach(row => {
             const tr = document.createElement("tr");
@@ -296,53 +305,91 @@
                 <td>${formatRupiah(row.totalRevenue)}</td>
                 <td>${formatRupiah(row.avgPerTransaction)}</td>
             `;
-            transactionsTableBody.appendChild(tr);
+            tbody.appendChild(tr);
         });
     }
+function updateCharts(chartData) {
+    const revenueCtx = document.getElementById("revenueChart").getContext("2d");
+    const transactionsCtx = document.getElementById("transactionsChart").getContext("2d");
 
-    function updateCharts(chartData) {
-        if (revenueChart) revenueChart.destroy();
-        if (transactionsChart) transactionsChart.destroy();
+    // Hancurkan chart sebelumnya jika ada
+    if (window.revenueChart) window.revenueChart.destroy();
+    if (window.transactionsChart) window.transactionsChart.destroy();
 
-        revenueChart = new Chart(revenueChartCanvas, {
-            type: 'bar',
-            data: {
-                labels: chartData.months,
-                datasets: [{
-                    label: 'Pendapatan',
-                    data: chartData.revenue,
-                    backgroundColor: '#4CAF50'
-                }]
+    const isEmpty = !chartData || chartData.months.length === 0;
+
+    const labels = isEmpty ? [] : chartData.months;
+    const revenueData = isEmpty ? [] : chartData.revenue;
+    const transactionData = isEmpty ? [] : chartData.transactions;
+
+    window.revenueChart = new Chart(revenueCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Pendapatan',
+                data: revenueData,
+                backgroundColor: '#4CAF50'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    enabled: !isEmpty
+                },
+                legend: {
+                    display: !isEmpty
+                }
             }
-        });
+        }
+    });
 
-        transactionsChart = new Chart(transactionsChartCanvas, {
-            type: 'line',
-            data: {
-                labels: chartData.months,
-                datasets: [{
-                    label: 'Jumlah Transaksi',
-                    data: chartData.transactions,
-                    backgroundColor: 'rgba(33, 150, 243, 0.5)',
-                    borderColor: '#2196F3',
-                    fill: true
-                }]
+    window.transactionsChart = new Chart(transactionsCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Jumlah Transaksi',
+                data: transactionData,
+                backgroundColor: 'rgba(33, 150, 243, 0.5)',
+                borderColor: '#2196F3',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    enabled: !isEmpty
+                },
+                legend: {
+                    display: !isEmpty
+                }
             }
-        });
-    }
+        }
+    });
+}
 
-    function formatRupiah(number) {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(number);
-    }
 
-    refreshBtn.addEventListener("click", fetchData);
-    window.addEventListener("DOMContentLoaded", fetchData);
+    // Event Listeners
+    // document.getElementById("refreshData").addEventListener("click", fetchData);
+    document.getElementById("yearFilter").addEventListener("change", fetchData);
+    document.getElementById("monthFilter").addEventListener("change", fetchData);
 
+    // Inisialisasi pertama kali
+    document.addEventListener("DOMContentLoaded", fetchData);    
     </script>
 
-</body>
-</html>
+    </body>
+    </html>

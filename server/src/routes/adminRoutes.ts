@@ -1,23 +1,29 @@
-import { Router } from "express";
-import {
-  getTutors,
-  deleteTutor,
-  verifyPayment,
-  getMonthlyTransactionStats,
-  verifyTutor,
-  getPendingTransactions,
-  getUnverifiedTutors,
-  getDashboardSummary,
-} from "../controllers/adminController";
+  import { Router } from "express";
+  import {
+    getTutors,
+    deleteTutor,
+    verifyPayment,
+    getMonthlyTransactionStats,
+    verifyTutor,
+    getPendingTransactions,
+    getUnverifiedTutors,
+    getDashboardSummary,
+    getStatistik,
+    getAll
+  } from "../controllers/adminController";
 
-const router = Router();
-router.get("/pendingPayment", getPendingTransactions); 
-router.put("/payment/:id", verifyPayment);      
-router.get("/allTutors", getTutors);                   
-router.delete("/deleteTutors/:id", deleteTutor);       
-router.get("/transactionMonthtly", getMonthlyTransactionStats); 
-router.put("/verifyTutor/:id", verifyTutor);            
-router.get("/unverifiedTutor", getUnverifiedTutors);    
-router.get("/dashboardSummary", getDashboardSummary);
+  const router = Router();
+  router.get("/pendingPayment", getPendingTransactions); 
+  router.put("/payment/:id", verifyPayment);      
+  router.get("/allTutors", getTutors);                   
+  router.delete("/deleteTutors/:id", deleteTutor);       
+  router.get("/transactionMonthtly", getMonthlyTransactionStats); 
+  router.put("/verifyTutor/:id", verifyTutor);            
+  router.get("/unverifiedTutor", getUnverifiedTutors);    
+  router.get("/dashboardSummary", getDashboardSummary);
 
-export default router;
+  router.get('/statistik', getStatistik);
+  router.get('/getAll', getAll);
+
+
+  export default router;

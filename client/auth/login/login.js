@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
       case 'learner':
         redirectUrl = '../../dashboard/learner/LearnerDashboard.html';
         break;
+      case 'admin':
+        redirectUrl = '../../dashboard/admin/homeAdmin.html';
+        break;
       default:
         redirectUrl = '../../index.html';
     }
@@ -36,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
   setupFormSubmit('loginForm', 'login', {
     tutor: '../../dashboard/tutor/dashboard_tutor.html',
     learner: '../../dashboard/learner/LearnerDashboard.html',
+    admin : '../../dashboard/admin/homeAdmin.html',
     default: '../../index.html'
   });
   

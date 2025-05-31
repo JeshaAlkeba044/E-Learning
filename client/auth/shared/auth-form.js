@@ -22,6 +22,7 @@ export async function handleAuthForm(data, idForm, endpoint, redirectUrls) {
       localStorage.setItem('user', JSON.stringify(result.user));
 
       console.log("result:", result )
+      // alert("apa ajalah")
 
       // Determine redirect URL based on role
       let redirectUrl;
@@ -32,6 +33,8 @@ export async function handleAuthForm(data, idForm, endpoint, redirectUrls) {
         case 'learner':
           redirectUrl = redirectUrls.learner || '/dashboard/learner/LearnerDashboard.html';
           break;
+        case 'admin' :
+          redirectUrl = redirectUrls.admin || '/dashboard/admin/homeAdmin.html';
         default:
           redirectUrl = redirectUrls.default || '/';
       }

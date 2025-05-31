@@ -5,6 +5,7 @@ import { Course } from '../models/Course';
 import { decrypt, encrypt } from '../utils/cryptoUtil';
 import { Op } from 'sequelize';
 import dayjs from 'dayjs'; 
+import Sequelize from 'sequelize';
 
 export const getTutors = async (req: Request, res: Response) => {
   try {
@@ -280,5 +281,179 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
     const err = error as Error;
     console.error('Error fetching dashboard summary:', err.message);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+
+const getMonthName = (month: number): string => {
+  const months = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ];
+  return months[month - 1];
+};
+
+export const getStatistik = async (req: Request, res: Response) => {
+  const { year, month } = req.query;
+
+  console.log('Headers:', req.headers); // Log headers yang diterima
+  console.log('Query:', req.query); // Log parameter query
+  
+
+  const yearParam = year as string;
+  const monthParam = month as string;
+
+  const whereClause: any = {};
+
+  if (yearParam && yearParam !== 'all' && !isNaN(parseInt(yearParam))) {
+    const parsedYear = parseInt(yearParam);
+    whereClause[Op.and] = [
+      Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('created_at')), parsedYear)
+    ];
+
+    if (monthParam && monthParam !== 'all' && !isNaN(parseInt(monthParam))) {
+      const parsedMonth = parseInt(monthParam);
+      whereClause[Op.and].push(
+        Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('created_at')), parsedMonth)
+      );
+    }
+  }
+
+  try {
+    const transactions = await Transaction.findAll({ where: whereClause });
+
+    if (!transactions.length) {
+      res.json({
+        summary: {
+          totalTransactions: 0,
+          totalRevenue: 0,
+          avgMonthly: 0,
+          bestMonth: "-",
+        },
+        table: [],
+        chart: {
+          months: [],
+          revenue: [],
+          transactions: [],
+        }
+      });
+    }
+
+    const summary = {
+      totalTransactions: transactions.length,
+      totalRevenue: transactions.reduce((acc, t: any) => acc + (t.amount || 0), 0),
+      avgMonthly: 0,
+      bestMonth: '',
+    };
+
+    const grouped = transactions.reduce((acc: any, t: any) => {
+      const date = new Date(t.created_at);
+      const m = date.getMonth() + 1;
+      const y = date.getFullYear();
+      const key = `${m}-${y}`;
+
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(t);
+      return acc;
+    }, {});
+
+    const table = Object.entries(grouped).map(([key, txs]) => {
+      const [m, y] = key.split("-");
+      const transactionsArray = txs as any[];
+      const revenue = transactionsArray.reduce((acc: number, t: any) => acc + (t.amount || 0), 0);
+      const avg = revenue / transactionsArray.length;
+
+      return {
+        monthName: `${getMonthName(+m)} ${y}`,
+        transactionCount: transactionsArray.length,
+        totalRevenue: revenue,
+        avgPerTransaction: Math.round(avg),
+      };
+    });
+
+    const sortedByRevenue = [...table].sort((a, b) => b.totalRevenue - a.totalRevenue);
+    summary.bestMonth = sortedByRevenue[0].monthName;
+    summary.avgMonthly = Math.round(summary.totalRevenue / Object.keys(grouped).length);
+
+    const chart = {
+      months: table.map(row => row.monthName),
+      revenue: table.map(row => row.totalRevenue),
+      transactions: table.map(row => row.transactionCount),
+    };
+
+    res.json({ summary, table, chart });
+
+  } catch (error) {
+    console.error("Error getStatistik:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const getAll = async (req: Request, res: Response) => {
+  try {
+    const transactions = await Transaction.findAll({
+      include: [
+        {
+          model: User,
+          where: { role: 'learner' }, // kalau kamu mau filter user learner aja
+          attributes: ['id_user', 'firstName', 'lastName', 'role'],
+        },
+        {
+          model: Course,
+          attributes: ['id_course', 'title'],
+          include: [
+            {
+              model: User,
+              as: 'instructor_Id', // sesuai alias di model Course
+              attributes: ['id_user', 'firstName', 'lastName'],
+            },
+          ],
+        },
+      ],
+      order: [['transaction_date', 'DESC']],
+    });
+
+    // Fungsi enkripsi base64 biar aman tampilannya
+    const encrypt = (text: string) => Buffer.from(text).toString('base64');
+
+    // Mapping data dan encrypt nama learner & instructor
+    const result = transactions.map((trx) => {
+      const learner = trx.user;
+      const course = trx.course;
+      const instructor = course?.instructor_Id;
+
+      return {
+        id_transaction: trx.id_transaction,
+        transaction_date: trx.transaction_date,
+        amount: trx.amount,
+        payment_method: trx.payment_method,
+        status: trx.status,
+        created_at: trx.created_at,
+        updated_at: trx.updated_at,
+        learner: {
+          id_user: learner.id_user,
+          firstName: encrypt(learner.firstName),
+          lastName: encrypt(learner.lastName),
+          role: learner.role,
+        },
+        course: {
+          id_course: course?.id_course,
+          title: course?.title,
+          instructor: instructor
+            ? {
+                id_user: instructor.id_user,
+                firstName: encrypt(instructor.firstName),
+                lastName: encrypt(instructor.lastName),
+              }
+            : null,
+        },
+      };
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('🔥 Error fetching transactions:', error);
+    res.status(500).json({ message: 'Internal server error', error });
   }
 };

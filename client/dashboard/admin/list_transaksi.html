@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Tutor | EduPlus</title>
+    <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css">
+</head>
+
+<style>
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    max-width: 800px;
+}
+
+.transaction-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    padding: 1.2rem;
+    border-left: 4px solid #00b894;
+    transition: transform 0.2s ease;
+}
+
+.transaction-card:hover {
+    transform: translateY(-4px);
+}
+
+.transaction-card h3 {
+    margin: 0 0 0.6rem;
+    font-size: 1.2rem;
+    color: #2d3436;
+    border-bottom: 1px solid #dfe6e9;
+    padding-bottom: 0.4rem;
+}
+
+.transaction-card p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: #636e72;
+}
+
+
+</style>
+<body>
+    <div class="sidebar">
+        <div class="logo-container">
+            <span class="logo-text">EduPlus</span>
+        </div>
+
+        <a href="homeAdmin.html" class="menu-item">
+            <div class="menu-icon">🏠</div>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="verify_trans.html" class="menu-item">
+            <div class="menu-icon">💳</div>
+            <span>Verifikasi Transaksi</span>
+        </a>
+
+        <a href="list_tutor.html" class="menu-item">
+            <div class="menu-icon">👨‍🏫</div>
+            <span>List Tutor</span>
+        </a>
+
+        <a href="list_transaksi.html" class="menu-item">
+            <div class="menu-icon">👨</div>
+            <span>List Transaksi</span>
+        </a>
+
+        <a href="settings/profile.html" class="menu-item">
+            <div class="menu-icon">⚙️</div>
+            <span>Pengaturan</span>
+        </a>
+
+        <!-- <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button> -->
+    </div>
+
+  <div class="main-content">
+    <div class="header">
+      <img
+        src="http://localhost:3000/uploads/defaultPic.png"
+        alt="Profile"
+        class="profile-pic"
+        id="profile-picture"
+      />
+      <span class="profile-name" id="profile-name">Admin</span>
+    </div>
+
+    <div class="section-title">
+      <h2>Daftar Transaksi</h2>
+    </div>
+
+    <div class="transaction-list" id="transactionList">
+      <div class="loading" id="loadingIndicator">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const transactionList = document.getElementById("transactionList");
+      const loading = document.getElementById("loadingIndicator");
+
+      try {
+        const response = await fetch("http://localhost:3000/api/admin/getAll");
+        const data = await response.json();
+
+        loading.style.display = "none";
+
+        if (!Array.isArray(data) || data.length === 0) {
+          transactionList.innerHTML = "<p>Tidak ada transaksi ditemukan.</p>";
+          return;
+        }
+
+        data.forEach(tx => {
+          const card = document.createElement("div");
+          card.className = "transaction-card";
+          card.innerHTML = `
+            <h3>Transaksi #${tx.id}</h3>
+            <p><strong>Nama User:</strong> ${tx.User?.name || "Tidak diketahui"}</p>
+            <p><strong>Nama Kursus:</strong> ${tx.Course?.title || "Tidak diketahui"}</p>
+            <p><strong>Jumlah:</strong> Rp${Number(tx.amount).toLocaleString("id-ID")}</p>
+            <p><strong>Status:</strong> ${tx.status}</p>
+            <p><strong>Tanggal:</strong> ${new Date(tx.transaction_date).toLocaleDateString("id-ID", {
+              day: 'numeric', month: 'long', year: 'numeric'
+            })}</p>
+          `;
+          transactionList.appendChild(card);
+        });
+      } catch (err) {
+        loading.style.display = "none";
+        transactionList.innerHTML = `<p style="color: red;">Gagal memuat data transaksi. Coba lagi nanti ya 😢</p>`;
+        console.error("Fetch error:", err);
+      }
+    });
+  </script>
+
+</body>
+</html>

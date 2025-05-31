@@ -47,6 +47,12 @@ app.use(cors({
   credentials: true
 }));
 
+app.use((req, res, next) => {
+  console.log(`💥 ${req.method} ${req.originalUrl}`);
+  next();
+});
+
+
 app.use(bodyParser.json());
 
 const uploadsDir = path.join(__dirname, '../uploads');
@@ -59,10 +65,11 @@ app.use('/api/learner', learnerRoutes);
 app.use('/api/transaction', transactionRoutes);
 app.use('/api/tutor', tutorRoutes);
 
-
 // Upload image route
 app.post('/api/upload', upload.single('image'), uploadImage);
 app.delete('/api/upload/:filename', deleteImage);
+
+
 
 const PORT = process.env.PORT || 3000;
 

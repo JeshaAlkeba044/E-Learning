@@ -86,6 +86,11 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const hashedEmail = hashEmail(email);
 
+  console.log("\n\n\n\nencrypted email", encrypt("admin1@example.com") )
+  console.log("\n\n\n\ndec email", decrypt("d8c38ef3a50d6904f9982ac7c94ff620:8bcf6490f69104a66826b188b8fe42e6fab3b91e392c0470d6968714b5962abc") )
+  console.log("email" , email)
+  console.log("hashemail", hashedEmail)
+
   try {
     // Cek user
     
