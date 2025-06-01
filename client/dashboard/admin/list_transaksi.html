@@ -3,225 +3,247 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>List Tutor | EduPlus</title>
-  <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css" />
+  <title>List Transaksi | EduPlus</title>
+  <link rel="stylesheet" href="../../assets/css/pages/_admin.css" />
+  <link rel="stylesheet" href="../../assets/css/pages/_listTransaksi.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
   <!-- jsPDF dan html2canvas CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-  <style>
-    .transaction-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      margin-top: 1.5rem;
-      padding: 1rem;
-      max-width: 800px;
-    }
-
-    .transaction-card {
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-      padding: 1.2rem;
-      border-left: 4px solid #00b894;
-      transition: transform 0.2s ease;
-    }
-
-    .transaction-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .transaction-card h3 {
-      margin: 0 0 0.6rem;
-      font-size: 1.2rem;
-      color: #2d3436;
-      border-bottom: 1px solid #dfe6e9;
-      padding-bottom: 0.4rem;
-    }
-
-    .transaction-card p {
-      margin: 0.3rem 0;
-      font-size: 0.95rem;
-      color: #636e72;
-    }
-
-    .print-btn {
-      margin: 1rem;
-      padding: 10px 20px;
-      background-color: #00b894;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .print-btn:hover {
-      background-color: #019874;
-    }
-  </style>
 </head>
 
 <body>
+  <div class="mobile-menu-toggle">☰</div>
+  <!-- Sidebar -->
   <div class="sidebar">
-    <div class="logo-container">
-      <span class="logo-text">EduPlus</span>
-    </div>
-
-    <a href="homeAdmin.html" class="menu-item">
-      <div class="menu-icon">🏠</div>
-      <span>Dashboard</span>
-    </a>
-
-    <a href="verify_trans.html" class="menu-item">
-      <div class="menu-icon">💳</div>
-      <span>Verifikasi Transaksi</span>
-    </a>
-
-    <a href="list_tutor.html" class="menu-item">
-      <div class="menu-icon">👨‍🏫</div>
-      <span>List Tutor</span>
-    </a>
-
-    <a href="list_transaksi.html" class="menu-item">
-      <div class="menu-icon">👨</div>
-      <span>List Transaksi</span>
-    </a>
-
-        <a href="addAdmin.html" class="menu-item">
-      <div class="menu-icon">❤</div>
-      <span>Add Admin</span>
-    </a>
-
-    <a href="settings/profile.html" class="menu-item">
-      <div class="menu-icon">⚙️</div>
-      <span>Pengaturan</span>
-    </a>
-  </div>
-
-  <div class="main-content">
-    <div class="header">
-            <div class="welcome-text">
-                <h1>List Transaksi</h1>
-            </div>
-            
-            <img
-              src="http://localhost:3000/uploads/defaultPic.png"
-              alt="Profile"
-              class="profile-pic"
-              id="profile-picture"
-            />
-            <span class="profile-name" id="profile-name">John Doe</span>
-
-            <div class="profile-dropdown">
-              <a href="settings/profile.html">
-                <i class="fas fa-user"></i> Profil Saya
-              </a>
-              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
-                <i class="fas fa-sign-out-alt"></i> Keluar
-              </a>
-            </div>
+      <div class="sidebar-overlay"></div>
+      <div class="sidebar-content">
+        <div class="logo-container">
+          <span class="logo-text">EduPlus</span>
+          <div class="close-sidebar">×</div>
         </div>
 
-    <div class="transaction-list" id="transactionList">
-      <div class="loading" id="loadingIndicator">
-        <div class="spinner"></div>
+        <a href="homeAdmin.html" class="menu-item">
+          <div class="menu-icon"><i class="fas fa-home"></i></div>
+          <span class="menu-text">Dashboard</span>
+        </a>
+        <a href="verify_trans.html" class="menu-item">
+          <div class="menu-icon"><i class="fas fa-credit-card"></i></div>
+          <span class="menu-text">Verifikasi Transaksi</span>
+        </a>
+        <a href="list_tutor.html" class="menu-item">
+          <div class="menu-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+          <span class="menu-text">List Tutor</span>
+        </a>
+        <a href="list_transaksi.html" class="menu-item active">
+          <div class="menu-icon"><i class="fas fa-chart-line"></i></div>
+          <span class="menu-text">List Transaksi</span>
+        </a>
+        <a href="addAdmin.html" class="menu-item">
+          <div class="menu-icon"><i class="fas fa-user-plus"></i></div>
+          <span class="menu-text">Tambah Admin</span>
+        </a>
+        <a href="settings/profile.html" class="menu-item">
+          <div class="menu-icon"><i class="fas fa-cog"></i></div>
+          <span class="menu-text">Pengaturan</span>
+        </a>
+      </div>
+    </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="main-header">
+      <div class="welcome-text">
+        <h1>List Transaksi</h1>
+        <p>Kelola dan pantau semua transaksi di platform</p>
+      </div>
+      
+      <div class="user-profile">
+        <img
+          src="http://localhost:3000/uploads/defaultPic.png"
+          alt="Profile"
+          class="profile-pic"
+          id="profile-picture"
+        />
+        <span class="profile-name" id="profile-name">John Doe</span>
+
+        <div class="profile-dropdown">
+          <a href="settings/profile.html">
+            <i class="fas fa-user"></i> Profil Saya
+          </a>
+          <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
+            <i class="fas fa-sign-out-alt"></i> Keluar
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction List -->
+    <div class="transaction-container">
+      <div class="transaction-header">
+        <h2 class="transaction-title">Daftar Transaksi</h2>
+      </div>
+
+      <div class="transaction-list" id="transactionList">
+        <div class="loading" id="loadingIndicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
     </div>
   </div>
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    loadUserData()
-    const transactionList = document.getElementById("transactionList");
-    const loading = document.getElementById("loadingIndicator");
 
-    try {
-      const response = await fetch("http://localhost:3000/api/admin/getAll");
-      const data = await response.json();
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      loadUserData();
+      const transactionList = document.getElementById("transactionList");
+      const loading = document.getElementById("loadingIndicator");
 
-      loading.style.display = "none";
+      try {
+        const response = await fetch("http://localhost:3000/api/admin/getAll");
+        const data = await response.json();
 
-      if (!Array.isArray(data) || data.length === 0) {
-        transactionList.innerHTML = "<p>Tidak ada transaksi ditemukan.</p>";
-        return;
-      }
+        loading.style.display = "none";
 
-      data.forEach((tx, index) => {
-        const card = document.createElement("div");
-        card.className = "transaction-card";
+        if (!Array.isArray(data) || data.length === 0) {
+          transactionList.innerHTML = `
+            <div class="empty-state">
+              <h3>Tidak ada transaksi ditemukan</h3>
+              <p>Belum ada transaksi yang tercatat dalam sistem</p>
+            </div>
+          `;
+          return;
+        }
 
-        const learnerName = `${tx.learner?.firstName || ""} ${tx.learner?.lastName || ""}`.trim() || "Tidak diketahui";
-        const courseTitle = tx.course?.title || "Tidak diketahui";
-        const instructorName = `${tx.course?.instructor?.firstName || ""} ${tx.course?.instructor?.lastName || ""}`.trim() || "Tidak diketahui";
-        const amountFormatted = `Rp${Number(tx.amount).toLocaleString("id-ID")}`;
-        const status = tx.status || "Tidak diketahui";
-        const dateFormatted = new Date(tx.transaction_date).toLocaleDateString("id-ID", {
-          day: 'numeric', month: 'long', year: 'numeric'
+        data.forEach((tx, index) => {
+          const card = document.createElement("div");
+          card.className = "transaction-card";
+
+          const learnerName = `${tx.learner?.firstName || ""} ${tx.learner?.lastName || ""}`.trim() || "Tidak diketahui";
+          const courseTitle = tx.course?.title || "Tidak diketahui";
+          const instructorName = `${tx.course?.instructor?.firstName || ""} ${tx.course?.instructor?.lastName || ""}`.trim() || "Tidak diketahui";
+          const amountFormatted = `Rp${Number(tx.amount).toLocaleString("id-ID")}`;
+          const status = tx.status || "pending";
+          const dateFormatted = new Date(tx.transaction_date).toLocaleDateString("id-ID", {
+            day: 'numeric', month: 'long', year: 'numeric'
+          });
+          const timeFormatted = new Date(tx.transaction_date).toLocaleTimeString("id-ID", {
+            hour: '2-digit', minute: '2-digit'
+          });
+
+          const statusClass = getStatusClass(status);
+
+          card.innerHTML = `
+            <h3>Transaksi #${index + 1}</h3>
+            <div class="transaction-detail">
+              <div class="transaction-detail-item">
+                <strong>Nama User:</strong>
+                <span>${learnerName}</span>
+              </div>
+              <div class="transaction-detail-item">
+                <strong>Nama Kursus:</strong>
+                <span>${courseTitle}</span>
+              </div>
+              <div class="transaction-detail-item">
+                <strong>Instruktur:</strong>
+                <span>${instructorName}</span>
+              </div>
+              <div class="transaction-detail-item">
+                <strong>Jumlah:</strong>
+                <span>${amountFormatted}</span>
+              </div>
+              <div class="transaction-detail-item">
+                <strong>Status:</strong>
+                <span class="transaction-status ${statusClass}">${status}</span>
+              </div>
+              <div class="transaction-detail-item">
+                <strong>Tanggal:</strong>
+                <span>${dateFormatted} • ${timeFormatted}</span>
+              </div>
+            </div>
+            <div class="transaction-actions">
+              <button class="print-btn" onclick="printSingleTransaction('${learnerName}', '${courseTitle}', '${instructorName}', '${amountFormatted}', '${status}', '${dateFormatted}', '${timeFormatted}')">
+                <i class="fas fa-print"></i> Cetak PDF
+              </button>
+            </div>
+          `;
+
+          transactionList.appendChild(card);
         });
-
-        const transactionId = `trx-${index}`;
-
-        card.innerHTML = `
-          <h3>Transaksi</h3>
-          <p><strong>Nama User:</strong> ${learnerName}</p>
-          <p><strong>Nama Kursus:</strong> ${courseTitle}</p>
-          <p><strong>Instruktur:</strong> ${instructorName}</p>
-          <p><strong>Jumlah:</strong> ${amountFormatted}</p>
-          <p><strong>Status:</strong> ${status}</p>
-          <p><strong>Tanggal:</strong> ${dateFormatted}</p>
-          <button class="print-btn" onclick="printSingleTransaction('${learnerName}', '${courseTitle}', '${instructorName}', '${amountFormatted}', '${status}', '${dateFormatted}')">Print PDF</button>
+      } catch (err) {
+        loading.style.display = "none";
+        transactionList.innerHTML = `
+          <div class="error-message">
+            Gagal memuat data transaksi. Silakan coba lagi nanti.
+          </div>
         `;
+        console.error("Fetch error:", err);
+      }
+    });
 
-        transactionList.appendChild(card);
-      });
-    } catch (err) {
-      loading.style.display = "none";
-      transactionList.innerHTML = `<p style="color: red;">Gagal memuat data transaksi. Coba lagi nanti ya 😢</p>`;
-      console.error("Fetch error:", err);
+    function getStatusClass(status) {
+      switch (status.toLowerCase()) {
+        case 'completed':
+        case 'success':
+          return 'status-success';
+        case 'pending':
+          return 'status-pending';
+        case 'failed':
+        case 'rejected':
+          return 'status-failed';
+        default:
+          return 'status-pending';
+      }
     }
-  });
 
-  async function printSingleTransaction(learnerName, courseTitle, instructorName, amountFormatted, status, dateFormatted) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    async function printSingleTransaction(learnerName, courseTitle, instructorName, amountFormatted, status, dateFormatted, timeFormatted) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-    // Header
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.text("EduLearn", 105, 20, { align: "center" });
+      // Header
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text("EduPlus", 105, 20, { align: "center" });
 
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "normal");
-    doc.text("edulearn20255@gmail.com", 105, 28, { align: "center" });
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text("Invoice Transaksi", 105, 28, { align: "center" });
 
-    doc.setLineWidth(0.5);
-    doc.line(20, 32, 190, 32); // horizontal line
+      doc.setLineWidth(0.5);
+      doc.line(20, 32, 190, 32);
 
-    // Transaction Details
-    let y = 45;
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("Detail Transaksi", 20, y);
+      // Transaction Details
+      let y = 45;
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Detail Transaksi", 20, y);
 
-    doc.setFont("helvetica", "normal");
-    y += 10;
-    doc.text(`Nama User       : ${learnerName}`, 20, y);
-    y += 8;
-    doc.text(`Nama Kursus     : ${courseTitle}`, 20, y);
-    y += 8;
-    doc.text(`Instruktur      : ${instructorName}`, 20, y);
-    y += 8;
-    doc.text(`Jumlah          : ${amountFormatted}`, 20, y);
-    y += 8;
-    doc.text(`Status          : ${status}`, 20, y);
-    y += 8;
-    doc.text(`Tanggal         : ${dateFormatted}`, 20, y);
+      doc.setFont("helvetica", "normal");
+      y += 10;
+      doc.text(`Nama User       : ${learnerName}`, 20, y);
+      y += 8;
+      doc.text(`Nama Kursus     : ${courseTitle}`, 20, y);
+      y += 8;
+      doc.text(`Instruktur      : ${instructorName}`, 20, y);
+      y += 8;
+      doc.text(`Jumlah          : ${amountFormatted}`, 20, y);
+      y += 8;
+      doc.text(`Status          : ${status}`, 20, y);
+      y += 8;
+      doc.text(`Tanggal         : ${dateFormatted} ${timeFormatted}`, 20, y);
 
-    doc.save(`transaksi_${learnerName.replace(/\s/g, '_')}.pdf`);
-  }
+      // Footer
+      doc.setFontSize(10);
+      doc.text("Terima kasih telah menggunakan EduPlus", 105, 280, { align: "center" });
 
-  async function loadUserData() {
+      doc.save(`transaksi_${learnerName.replace(/\s/g, '_')}_${dateFormatted.replace(/\s/g, '_')}.pdf`);
+    }
+
+    async function loadUserData() {
       try {
         const res = await fetch("http://localhost:3000/api/auth/profile", {
           headers: {
@@ -247,7 +269,50 @@
         document.getElementById("profile-picture").src = `http://localhost:3000${photo}`;
       }
     }
-</script>
 
+    // Mobile sidebar toggle
+    document.querySelector('.close-sidebar')?.addEventListener('click', () => {
+      document.body.classList.remove('sidebar-active');
+      document.querySelector('.sidebar').classList.remove('active');
+    });
+
+
+    // Enhanced mobile sidebar functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileToggle = document.querySelector(".mobile-menu-toggle");
+        const sidebar = document.querySelector(".sidebar");
+        const sidebarOverlay = document.querySelector(".sidebar-overlay");
+        const closeSidebar = document.querySelector(".close-sidebar");
+
+        function toggleSidebar() {
+          sidebar.classList.toggle("active");
+          document.body.classList.toggle("sidebar-active");
+        }
+
+        if (mobileToggle && sidebar) {
+          mobileToggle.addEventListener("click", toggleSidebar);
+        }
+
+        if (closeSidebar) {
+          closeSidebar.addEventListener("click", toggleSidebar);
+        }
+
+        if (sidebarOverlay) {
+          sidebarOverlay.addEventListener("click", toggleSidebar);
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener("click", function (e) {
+          if (
+            window.innerWidth <= 768 &&
+            !sidebar.contains(e.target) &&
+            !mobileToggle.contains(e.target)
+          ) {
+            sidebar.classList.remove("active");
+            document.body.classList.remove("sidebar-active");
+          }
+        });
+      });
+  </script>
 </body>
 </html>

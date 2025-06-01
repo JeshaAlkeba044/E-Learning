@@ -1,60 +1,62 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verifikasi Transaksi | EduPlus</title>
-    <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css">
-
-</head>
-<body>
+    <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="mobile-menu-toggle">☰</div>
+    <!-- Sidebar -->
     <div class="sidebar">
+      <div class="sidebar-overlay"></div>
+      <div class="sidebar-content">
         <div class="logo-container">
-            <span class="logo-text">EduPlus</span>
+          <span class="logo-text">EduPlus</span>
+          <div class="close-sidebar">×</div>
         </div>
-        
+
         <a href="homeAdmin.html" class="menu-item">
-            <div class="menu-icon">🏠</div>
-            <span>Dashboard</span>
+          <div class="menu-icon"><i class="fas fa-home"></i></div>
+          <span class="menu-text">Dashboard</span>
         </a>
-        
         <a href="verify_trans.html" class="menu-item">
-            <div class="menu-icon">💳</div>
-            <span>Verifikasi Transaksi</span>
+          <div class="menu-icon"><i class="fas fa-credit-card"></i></div>
+          <span class="menu-text">Verifikasi Transaksi</span>
         </a>
-
         <a href="list_tutor.html" class="menu-item">
-            <div class="menu-icon">👨‍🏫</div>
-            <span>List Tutor</span>
+          <div class="menu-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+          <span class="menu-text">List Tutor</span>
         </a>
-
-        
         <a href="list_transaksi.html" class="menu-item">
-            <div class="menu-icon">👨</div>
-            <span>List Transaksi</span>
+          <div class="menu-icon"><i class="fas fa-chart-line"></i></div>
+          <span class="menu-text">List Transaksi</span>
         </a>
-
-            <a href="addAdmin.html" class="menu-item">
-      <div class="menu-icon">❤</div>
-      <span>Add Admin</span>
-    </a>
-        
+        <a href="addAdmin.html" class="menu-item">
+          <div class="menu-icon"><i class="fas fa-user-plus"></i></div>
+          <span class="menu-text">Tambah Admin</span>
+        </a>
         <a href="settings/profile.html" class="menu-item">
-            <div class="menu-icon">⚙️</div>
-            <span>Pengaturan</span>
+          <div class="menu-icon"><i class="fas fa-cog"></i></div>
+          <span class="menu-text">Pengaturan</span>
         </a>
-
-        <!-- <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button> -->
-
+      </div>
     </div>
 
     <div class="main-content">
-        <div class="header">
-            <div class="welcome-text">
-                <h1>Verifikasi Transaksi</h1>
-                <p>Kelola dan verifikasi pembayaran pengguna</p>
-            </div>
-            
+      <div class="main-header">
+        <div class="welcome-text">
+          <h1>Verifikasi Transaksi</h1>
+          <p>Kelola dan verifikasi pembayaran pengguna</p>
+        </div>
+
+        <div class="user-actions">
+          <div class="user-profile">
             <img
               src="http://localhost:3000/uploads/defaultPic.png"
               alt="Profile"
@@ -67,68 +69,74 @@
               <a href="settings/profile.html">
                 <i class="fas fa-user"></i> Profil Saya
               </a>
-              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
+              <a
+                href="../../auth/login/indexLogin.html"
+                onclick="localStorage.removeItem('token'); localStorage.removeItem('user');"
+              >
                 <i class="fas fa-sign-out-alt"></i> Keluar
               </a>
             </div>
+          </div>
         </div>
+      </div>
 
-        <div class="section-title">
-            <h2>Daftar Transaksi</h2>
-        </div>
+      <div class="section-title">
+        <h2>Daftar Transaksi</h2>
+      </div>
 
-        <div class="trans-list" id="transactionContainer">
-            <!-- Loader -->
-            <div class="loading" id="loadingIndicator">
-                <div class="spinner"></div>
-            </div>
+      <div class="trans-list" id="transactionContainer">
+        <!-- Loader -->
+        <div class="loading" id="loadingIndicator">
+          <div class="spinner"></div>
         </div>
+      </div>
     </div>
 
     <script src="../../assets/js/admin/verifyTrans.js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-    loadUserData()
+      document.addEventListener("DOMContentLoaded", () => {
+        loadUserData();
 
-    const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
+        const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
 
-    const menuItems = document.querySelectorAll('.menu-item');
+        const menuItems = document.querySelectorAll(".menu-item");
 
-    menuItems.forEach(item => {
-        if (item.getAttribute("href") === path) {
-        item.classList.add('active');
-        }
-    });
-
-    async function loadUserData() {
-      try {
-        const res = await fetch("http://localhost:3000/api/auth/profile", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+        menuItems.forEach((item) => {
+          if (item.getAttribute("href") === path) {
+            item.classList.add("active");
+          }
         });
-        if (!res.ok) throw new Error("401");
 
-        const user = await res.json();
-        renderUserData(user);
-      } catch (err) {
-        console.error(err);
-        window.location.href = "/auth/login/indexLogin.html";
-      }
-    }
+        async function loadUserData() {
+          try {
+            const res = await fetch("http://localhost:3000/api/auth/profile", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            if (!res.ok) throw new Error("401");
 
-    function renderUserData(user) {
-      const name = `${user.user.firstName} ${user.user.lastName}`;
-      const photo = user.user.photo_path;
+            const user = await res.json();
+            renderUserData(user);
+          } catch (err) {
+            console.error(err);
+            window.location.href = "/auth/login/indexLogin.html";
+          }
+        }
 
-      document.getElementById("profile-name").textContent = name;
-      if (photo) {
-        document.getElementById("profile-picture").src = `http://localhost:3000${photo}`;
-      }
-    }
+        function renderUserData(user) {
+          const name = `${user.user.firstName} ${user.user.lastName}`;
+          const photo = user.user.photo_path;
 
-});
+          document.getElementById("profile-name").textContent = name;
+          if (photo) {
+            document.getElementById(
+              "profile-picture"
+            ).src = `http://localhost:3000${photo}`;
+          }
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

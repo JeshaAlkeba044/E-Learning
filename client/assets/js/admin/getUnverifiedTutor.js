@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.classList.add('verification-card');
                 card.innerHTML = `
-                <img src="../../img/${tutor.photo_path}" alt="${tutor.firstName}" class="verification-image" />
+                <img src="http://localhost:3000${tutor.photo_path}" alt="${tutor.firstName}" class="verification-image" />
                 <div class="verification-info">
                     <h3 class="verification-name">${tutor.firstName} ${tutor.lastName}</h3>
                     <p class="verification-subject">${tutor.subjects || '-'}</p>

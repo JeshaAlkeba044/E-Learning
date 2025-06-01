@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       const result = await response.json();
 
-      console.log(result);
+      console.log("jkhkjhkjgiug", result);
 
       if (result.success) {
         const { totalCourses, totalLearners, totalTransactions } = result.data;

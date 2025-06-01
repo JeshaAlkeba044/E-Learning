@@ -1,306 +1,777 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List Tutor | EduPlus</title>
-    <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css">
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      :root {
+        /* Color Variables */
+        --primary: #4f5eea;
+        --primary-light: #e0e1ff;
+        --secondary: #4361ee;
+        --success: #4CAF50;
+        --info: #2196F3;
+        --warning: #FFC107;
+        --danger: #F44336;
+        --light: #f8f9fa;
+        --dark: #1a1e2e;
+        --white: #ffffff;
+        --gray: #6b7280;
+        --light-gray: #f5f5f9;
+        
+        /* Spacing Variables */
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 16px;
+        --space-lg: 24px;
+        --space-xl: 32px;
+        
+        /* Radius Variables */
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        
+        /* Shadow Variables */
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+        --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+        --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
+        
+        /* Transition Variables */
+        --transition-fast: 0.15s ease;
+        --transition-normal: 0.3s ease;
+        --transition-slow: 0.5s ease;
+      }
 
-<style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      }
 
-/* Tutor Card - Elegant White Theme */
-.tutor-card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    /* overflow: hidden; */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    /* display: flex; */
-    transition: all 0.3s ease;
-    border-left: 4px solid #4361ee;
-    padding: 1.1rem;
-    margin-bottom: 1.1rem;
-    width: 800px;
-}
+      body {
+        background-color: var(--light-gray);
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        line-height: 1.5;
+        position: relative;
+      }
 
-/* .tutor-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-} */
+      body.sidebar-active {
+        overflow: hidden;
+      }
 
-.tutor-list {
-    display: flex;
-    flex-direction: column; /* bikin listnya ke bawah */
-    gap: 1.5rem;            /* jarak antar kartu */
-    padding: 1rem 0;
-    max-width: 800px;       /* supaya card gak melebar lebih dari 800px */
-    /* margin: 0 auto;          */
-}
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: var(--transition-normal);
+      }
 
-.tutor-info {
-    /* display: flex; */
-    flex-direction: column;
-    /* gap: 0.5rem; */
-    color: #4a5568;
-}
+      /* Sidebar Styles */
+      .sidebar {
+        width: 280px;
+        background-color: var(--dark);
+        color: var(--white);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        transition: transform var(--transition-normal);
+        transform: translateX(-100%);
+      }
 
-.tutor-info h3 {
-    color: #2d3748;
-    margin: 0 0 0.5rem 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    border-bottom: 1px solid #e2e8f0;
-    /* padding-bottom: 0.5rem; */
-}
+      .sidebar.active {
+        transform: translateX(0);
+        box-shadow: var(--shadow-xl);
+      }
 
-.tutor-info p {
-    margin: 0.25rem ;
-    line-height: 1.5;
-    font-size: 0.95rem;
-    display: flex;
-    flex-direction: column;
-}
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-normal), visibility var(--transition-normal);
+      }
 
-.tutor-info p strong {
-    color: #1a202c;
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.2rem;
-}
+      .sidebar.active + .sidebar-overlay {
+        opacity: 1;
+        visibility: visible;
+      }
 
-.tutor-info a {
-    color: #4361ee;
-    word-break: break-all;
-    text-decoration: none;
-    transition: color 0.2s;
-}
+      .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
 
-.tutor-info a:hover {
-    text-decoration: underline;
-    color: #3a4fd8;
-}
+      .logo-container {
+        padding: var(--space-md) var(--space-lg);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--space-xl);
+        gap: var(--space-md);
+        position: relative;
+      }
 
-.delete-btn {
-    margin-top: 1rem;
-    background-color: #fff;
-    color: #e53e3e;
-    border: 1px solid #e53e3e;
-    border-radius: 6px;
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: fit-content;
-}
+      .close-sidebar {
+        display: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--white);
+      }
 
-.delete-btn:hover {
-    background-color: #e53e3e;
-    color: white;
-}
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
 
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        transition: opacity var(--transition-normal);
+      }
 
-</style>
-<body>
+      .menu-item {
+        padding: var(--space-md) var(--space-lg);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color var(--transition-normal);
+        color: var(--white);
+        gap: var(--space-md);
+        border-left: 4px solid transparent;
+      }
+
+      .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .menu-item.active {
+        background-color: rgba(79, 94, 234, 0.2);
+        border-left: 4px solid var(--primary);
+      }
+
+      .menu-item.active.dashboard {
+        background-color: rgba(72, 133, 237, 0.2);
+        border-left: 4px solid #4885ed;
+      }
+
+      .menu-item.active.users {
+        background-color: rgba(66, 165, 245, 0.2);
+        border-left: 4px solid #42a5f5;
+      }
+
+      .menu-item.active.settings {
+        background-color: rgba(41, 182, 246, 0.2);
+        border-left: 4px solid #29b6f6;
+      }
+
+      .menu-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .menu-text {
+        transition: opacity var(--transition-normal);
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 0;
+        padding: var(--space-lg);
+        width: 100%;
+        transition: margin-left var(--transition-normal), width var(--transition-normal);
+      }
+
+      /* Header */
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-xl);
+        padding: var(--space-md) var(--space-lg);
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        flex-wrap: wrap;
+        gap: var(--space-md);
+      }
+
+      .welcome-text h1 {
+        font-size: 1.25rem;
+        margin-bottom: var(--space-xs);
+        color: var(--dark);
+      }
+
+      .welcome-text p {
+        color: var(--gray);
+        font-size: 0.875rem;
+      }
+
+      /* User Profile */
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-light);
+      }
+
+      .profile-name {
+        font-weight: 500;
+      }
+
+      .profile-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: var(--white);
+        min-width: 200px;
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--radius-md);
+        z-index: 110;
+        display: none;
+        overflow: hidden;
+        margin-top: var(--space-sm);
+      }
+
+      .profile-dropdown a {
+        padding: var(--space-sm) var(--space-md);
+        display: block;
+        color: var(--dark);
+        transition: var(--transition-fast);
+        font-size: 0.875rem;
+      }
+
+      .profile-dropdown a:hover {
+        background-color: var(--light-gray);
+        color: var(--primary);
+      }
+
+      .user-profile:hover .profile-dropdown {
+        display: block;
+      }
+
+      /* Tutor List Styles */
+      .tutor-list-container {
+        background-color: var(--white);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+        padding: var(--space-xl);
+      }
+
+      .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-lg);
+      }
+
+      .section-title h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .tutor-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+      }
+
+      .tutor-card {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-sm);
+        border-left: 4px solid var(--primary);
+        transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+      }
+
+      .tutor-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .tutor-info h3 {
+        color: var(--dark);
+        font-size: 1.125rem;
+        margin-bottom: var(--space-md);
+        padding-bottom: var(--space-sm);
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      .tutor-info p {
+        margin-bottom: var(--space-sm);
+        color: var(--gray);
+        font-size: 0.9375rem;
+      }
+
+      .tutor-info p strong {
+        color: var(--dark);
+        font-weight: 600;
+        margin-right: var(--space-xs);
+      }
+
+      .tutor-info a {
+        color: var(--primary);
+        word-break: break-all;
+      }
+
+      .tutor-info a:hover {
+        text-decoration: underline;
+      }
+
+      .delete-btn {
+        background-color: var(--white);
+        color: var(--danger);
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-md);
+        padding: var(--space-sm) var(--space-md);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        margin-top: var(--space-md);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+      }
+
+      .delete-btn:hover {
+        background-color: var(--danger);
+        color: var(--white);
+      }
+
+      /* Loading state */
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        width: 100%;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(67, 97, 238, 0.1);
+        border-left-color: var(--secondary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: var(--space-xl);
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+      }
+
+      .empty-state h3 {
+        color: var(--dark);
+        margin-bottom: var(--space-sm);
+      }
+
+      .empty-state p {
+        color: var(--gray);
+      }
+
+      /* Mobile Menu Toggle */
+      .mobile-menu-toggle {
+        display: none;
+        position: fixed;
+        top: var(--space-md);
+        left: var(--space-md);
+        z-index: 1001;
+        background: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-md);
+        cursor: pointer;
+      }
+
+      /* Responsive adjustments */
+      @media (min-width: 769px) {
+        .sidebar {
+          transform: translateX(0);
+          position: fixed;
+          height: 100vh;
+        }
+        
+        .main-content {
+          margin-left: 280px;
+          width: calc(100% - 280px);
+        }
+
+        .sidebar-overlay {
+          display: none;
+        }
+
+        .close-sidebar {
+          display: none;
+        }
+
+        .mobile-menu-toggle {
+          display: none;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .sidebar {
+          width: 240px;
+        }
+        
+        .main-content {
+          margin-left: 240px;
+          width: calc(100% - 240px);
+        }
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          width: 80px;
+          overflow-x: hidden;
+        }
+        
+        .logo-text, .menu-text {
+          display: none;
+        }
+        
+        .menu-item {
+          justify-content: center;
+          padding: var(--space-md) var(--space-sm);
+        }
+        
+        .menu-icon {
+          margin-right: 0;
+        }
+        
+        .main-content {
+          margin-left: 80px;
+          width: calc(100% - 80px);
+          padding: var(--space-md);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .mobile-menu-toggle {
+          display: flex;
+        }
+
+        .sidebar {
+          width: 280px;
+          transform: translateX(-100%);
+          z-index: 1000;
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        .close-sidebar {
+          display: block;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .main-content {
+          padding: var(--space-md);
+        }
+
+        .tutor-list-container {
+          padding: var(--space-lg);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="mobile-menu-toggle">☰</div>
+    <!-- Sidebar -->
     <div class="sidebar">
+      <div class="sidebar-overlay"></div>
+      <div class="sidebar-content">
         <div class="logo-container">
-            <span class="logo-text">EduPlus</span>
+          <span class="logo-text">EduPlus</span>
+          <div class="close-sidebar">×</div>
         </div>
 
         <a href="homeAdmin.html" class="menu-item">
-            <div class="menu-icon">🏠</div>
-            <span>Dashboard</span>
+          <div class="menu-icon"><i class="fas fa-home"></i></div>
+          <span class="menu-text">Dashboard</span>
         </a>
-
         <a href="verify_trans.html" class="menu-item">
-            <div class="menu-icon">💳</div>
-            <span>Verifikasi Transaksi</span>
+          <div class="menu-icon"><i class="fas fa-credit-card"></i></div>
+          <span class="menu-text">Verifikasi Transaksi</span>
         </a>
-
-        <a href="list_tutor.html" class="menu-item">
-            <div class="menu-icon">👨‍🏫</div>
-            <span>List Tutor</span>
+        <a href="list_tutor.html" class="menu-item active">
+          <div class="menu-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+          <span class="menu-text">List Tutor</span>
         </a>
-
-        
         <a href="list_transaksi.html" class="menu-item">
-            <div class="menu-icon">👨</div>
-            <span>List Transaksi</span>
+          <div class="menu-icon"><i class="fas fa-chart-line"></i></div>
+          <span class="menu-text">List Transaksi</span>
         </a>
-
-            <a href="addAdmin.html" class="menu-item">
-      <div class="menu-icon">❤</div>
-      <span>Add Admin</span>
-    </a>
-
+        <a href="addAdmin.html" class="menu-item">
+          <div class="menu-icon"><i class="fas fa-user-plus"></i></div>
+          <span class="menu-text">Tambah Admin</span>
+        </a>
         <a href="settings/profile.html" class="menu-item">
-            <div class="menu-icon">⚙️</div>
-            <span>Pengaturan</span>
+          <div class="menu-icon"><i class="fas fa-cog"></i></div>
+          <span class="menu-text">Pengaturan</span>
         </a>
-
-
-
-        <!-- <button class="logout-btn" onclick="window.location.href='../index.html'">Logout</button> -->
+      </div>
     </div>
 
     <div class="main-content">
-        <div class="header">
-            <div class="welcome-text">
-                <h1>List Tutor</h1>
-            </div>
-            
-            <img
-              src="http://localhost:3000/uploads/defaultPic.png"
-              alt="Profile"
-              class="profile-pic"
-              id="profile-picture"
-            />
-            <span class="profile-name" id="profile-name">John Doe</span>
-
-            <div class="profile-dropdown">
-              <a href="settings/profile.html">
-                <i class="fas fa-user"></i> Profil Saya
-              </a>
-              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
-                <i class="fas fa-sign-out-alt"></i> Keluar
-              </a>
-            </div>
+      <div class="main-header">
+        <div class="welcome-text">
+          <h1>List Tutor</h1>
         </div>
 
+        <div class="user-profile">
+          <img
+            src="http://localhost:3000/uploads/defaultPic.png"
+            alt="Profile"
+            class="profile-pic"
+            id="profile-picture"
+          />
+          <span class="profile-name" id="profile-name">John Doe</span>
+
+          <div class="profile-dropdown">
+            <a href="settings/profile.html">
+              <i class="fas fa-user"></i> Profil Saya
+            </a>
+            <a
+              href="../../auth/login/indexLogin.html"
+              onclick="localStorage.removeItem('token'); localStorage.removeItem('user');"
+            >
+              <i class="fas fa-sign-out-alt"></i> Keluar
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutor-list-container">
         <div class="section-title">
-            <h2>Daftar Tutor</h2>
+          <h2>Daftar Tutor</h2>
         </div>
 
-        <!-- Di sinilah kartu tutor akan ditampilkan -->
+        <!-- Tutor list will be displayed here -->
         <div class="tutor-list">
-            <div class="loading" id="loadingIndicator">
-                <div class="spinner"></div>
-            </div>
+          <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const listContainer = document.querySelector('.tutor-list');
-            const loadingIndicator = document.getElementById('loadingIndicator');
+      document.addEventListener("DOMContentLoaded", () => {
+        const listContainer = document.querySelector(".tutor-list");
+        const loadingIndicator = document.getElementById("loadingIndicator");
 
-            const fetchTutors = async () => {
-                try {
-                    const response = await fetch('http://localhost:3000/api/admin/allTutors');
-                    if (!response.ok) throw new Error('Gagal fetch tutor');
+        const fetchTutors = async () => {
+          try {
+            const response = await fetch(
+              "http://localhost:3000/api/admin/allTutors"
+            );
+            if (!response.ok) throw new Error("Gagal fetch tutor");
 
-                    const result = await response.json();
-                    const tutors = result.data || result || [];
+            const result = await response.json();
+            const tutors = result.data || result || [];
 
-                    listContainer.innerHTML = ''; // Clear loading
+            listContainer.innerHTML = ""; // Clear loading
 
-                    if (tutors.length === 0) {
-                        listContainer.innerHTML = `
-                            <div class="empty-state">
-                                <h3>Empty Data</h3>
-                                <p>Belum ada tutor yang terdaftar.</p>
-                            </div>
-                        `;
-                        return;
-                    }
+            if (tutors.length === 0) {
+              listContainer.innerHTML = `
+                <div class="empty-state">
+                  <h3>Empty Data</h3>
+                  <p>Belum ada tutor yang terdaftar.</p>
+                </div>
+              `;
+              return;
+            }
 
-                    tutors.forEach(tutor => {
-                        const name = `${tutor.firstName || ''} ${tutor.lastName || ''}`.trim();
-                        const card = document.createElement('div');
-                        card.classList.add('tutor-card');
-                        card.innerHTML = `
-                            <div class="tutor-info">
-                                <h3>${name || 'Tanpa Nama'}</h3>
-                                <p><strong>Email:</strong> ${tutor.email || '-'}</p>
-                                <p><strong>Telepon:</strong> ${tutor.phoneNumber || '-'}</p>
-                                <p><strong>Bio:</strong> ${tutor.bio || '-'}</p>
-                                <p><strong>Spesialisasi:</strong> ${tutor.specialization || '-'}</p>
-                                <p><strong>YoE:</strong> ${tutor.YoE || '-'}</p>
-                                <p><strong>Link Portofolio:</strong> 
-                                    ${tutor.linkPorto ? `<a href="${tutor.linkPorto}" target="_blank">${tutor.linkPorto}</a>` : '-'}</p>
-                                <button class="delete-btn" data-tutor-id="${tutor.id_user}">🗑️ Hapus</button>
-                            </div>
-                        `;
-                        listContainer.appendChild(card);
-                    });
-
-                } catch (error) {
-                    console.error('Gagal mengambil data tutor:', error);
-                    listContainer.innerHTML = `
-                        <div class="empty-state">
-                            <h3>Terjadi Kesalahan</h3>
-                            <p>Gagal memuat list Tutor. Silakan coba lagi nanti.</p>
-                        </div>
-                    `;
-                }
-            };
-
-            const deleteTutor = async (tutorId, cardElement) => {
-                const confirmDelete = confirm("Yakin ingin menghapus tutor ini? Aksi ini tidak bisa dibatalkan 🥺");
-                if (!confirmDelete) return;
-                // console.log("Menghapus tutor dengan ID:", tutorId);
-
-                try {
-                    const response = await fetch(`http://localhost:3000/api/admin/deleteTutors/${tutorId}`, {
-                        method: 'DELETE',
-                    });
-
-                    if (!response.ok) throw new Error('Gagal menghapus tutor');
-
-                    alert("Tutor berhasil dihapus ✅");
-                    cardElement.remove();
-                } catch (error) {
-                    console.error("Gagal menghapus tutor:", error);
-                    alert("Terjadi kesalahan saat menghapus tutor 😣");
-                }
-            };
-
-            listContainer.addEventListener('click', async (e) => {
-                if (e.target.classList.contains('delete-btn')) {
-                    const btn = e.target;
-                    const tutorId = btn.getAttribute('data-tutor-id');
-                    console.log("Tutor ID:", tutorId);
-                    const card = btn.closest('.tutor-card');
-                    await deleteTutor(tutorId, card);
-                }
+            tutors.forEach((tutor) => {
+              const name = `${tutor.firstName || ""} ${
+                tutor.lastName || ""
+              }`.trim();
+              const card = document.createElement("div");
+              card.classList.add("tutor-card");
+              card.innerHTML = `
+                <div class="tutor-info">
+                  <h3>${name || "Tanpa Nama"}</h3>
+                  <p><strong>Email:</strong> ${tutor.email || "-"}</p>
+                  <p><strong>Telepon:</strong> ${tutor.phoneNumber || "-"}</p>
+                  <p><strong>Bio:</strong> ${tutor.bio || "-"}</p>
+                  <p><strong>Spesialisasi:</strong> ${tutor.specialization || "-"}</p>
+                  <p><strong>Pengalaman:</strong> ${tutor.YoE || "-"} tahun</p>
+                  <p><strong>Link Portofolio:</strong> 
+                    ${
+                      tutor.linkPorto
+                        ? `<a href="${tutor.linkPorto}" target="_blank">${tutor.linkPorto}</a>`
+                        : "-"
+                    }</p>
+                  <button class="delete-btn" data-tutor-id="${tutor.id_user}">
+                    <i class="fas fa-trash"></i> Hapus Tutor
+                  </button>
+                </div>
+              `;
+              listContainer.appendChild(card);
             });
+          } catch (error) {
+            console.error("Gagal mengambil data tutor:", error);
+            listContainer.innerHTML = `
+              <div class="empty-state">
+                <h3>Terjadi Kesalahan</h3>
+                <p>Gagal memuat list Tutor. Silakan coba lagi nanti.</p>
+              </div>
+            `;
+          }
+        };
 
-            fetchTutors();
-            loadUserData()
+        const deleteTutor = async (tutorId, cardElement) => {
+          const confirmDelete = confirm(
+            "Yakin ingin menghapus tutor ini? Aksi ini tidak bisa dibatalkan."
+          );
+          if (!confirmDelete) return;
+
+          try {
+            const response = await fetch(
+              `http://localhost:3000/api/admin/deleteTutors/${tutorId}`,
+              {
+                method: "DELETE",
+              }
+            );
+
+            if (!response.ok) throw new Error("Gagal menghapus tutor");
+
+            alert("Tutor berhasil dihapus");
+            cardElement.remove();
+          } catch (error) {
+            console.error("Gagal menghapus tutor:", error);
+            alert("Terjadi kesalahan saat menghapus tutor");
+          }
+        };
+
+        listContainer.addEventListener("click", async (e) => {
+          if (e.target.classList.contains("delete-btn")) {
+            const btn = e.target;
+            const tutorId = btn.getAttribute("data-tutor-id");
+            const card = btn.closest(".tutor-card");
+            await deleteTutor(tutorId, card);
+          }
         });
 
-        async function loadUserData() {
-      try {
-        const res = await fetch("http://localhost:3000/api/auth/profile", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+        fetchTutors();
+        loadUserData();
+      });
+
+      async function loadUserData() {
+        try {
+          const res = await fetch("http://localhost:3000/api/auth/profile", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+          if (!res.ok) throw new Error("401");
+
+          const user = await res.json();
+          renderUserData(user);
+        } catch (err) {
+          console.error(err);
+          window.location.href = "/auth/login/indexLogin.html";
+        }
+      }
+
+      function renderUserData(user) {
+        const name = `${user.user.firstName} ${user.user.lastName}`;
+        const photo = user.user.photo_path;
+
+        document.getElementById("profile-name").textContent = name;
+        if (photo) {
+          document.getElementById(
+            "profile-picture"
+          ).src = `http://localhost:3000${photo}`;
+        }
+      }
+
+      // Enhanced mobile sidebar functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileToggle = document.querySelector(".mobile-menu-toggle");
+        const sidebar = document.querySelector(".sidebar");
+        const sidebarOverlay = document.querySelector(".sidebar-overlay");
+        const closeSidebar = document.querySelector(".close-sidebar");
+
+        function toggleSidebar() {
+          sidebar.classList.toggle("active");
+          document.body.classList.toggle("sidebar-active");
+        }
+
+        if (mobileToggle && sidebar) {
+          mobileToggle.addEventListener("click", toggleSidebar);
+        }
+
+        if (closeSidebar) {
+          closeSidebar.addEventListener("click", toggleSidebar);
+        }
+
+        if (sidebarOverlay) {
+          sidebarOverlay.addEventListener("click", toggleSidebar);
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener("click", function (e) {
+          if (
+            window.innerWidth <= 768 &&
+            !sidebar.contains(e.target) &&
+            !mobileToggle.contains(e.target)
+          ) {
+            sidebar.classList.remove("active");
+            document.body.classList.remove("sidebar-active");
+          }
         });
-        if (!res.ok) throw new Error("401");
-
-        const user = await res.json();
-        renderUserData(user);
-      } catch (err) {
-        console.error(err);
-        window.location.href = "/auth/login/indexLogin.html";
-      }
-    }
-
-    function renderUserData(user) {
-      const name = `${user.user.firstName} ${user.user.lastName}`;
-      const photo = user.user.photo_path;
-
-      document.getElementById("profile-name").textContent = name;
-      if (photo) {
-        document.getElementById("profile-picture").src = `http://localhost:3000${photo}`;
-      }
-    }
+      });
     </script>
-</body>
+  </body>
 </html>
