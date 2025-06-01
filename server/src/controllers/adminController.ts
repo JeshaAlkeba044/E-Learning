@@ -33,16 +33,25 @@ export const addAdmin = async (req: Request, res: Response) => {
       encryptedEmail,
       password: hashPassword,
       phone_number: encrypt(phone_number),
-      role: "admin",
+      role: encrypt("admin"),
       statusUser: "verified",
     });
 
-    res.status(201).json({ message: "Admin berhasil ditambahkan", admin: newAdmin });
+    res.status(201).json({
+      message: "Admin berhasil ditambahkan",
+      admin: {
+        id: newAdmin.id,
+        email,
+        firstName,
+        lastName,
+      },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Gagal menambahkan admin" });
   }
 };
+
 
 
 
