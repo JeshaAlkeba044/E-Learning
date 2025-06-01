@@ -296,17 +296,17 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
     const totalCourses = await Course.count({
       where: { is_active: true },
     });
-
+    
     const allUsers = await User.findAll({
       attributes: ['role']
     });
 
-    const totalLearners = allUsers.filter(user => decrypt(user.role) === 'learner').length;
-
+    const totalLearners = allUsers.filter(user => user.role === 'learner').length;
+    
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-
+    
     const totalTransactions = await Transaction.count({
       where: {
         transaction_date: {
@@ -316,7 +316,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
         status: 'completed',
       },
     });
-
+    
     res.json({
       success: true,
       data: {
