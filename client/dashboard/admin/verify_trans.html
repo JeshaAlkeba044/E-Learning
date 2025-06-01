@@ -27,6 +27,17 @@
             <div class="menu-icon">👨‍🏫</div>
             <span>List Tutor</span>
         </a>
+
+        
+        <a href="list_transaksi.html" class="menu-item">
+            <div class="menu-icon">👨</div>
+            <span>List Transaksi</span>
+        </a>
+
+            <a href="addAdmin.html" class="menu-item">
+      <div class="menu-icon">❤</div>
+      <span>Add Admin</span>
+    </a>
         
         <a href="settings/profile.html" class="menu-item">
             <div class="menu-icon">⚙️</div>
@@ -43,9 +54,22 @@
                 <h1>Verifikasi Transaksi</h1>
                 <p>Kelola dan verifikasi pembayaran pengguna</p>
             </div>
-            <div class="user-profile">
-                <img src="../../assets/img/pisi.jpeg" alt="Admin Avatar" class="admin-avatar" />
+            
+            <img
+              src="http://localhost:3000/uploads/defaultPic.png"
+              alt="Profile"
+              class="profile-pic"
+              id="profile-picture"
+            />
+            <span class="profile-name" id="profile-name">John Doe</span>
 
+            <div class="profile-dropdown">
+              <a href="settings/profile.html">
+                <i class="fas fa-user"></i> Profil Saya
+              </a>
+              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+              </a>
             </div>
         </div>
 
@@ -64,6 +88,9 @@
     <script src="../../assets/js/admin/verifyTrans.js"></script>
 
     <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    loadUserData()
+
     const path = window.location.pathname.split("/").pop(); // misalnya: 'dashboard.html'
 
     const menuItems = document.querySelectorAll('.menu-item');
@@ -73,6 +100,35 @@
         item.classList.add('active');
         }
     });
+
+    async function loadUserData() {
+      try {
+        const res = await fetch("http://localhost:3000/api/auth/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (!res.ok) throw new Error("401");
+
+        const user = await res.json();
+        renderUserData(user);
+      } catch (err) {
+        console.error(err);
+        window.location.href = "/auth/login/indexLogin.html";
+      }
+    }
+
+    function renderUserData(user) {
+      const name = `${user.user.firstName} ${user.user.lastName}`;
+      const photo = user.user.photo_path;
+
+      document.getElementById("profile-name").textContent = name;
+      if (photo) {
+        document.getElementById("profile-picture").src = `http://localhost:3000${photo}`;
+      }
+    }
+
+});
     </script>
 </body>
 </html>

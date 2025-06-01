@@ -2,7 +2,7 @@ import express from 'express';
 import {
   createTransaction,
   getUserTransactions,
-  getUserEnrolledCourses
+  getUserEnrolledCourses,
 } from '../controllers/transactionController';
 import { authenticate } from '../middleware/authMiddleware';
 

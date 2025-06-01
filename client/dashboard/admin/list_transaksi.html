@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List Tutor | EduPlus</title>
+  <link rel="stylesheet" href="../../assets/css/pages/_verifTrans.css" />
+
+  <!-- jsPDF dan html2canvas CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      max-width: 800px;
+    }
+
+    .transaction-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+      padding: 1.2rem;
+      border-left: 4px solid #00b894;
+      transition: transform 0.2s ease;
+    }
+
+    .transaction-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .transaction-card h3 {
+      margin: 0 0 0.6rem;
+      font-size: 1.2rem;
+      color: #2d3436;
+      border-bottom: 1px solid #dfe6e9;
+      padding-bottom: 0.4rem;
+    }
+
+    .transaction-card p {
+      margin: 0.3rem 0;
+      font-size: 0.95rem;
+      color: #636e72;
+    }
+
+    .print-btn {
+      margin: 1rem;
+      padding: 10px 20px;
+      background-color: #00b894;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .print-btn:hover {
+      background-color: #019874;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <div class="logo-container">
+      <span class="logo-text">EduPlus</span>
+    </div>
+
+    <a href="homeAdmin.html" class="menu-item">
+      <div class="menu-icon">🏠</div>
+      <span>Dashboard</span>
+    </a>
+
+    <a href="verify_trans.html" class="menu-item">
+      <div class="menu-icon">💳</div>
+      <span>Verifikasi Transaksi</span>
+    </a>
+
+    <a href="list_tutor.html" class="menu-item">
+      <div class="menu-icon">👨‍🏫</div>
+      <span>List Tutor</span>
+    </a>
+
+    <a href="list_transaksi.html" class="menu-item">
+      <div class="menu-icon">👨</div>
+      <span>List Transaksi</span>
+    </a>
+
+        <a href="addAdmin.html" class="menu-item">
+      <div class="menu-icon">❤</div>
+      <span>Add Admin</span>
+    </a>
+
+    <a href="settings/profile.html" class="menu-item">
+      <div class="menu-icon">⚙️</div>
+      <span>Pengaturan</span>
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+            <div class="welcome-text">
+                <h1>List Transaksi</h1>
+            </div>
+            
+            <img
+              src="http://localhost:3000/uploads/defaultPic.png"
+              alt="Profile"
+              class="profile-pic"
+              id="profile-picture"
+            />
+            <span class="profile-name" id="profile-name">John Doe</span>
+
+            <div class="profile-dropdown">
+              <a href="settings/profile.html">
+                <i class="fas fa-user"></i> Profil Saya
+              </a>
+              <a href="../../auth/login/indexLogin.html" onclick="localStorage.removeItem('token'); localStorage.removeItem('user');">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+              </a>
+            </div>
+        </div>
+
+    <div class="transaction-list" id="transactionList">
+      <div class="loading" id="loadingIndicator">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    loadUserData()
+    const transactionList = document.getElementById("transactionList");
+    const loading = document.getElementById("loadingIndicator");
+
+    try {
+      const response = await fetch("http://localhost:3000/api/admin/getAll");
+      const data = await response.json();
+
+      loading.style.display = "none";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        transactionList.innerHTML = "<p>Tidak ada transaksi ditemukan.</p>";
+        return;
+      }
+
+      data.forEach((tx, index) => {
+        const card = document.createElement("div");
+        card.className = "transaction-card";
+
+        const learnerName = `${tx.learner?.firstName || ""} ${tx.learner?.lastName || ""}`.trim() || "Tidak diketahui";
+        const courseTitle = tx.course?.title || "Tidak diketahui";
+        const instructorName = `${tx.course?.instructor?.firstName || ""} ${tx.course?.instructor?.lastName || ""}`.trim() || "Tidak diketahui";
+        const amountFormatted = `Rp${Number(tx.amount).toLocaleString("id-ID")}`;
+        const status = tx.status || "Tidak diketahui";
+        const dateFormatted = new Date(tx.transaction_date).toLocaleDateString("id-ID", {
+          day: 'numeric', month: 'long', year: 'numeric'
+        });
+
+        const transactionId = `trx-${index}`;
+
+        card.innerHTML = `
+          <h3>Transaksi</h3>
+          <p><strong>Nama User:</strong> ${learnerName}</p>
+          <p><strong>Nama Kursus:</strong> ${courseTitle}</p>
+          <p><strong>Instruktur:</strong> ${instructorName}</p>
+          <p><strong>Jumlah:</strong> ${amountFormatted}</p>
+          <p><strong>Status:</strong> ${status}</p>
+          <p><strong>Tanggal:</strong> ${dateFormatted}</p>
+          <button class="print-btn" onclick="printSingleTransaction('${learnerName}', '${courseTitle}', '${instructorName}', '${amountFormatted}', '${status}', '${dateFormatted}')">Print PDF</button>
+        `;
+
+        transactionList.appendChild(card);
+      });
+    } catch (err) {
+      loading.style.display = "none";
+      transactionList.innerHTML = `<p style="color: red;">Gagal memuat data transaksi. Coba lagi nanti ya 😢</p>`;
+      console.error("Fetch error:", err);
+    }
+  });
+
+  async function printSingleTransaction(learnerName, courseTitle, instructorName, amountFormatted, status, dateFormatted) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("EduLearn", 105, 20, { align: "center" });
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text("edulearn20255@gmail.com", 105, 28, { align: "center" });
+
+    doc.setLineWidth(0.5);
+    doc.line(20, 32, 190, 32); // horizontal line
+
+    // Transaction Details
+    let y = 45;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Detail Transaksi", 20, y);
+
+    doc.setFont("helvetica", "normal");
+    y += 10;
+    doc.text(`Nama User       : ${learnerName}`, 20, y);
+    y += 8;
+    doc.text(`Nama Kursus     : ${courseTitle}`, 20, y);
+    y += 8;
+    doc.text(`Instruktur      : ${instructorName}`, 20, y);
+    y += 8;
+    doc.text(`Jumlah          : ${amountFormatted}`, 20, y);
+    y += 8;
+    doc.text(`Status          : ${status}`, 20, y);
+    y += 8;
+    doc.text(`Tanggal         : ${dateFormatted}`, 20, y);
+
+    doc.save(`transaksi_${learnerName.replace(/\s/g, '_')}.pdf`);
+  }
+
+  async function loadUserData() {
+      try {
+        const res = await fetch("http://localhost:3000/api/auth/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (!res.ok) throw new Error("401");
+
+        const user = await res.json();
+        renderUserData(user);
+      } catch (err) {
+        console.error(err);
+        window.location.href = "/auth/login/indexLogin.html";
+      }
+    }
+
+    function renderUserData(user) {
+      const name = `${user.user.firstName} ${user.user.lastName}`;
+      const photo = user.user.photo_path;
+
+      document.getElementById("profile-name").textContent = name;
+      if (photo) {
+        document.getElementById("profile-picture").src = `http://localhost:3000${photo}`;
+      }
+    }
+</script>
+
+</body>
+</html>

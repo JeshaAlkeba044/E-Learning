@@ -331,3 +331,60 @@ body {
 .empty-state p {
     color: #777;
 }
+
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+        }
+
+        .profile-name {
+            font-weight: 500;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: var(--white);
+            min-width: 200px;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-md);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        .profile-dropdown a {
+            padding: var(--space-sm) var(--space-md);
+            display: block;
+            color: var(--dark);
+            transition: var(--transition-fast);
+        }
+
+        .profile-dropdown a:hover {
+            background-color: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .user-profile:hover .profile-dropdown {
+            display: block;
+        }
