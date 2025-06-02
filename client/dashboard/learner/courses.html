@@ -545,11 +545,11 @@
             <span class="filter-label">Kategori:</span>
             <select class="filter-select">
               <option value="all">Semua Kategori</option>
-              <option value="design">Desain</option>
-              <option value="programming">Pemrograman</option>
-              <option value="marketing">Marketing</option>
+              <option value="design" selected>Desain</option>
+              <option value="development">Development</option>
               <option value="business">Bisnis</option>
-              <option value="data-science">Data Science</option>
+              <option value="marketing">Pemasaran</option>
+              <option value="photography">Fotografi</option>
             </select>
           </div>
           <div class="filter-group">
@@ -566,7 +566,6 @@
             <select class="filter-select">
               <option value="popular">Paling Populer</option>
               <option value="newest">Terbaru</option>
-              <option value="highest-rated">Rating Tertinggi</option>
               <option value="price-low">Harga: Rendah ke Tinggi</option>
               <option value="price-high">Harga: Tinggi ke Rendah</option>
             </select>
@@ -585,7 +584,7 @@
           <!-- Static course cards as fallback or initial state -->
         </div>
         <!-- Pagination -->
-        <div class="pagination">
+        <!-- <div class="pagination">
           <div class="page-item disabled">
             <i class="fas fa-chevron-left"></i>
           </div>
@@ -597,7 +596,7 @@
           <div class="page-item">
             <i class="fas fa-chevron-right"></i>
           </div>
-        </div>
+        </div> -->
       </div>
     </main>
     <script>
@@ -722,9 +721,7 @@
             (course) => `
             <div class="course-card">
               <div class="card-image">
-                <img src="http://localhost:3000/${
-                    course.thumbnail_path || "../../assets/img/course-placeholder.jpg"
-                  }" alt="${course.courseTitle}">
+                <img src="${course.thumbnail_path ? 'http://localhost:3000/' + course.thumbnail_path : 'http://localhost:3000/uploads/defaultPic.png'}" alt="${course.courseTitle}">
                 ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
               </div>
               <div class="card-content">

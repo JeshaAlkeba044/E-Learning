@@ -348,13 +348,14 @@ export const getCoursesByInstructor = async (req: Request & { file?: Express.Mul
 
 export const updateCourse = async (req: Request & { file?: Express.Multer.File }, res: Response) => {
     try {
-        const { id_course } = req.params;
-        const { title, category, description, price } = req.body;
+        const { id } = req.params;
+        const { title, category, description, price, level } = req.body;
 
         console.log("Request body:", req.body);
+        console.log("Request param:", req.params);
         console.log("Uploaded file:", req.file); // Cek apakah file terupload
 
-        const course = await Course.findByPk(id_course);
+        const course = await Course.findByPk(id);
         if (!course) {
             res.status(404).json({ error: 'Course not found' });
             return;
@@ -365,6 +366,7 @@ export const updateCourse = async (req: Request & { file?: Express.Multer.File }
         course.category = category;
         course.description = description;
         course.price = parseFloat(price);
+        course.level = level;
         
         // Jika ada file yang diupload
         if (req.file) {

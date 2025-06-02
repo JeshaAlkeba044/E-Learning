@@ -642,7 +642,7 @@
                 <div class="tutor-info">
                   <h3>${name || "Tanpa Nama"}</h3>
                   <p><strong>Email:</strong> ${tutor.email || "-"}</p>
-                  <p><strong>Telepon:</strong> ${tutor.phoneNumber || "-"}</p>
+                  <p><strong>Telepon:</strong> ${tutor.phone_number || "-"}</p>
                   <p><strong>Bio:</strong> ${tutor.bio || "-"}</p>
                   <p><strong>Spesialisasi:</strong> ${tutor.specialization || "-"}</p>
                   <p><strong>Pengalaman:</strong> ${tutor.YoE || "-"} tahun</p>
@@ -720,7 +720,7 @@
           renderUserData(user);
         } catch (err) {
           console.error(err);
-          window.location.href = "/auth/login/indexLogin.html";
+          window.location.href = "../../auth/login/indexLogin.html";
         }
       }
 

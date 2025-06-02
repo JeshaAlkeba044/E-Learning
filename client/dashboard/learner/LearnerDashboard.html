@@ -332,7 +332,7 @@
         font-size: 0.9rem;
       }
 
-      /* Course Progress */
+      /* Progress Container */
       .progress-container {
         background-color: var(--white);
         border-radius: var(--radius-lg);
@@ -439,11 +439,13 @@
         background-color: var(--primary-dark);
       }
 
-      /* Recommended Courses */
+      /* Course Grid - Improved */
       .course-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: var(--space-lg);
+        margin: 0;
+        padding: 0;
       }
 
       .course-card {
@@ -452,6 +454,9 @@
         overflow: hidden;
         box-shadow: var(--shadow-sm);
         transition: var(--transition-normal);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
       }
 
       .course-card:hover {
@@ -491,6 +496,9 @@
 
       .card-content {
         padding: var(--space-lg);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       .card-category {
@@ -504,6 +512,7 @@
         font-size: 1.1rem;
         margin-bottom: var(--space-sm);
         color: var(--dark);
+        flex: 1;
       }
 
       .card-meta {
@@ -524,6 +533,7 @@
         align-items: center;
         padding-top: var(--space-md);
         border-top: 1px solid var(--light-gray);
+        margin-top: auto;
       }
 
       .card-price {
@@ -544,6 +554,16 @@
 
       .enroll-btn:hover {
         background-color: #2e8b00;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 2rem;
+        font-style: italic;
+        color: var(--gray);
+        width: 100%;
+        grid-column: 1 / -1;
       }
 
       /* ========== RESPONSIVE STYLES ========== */
@@ -617,6 +637,10 @@
           width: 100%;
           height: 120px;
         }
+
+        .course-grid {
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
       }
 
       @media (max-width: 576px) {
@@ -636,35 +660,6 @@
           display: none;
         }
       }
-
-      .empty-state {
-        text-align: center;
-        padding: 2rem;
-        font-style: italic;
-        color: #888;
-      }
-
-      .course-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: var(--space-lg);
-        min-height: 180px;
-        align-items: center;
-        justify-items: center;
-      }
-
-      .course-grid .empty-state {
-        grid-column: 1 / -1;
-        align-self: center;
-        justify-self: center;
-        width: 100%;
-        /* padding: 3rem 1rem; */
-        font-size: 1.1rem;
-        color: #888;
-        font-style: italic;
-      }
-
-
     </style>
   </head>
   <body>
@@ -766,41 +761,7 @@
           </div>
 
           <div class="progress-list">
-            <!-- <div class="progress-item">
-              <div class="course-image">
-                <img
-                  src="../../assets/img/c1591799-131d-45da-bec4-7f9fce0baa92.jpg"
-                  alt="UI/UX Design"
-                />
-              </div>
-
-              <div class="course-info">
-                <h3 class="course-title">UI/UX Design Fundamental</h3>
-                <p class="course-instructor">Oleh Jane Smith</p>
-
-                <a href="course_detail.html" class="continue-btn"
-                  >Lanjutkan Belajar</a
-                >
-              </div>
-            </div>
-
-            <div class="progress-item">
-              <div class="course-image">
-                <img
-                  src="../../assets/img/c1591799-131d-45da-bec4-7f9fce0baa92.jpg"
-                  alt="Web Development"
-                />
-              </div>
-
-              <div class="course-info">
-                <h3 class="course-title">Web Development Modern</h3>
-                <p class="course-instructor">Oleh John Doe</p>
-
-                <a href="course_detail.html" class="continue-btn"
-                  >Lanjutkan Belajar</a
-                >
-              </div>
-            </div> -->
+            <!-- Progress items will be inserted here by JavaScript -->
           </div>
         </div>
 
@@ -812,81 +773,14 @@
           </div>
 
           <div class="course-grid">
-            <!-- <div class="course-card">
-              <div class="card-image">
-                <img
-                  src="../../assets/img/c1591799-131d-45da-bec4-7f9fce0baa92.jpg"
-                  alt="Creative Art Design"
-                />
-                <div class="course-badge">Baru</div>
-              </div>
-
-              <div class="card-content">
-                <div class="card-category">Desain</div>
-                <h3 class="card-title">Creative Art Design</h3>
-                <div class="card-meta">
-                  <span><i class="fas fa-clock"></i> 40 Jam</span>
-                  <span><i class="fas fa-book"></i> 17 Materi</span>
-                </div>
-
-                <div class="card-footer">
-                  <span class="card-price">Rp 100.000</span>
-                  <a href="#" class="enroll-btn">Daftar</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="course-card">
-              <div class="card-image">
-                <img src="../img/course-datascience.jpg" alt="Data Science" />
-              </div>
-
-              <div class="card-content">
-                <div class="card-category">Data Science</div>
-                <h3 class="card-title">Data Science untuk Pemula</h3>
-                <div class="card-meta">
-                  <span><i class="fas fa-clock"></i> 25 Jam</span>
-                  <span><i class="fas fa-book"></i> 15 Materi</span>
-                </div>
-
-                <div class="card-footer">
-                  <span class="card-price">Rp 150.000</span>
-                  <a href="#" class="enroll-btn">Daftar</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="course-card">
-              <div class="card-image">
-                <img
-                  src="../img/course-digitalmarketing.jpg"
-                  alt="Digital Marketing"
-                />
-                <div class="course-badge">Populer</div>
-              </div>
-
-              <div class="card-content">
-                <div class="card-category">Marketing</div>
-                <h3 class="card-title">Digital Marketing Mastery</h3>
-                <div class="card-meta">
-                  <span><i class="fas fa-clock"></i> 30 Jam</span>
-                  <span><i class="fas fa-book"></i> 12 Materi</span>
-                </div>
-
-                <div class="card-footer">
-                  <span class="card-price">Rp 120.000</span>
-                  <a href="#" class="enroll-btn">Daftar</a>
-                </div>
-              </div>
-            </div>
-          </div> -->
+            <!-- Course cards will be inserted here by JavaScript -->
+          </div>
         </div>
       </div>
     </main>
 
     <script>
       document.addEventListener("DOMContentLoaded", async function () {
-        // const server = "https://localhost:3000";
         // Check authentication
         if (!localStorage.getItem("token")) {
           window.location.href = "/auth/login/indexLogin.html";
@@ -903,7 +797,6 @@
         await loadRecommendedCourses();
 
         await loadDashboardData();
-
 
         // Mobile menu toggle
         const menuToggle = document.querySelector(".menu-toggle");
@@ -934,12 +827,10 @@
               },
             }
           );
-          // console.log("Status:", response.status); // Debug
 
           if (!response.ok) throw new Error("Failed to load user data");
 
           const user = await response.json();
-          // console.log("User Data:", user); // Debug
           renderUserData(user);
         } catch (error) {
           console.error(error);
@@ -949,13 +840,11 @@
         }
       }
 
-
       function renderUserData(user) {
         const pageTitle = document.querySelector(".page-title h1");
         const profileName = document.querySelector(".profile-name");
         const profilePic = document.querySelector(".profile-pic");
 
-        // console.log("User Data:", user.user.firstName); // Debug
         if (pageTitle) {
           pageTitle.textContent = `Selamat Datang, ${user.user.firstName}!`;
         }
@@ -981,7 +870,6 @@
           if (!response.ok) throw new Error("Failed to load active courses");
 
           const progress = await response.json();
-          console.log("Active Courses Data:", progress); // Debug
           renderActiveCourses(progress);
         } catch (error) {
           console.error(error);
@@ -989,32 +877,31 @@
       }
 
       async function loadDashboardData() {
-      try {
-        const token = localStorage.getItem("token"); // <- Pastikan token diambil di sini
+        try {
+          const token = localStorage.getItem("token");
 
-        const response = await fetch("http://localhost:3000/api/learner/dashboard", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await fetch("http://localhost:3000/api/learner/dashboard", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
 
-          if (!response.ok) throw new Error("Gagal mengambil data dashboard");
+            if (!response.ok) throw new Error("Gagal mengambil data dashboard");
 
-          const data = await response.json();
+            const data = await response.json();
 
-          // Update nilai Kursus Aktif
-          const activeCoursesEl = document.querySelector(".dashboard-card:nth-child(1) .card-value");
-          if (activeCoursesEl) activeCoursesEl.textContent = data.activeCourses;
+            // Update nilai Kursus Aktif
+            const activeCoursesEl = document.querySelector(".dashboard-card:nth-child(1) .card-value");
+            if (activeCoursesEl) activeCoursesEl.textContent = data.activeCourses;
 
-          // Update nilai Jam Belajar
-          const studyHoursEl = document.querySelector(".dashboard-card:nth-child(2) .card-value");
-          if (studyHoursEl) studyHoursEl.textContent = data.studyHours;
+            // Update nilai Jam Belajar
+            const studyHoursEl = document.querySelector(".dashboard-card:nth-child(2) .card-value");
+            if (studyHoursEl) studyHoursEl.textContent = data.studyHours;
 
-        } catch (error) {
-          console.error("Oops, gagal mengambil data dashboard:", error);
-        }
+          } catch (error) {
+            console.error("Oops, gagal mengambil data dashboard:", error);
+          }
       }
-
 
       function renderActiveCourses(progress) {
         const progressList = document.querySelector(".progress-list");
@@ -1032,48 +919,45 @@
           ".dashboard-card:nth-child(2) .card-value"
         ).textContent = progress.data.reduce((sum, c) => sum + c.totalHours, 0);
 
-        console.log("Progress list: ", progress);
         // Render active courses
-        progressList.innerHTML = progress.data
-          .filter((c) => c.progress < 100)
-          .slice(0, 2) // Show only 2 active courses
-          .map(
-            (course) => `
-              <div class="progress-item">
-                <div class="course-image">
-                  <img src="http://localhost:3000/${
-                    course.thumbnail || "../../assets/img/course-placeholder.jpg"
-                  }" alt="${course.courseTitle}">
-                </div>
-                
-                <div class="course-info">
-                  <h3 class="course-title">${course.courseTitle}</h3>
-                  <p class="course-instructor">Oleh ${course.instructor}</p>
-                  
-                  <div class="progress-container">
-                    <div class="progress-bar">
-                      <div class="progress-fill" style="width: ${
-                        course.progress
-                      }%"></div>
-                    </div>
-                    <span class="progress-percent">${course.progress}%</span>
+        if (progress.data && progress.data.filter((c) => c.progress < 100).length > 0) {
+          progressList.innerHTML = progress.data
+            .filter((c) => c.progress < 100)
+            .slice(0, 2) // Show only 2 active courses
+            .map(
+              (course) => `
+                <div class="progress-item">
+                  <div class="course-image">
+                    <img src="${console.log("testing aja: ", course), course.thumbnail ? 'http://localhost:3000/' + course.thumbnail : 'http://localhost:3000/uploads/defaultPic.png'}" alt="${course.courseTitle}">
+
                   </div>
                   
-                  <a href="course_detail.html?id=${
-                    course.courseId
-                  }" class="continue-btn">Lanjutkan Belajar</a>
+                  <div class="course-info">
+                    <h3 class="course-title">${course.courseTitle}</h3>
+                    <p class="course-instructor">Oleh ${course.instructor}</p>
+                    
+                    <div class="progress-container">
+                      <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${
+                          course.progress
+                        }%"></div>
+                      </div>
+                      <span class="progress-percent">${course.progress}%</span>
+                    </div>
+                    
+                    <a href="course_detail.html?id=${
+                      course.courseId
+                    }" class="continue-btn">Lanjutkan Belajar</a>
+                  </div>
                 </div>
-              </div>
-            `
-          )
-          .join("");
-
-          if (progressList.innerHTML.trim() === "") {
-            progressList.innerHTML = `
-              <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
-            `;
-          }
-
+              `
+            )
+            .join("");
+        } else {
+          progressList.innerHTML = `
+            <p class="empty-state">Belum ada kursus yang sedang berjalan</p>
+          `;
+        }
       }
 
       async function loadRecommendedCourses() {
@@ -1099,53 +983,49 @@
       function renderRecommendedCourses(courses) {
         const courseGrid = document.querySelector(".course-grid");
         
-        console.log("Recommended Courses Data:", courses); // Debug
-        courseGrid.innerHTML = courses
-          .map(
-            (course) => `
-              <div class="course-card">
-                <div class="card-image">
-                  <img src="http://localhost:3000/${course.thumbnail || '/uploads/course-placeholder.jpg'}" alt="${course.title}">
-                  ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
-                </div>
-                
-                <div class="card-content">
-                  <div class="card-category">${course.category}</div>
-                  <h3 class="card-title">${course.title}</h3>
-                  
-                  <div class="card-meta">
-                    <span><i class="fas fa-clock"></i> ${Math.round(
-                      course.totalHours
-                    )} Jam</span>
-                    <span><i class="fas fa-book"></i> ${course.total_module} Materi</span>
+        if (courses && courses.length > 0) {
+          courseGrid.innerHTML = courses
+            .map(
+              (course) => `
+                <div class="course-card">
+                  <div class="card-image">
+                    <img src="${course.thumbnail ? 'http://localhost:3000/' + course.thumbnail : 'http://localhost:3000/uploads/defaultPic.png'}" alt="${course.title}">
+                    ${course.is_new ? '<div class="course-badge">Baru</div>' : ""}
                   </div>
                   
-                  <div class="card-footer">
-                    <span class="card-price">Rp ${course.price.toLocaleString()}</span>
-                    <a href="course_detail.html?id=${
-                      course.courseId
-                    }" class="enroll-btn">Daftar</a>
+                  <div class="card-content">
+                    <div class="card-category">${course.category}</div>
+                    <h3 class="card-title">${course.title}</h3>
+                    
+                    <div class="card-meta">
+                      <span><i class="fas fa-clock"></i> ${Math.round(
+                        course.totalHours
+                      )} Jam</span>
+                      <span><i class="fas fa-book"></i> ${course.total_module} Materi</span>
+                    </div>
+                    
+                    <div class="card-footer">
+                      <span class="card-price">Rp ${course.price.toLocaleString()}</span>
+                      <a href="course_detail.html?id=${
+                        course.courseId
+                      }" class="enroll-btn">Daftar</a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            `
-          )
-          .join("");
-
-        if (!courses || courses.length === 0) {
+              `
+            )
+            .join("");
+        } else {
           courseGrid.innerHTML = `
             <p class="empty-state">Belum ada kursus rekomendasi untukmu saat ini</p>
           `;
-          return;
         }
       }
-
 
       // Load user data from localStorage
       document.addEventListener("DOMContentLoaded", () => {
         try {
           const userData = JSON.parse(localStorage.getItem('user'));
-          console.log("user data", userData)
           if (userData) {
             // Update welcome message
             const welcomeTitle = document.getElementById('welcome-title');
@@ -1158,10 +1038,7 @@
             // Update profile picture
             const profilePic = document.getElementById('profile-picture');
             if (userData.photo_path) {
-              // Handle different photo_path formats
               let photoUrl = `http://localhost:3000/${userData.photo_path}`;
-
-              console.log("photoUrl", photoUrl)
               
               // If path doesn't start with http or /, assume it's a local path
               if (!photoUrl.startsWith('http') && !photoUrl.startsWith('/')) {

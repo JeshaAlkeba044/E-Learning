@@ -175,6 +175,7 @@
       .page-title h1 {
         font-size: 1.8rem;
         color: var(--dark);
+        margin-bottom: var(--space-sm);
       }
 
       .page-title p {
@@ -182,7 +183,7 @@
         font-size: 0.9rem;
       }
 
-      .user-actions {
+      .header-right {
         display: flex;
         align-items: center;
         gap: var(--space-md);
@@ -235,6 +236,25 @@
 
       .user-profile:hover .profile-dropdown {
         display: block;
+      }
+
+      .menu-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 21px;
+        cursor: pointer;
+        z-index: 1001;
+      }
+
+      .menu-toggle span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background: var(--primary);
+        border-radius: 3px;
+        transition: var(--transition-normal);
       }
 
       /* Form Styles */
@@ -403,24 +423,9 @@
 
         .menu-toggle {
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          width: 30px;
-          height: 21px;
-          cursor: pointer;
-          z-index: 1001;
           position: fixed;
           top: 20px;
           left: 20px;
-        }
-
-        .menu-toggle span {
-          display: block;
-          height: 3px;
-          width: 100%;
-          background: var(--primary);
-          border-radius: 3px;
-          transition: var(--transition-normal);
         }
 
         .menu-toggle.active span:nth-child(1) {
@@ -433,6 +438,10 @@
 
         .menu-toggle.active span:nth-child(3) {
           transform: translateY(-9px) rotate(-45deg);
+        }
+
+        .main-header {
+          padding-left: 60px;
         }
       }
 
@@ -463,6 +472,17 @@
 
         .profile-name {
           display: none;
+        }
+
+        .main-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-md);
+        }
+
+        .header-right {
+          width: 100%;
+          justify-content: space-between;
         }
       }
     </style>
@@ -498,7 +518,7 @@
           <p>Perbarui informasi kursus Anda</p>
         </div>
 
-        <div class="user-actions">
+        <div class="header-right">
           <div class="user-profile">
             <img
               src="http://localhost:3000/uploads/defaultPic.png"
@@ -516,6 +536,7 @@
                 <i class="fas fa-sign-out-alt"></i> Keluar
               </a>
             </div>
+          </div>
 
           <div class="menu-toggle">
             <span></span>
@@ -595,7 +616,7 @@ Pelajari pendekatan inovatif untuk memecahkan masalah kompleks dengan metodologi
               <label for="courseCategory">Kategori</label>
               <select id="courseCategory" name="courseCategory" required>
                 <option value="design" selected>Desain</option>
-                <option value="development">Pengembangan</option>
+                <option value="development">Development</option>
                 <option value="business">Bisnis</option>
                 <option value="marketing">Pemasaran</option>
                 <option value="photography">Fotografi</option>
@@ -710,6 +731,7 @@ Pelajari pendekatan inovatif untuk memecahkan masalah kompleks dengan metodologi
         formData.append("description", courseForm.courseDescription.value);
         formData.append("price", courseForm.coursePrice.value);
         formData.append("category", courseForm.courseCategory.value);
+        formData.append("level", courseForm.courseLevel.value);
 
         if (courseImage.files[0]) {
           formData.append("thumbnail", courseImage.files[0]);

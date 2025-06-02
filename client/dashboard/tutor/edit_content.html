@@ -1375,18 +1375,19 @@
               `[data-block-id="${block.id}"] .quill-editor`
             );
             const quill = new Quill(editorContainer, {
-              theme: "snow",
-              modules: {
-                toolbar: [
-                  [{ header: [1, 2, 3, false] }],
-                  ["bold", "italic", "underline", "strike"],
-                  [{ color: [] }, { background: [] }],
-                  [{ list: "ordered" }, { list: "bullet" }],
-                  ["link", "image", "video"],
-                  ["clean"],
-                ],
-              },
-            });
+  theme: "snow",
+  modules: {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ align: [] }], // Ini akan menambahkan dropdown alignment
+      ["link", "image", "video"],
+      ["clean"],
+    ],
+  },
+});
 
             if (block.content) {
               quill.root.innerHTML = block.content;

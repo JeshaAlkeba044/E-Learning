@@ -183,6 +183,9 @@
     <script src="../../assets/js/admin/getDashBoard.js"></script>
     <script src="../../assets/js/admin/getUnverifiedTutor.js"></script>
     <script>
+      // Variabel global untuk menyimpan chart
+      // let revenueChart, transactionsChart;
+
       document.addEventListener("DOMContentLoaded", async function () {
         const path = window.location.pathname.split("/").pop();
         const menuItems = document.querySelectorAll(".menu-item");
@@ -207,8 +210,8 @@
         const currentYear = new Date().getFullYear();
         yearFilter.value = currentYear;
         
-        fetchData();
-        loadUserData();
+        await fetchData();
+        await loadUserData();
       });
 
       function formatRupiah(number) {
@@ -272,6 +275,10 @@
       }
 
       function updateCharts(chartData) {
+        // Destroy existing charts if they exist
+        if (revenueChart) revenueChart.destroy();
+        if (transactionsChart) transactionsChart.destroy();
+
         const revenueCtx = document
           .getElementById("revenueChart")
           .getContext("2d");
@@ -280,15 +287,12 @@
           .getContext("2d");
 
 
-        console.log("Revenue: ",  window.revenueChart)
-        if (window.revenueChart) window.revenueChart.destroy();
-        if (window.transactionsChart) window.transactionsChart.destroy();
+        // console.log("Revenue: ",  window.revenueChart)
+        if (!revenueCtx || !transactionsCtx) return;
+        // if (window.revenueChart) window.revenueChart = new Chart();
+        // if (window.transactionsChart) window.transactionsChart = new Chart();
 
-        const isEmpty =
-          chartData.revenue.every((v) => v === 0) &&
-          chartData.transactions.every((v) => v === 0);
-
-        window.revenueChart = new Chart(revenueCtx, {
+        revenueChart = new Chart(revenueCtx, {
           type: "bar",
           data: {
             labels: chartData.months,
@@ -324,7 +328,7 @@
           },
         });
 
-        window.transactionsChart = new Chart(transactionsCtx, {
+        transactionsChart = new Chart(transactionsCtx, {
           type: "line",
           data: {
             labels: chartData.months,
@@ -360,7 +364,7 @@
           renderUserData(user);
         } catch (err) {
           console.error(err);
-          window.location.href = "/auth/login/indexLogin.html";
+          window.location.href = "../../auth/login/indexLogin.html";
         }
       }
 

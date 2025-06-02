@@ -818,78 +818,230 @@
         margin-top: var(--space-lg);
       }
 
-      /* Content block styles */
-      .content-block {
-        margin-bottom: 2rem;
-        padding: 1.5rem;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
+      /* ========== CONTENT BLOCKS ========== */
+.content-block {
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
 
-      .text-block {
-        line-height: 1.6;
-      }
+/* Text Block */
+.text-block {
+  line-height: 1.7;
+  font-size: 1rem;
+  color: var(--dark);
+}
 
-      .text-block p {
-        margin-bottom: 1rem;
-      }
+.text-block p {
+  margin-bottom: var(--space-md);
+}
 
-      .image-block {
-        text-align: center;
-      }
+.text-block ul,
+.text-block ol {
+  margin-left: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
 
-      .content-image {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-      }
+.text-block li {
+  margin-bottom: var(--space-xs);
+}
 
-      .image-caption {
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-        color: #666;
-        text-align: center;
-      }
+.text-block h2,
+.text-block h3,
+.text-block h4 {
+  margin: var(--space-lg) 0 var(--space-md);
+  color: var(--primary-dark);
+}
 
-      .video-container {
-        position: relative;
-        padding-bottom: 56.25%;
-        height: 0;
-        overflow: hidden;
-        margin-bottom: 1rem;
-      }
+.text-block h2 {
+  font-size: 1.5rem;
+}
 
-      .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
+.text-block h3 {
+  font-size: 1.3rem;
+}
 
-      .heading-block h3 {
-        margin: 0;
-        color: #4361ee;
-      }
+.text-block h4 {
+  font-size: 1.1rem;
+}
 
-      .quiz-block {
-        border-left: 4px solid #4361ee;
-      }
+/* Image Block */
+.image-block {
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
 
-      .quiz-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-      }
+.content-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: 0 auto;
+  box-shadow: var(--shadow-md);
+}
 
-      .empty-state {
-        text-align: center;
-        padding: 2rem;
-        color: #666;
-      }
+.image-caption {
+  margin-top: var(--space-sm);
+  font-size: 0.9rem;
+  color: var(--gray);
+  font-style: italic;
+  text-align: center;
+}
+
+/* Video Block */
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  margin: var(--space-xl) 0;
+  border-radius: var(--radius-md);
+  background-color: var(--black);
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-description {
+  margin-top: var(--space-md);
+  font-size: 0.9rem;
+  color: var(--gray);
+}
+
+/* Heading Block */
+.heading-block h3 {
+  margin: var(--space-lg) 0 var(--space-md);
+  color: var(--primary);
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: var(--space-xs);
+}
+
+/* Quiz Block */
+.quiz-block {
+  border-left: 4px solid var(--primary);
+  padding-left: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.quiz-title {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.quiz-meta {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+/* Resource Block */
+.resource-block {
+  background-color: var(--light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+
+.resource-title {
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--primary-dark);
+}
+
+.resource-description {
+  color: var(--gray);
+  margin-bottom: var(--space-md);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--gray);
+}
+
+.empty-state i {
+  font-size: 2rem;
+  margin-bottom: var(--space-md);
+  color: var(--primary-light);
+}
+
+/* Quill Editor Content */
+/* Quill Content without Toolbar */
+.quill-content {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.quill-content .ql-container {
+  border: none !important;
+  padding: 0 !important;
+}
+
+.quill-content .ql-editor {
+  padding: 0 !important;
+  white-space: normal !important;
+}
+
+.quill-content .ql-editor p,
+.quill-content .ql-editor ol,
+.quill-content .ql-editor ul,
+.quill-content .ql-editor pre,
+.quill-content .ql-editor blockquote {
+  margin-bottom: var(--space-md);
+  line-height: 1.6;
+}
+
+.quill-content .ql-editor h1,
+.quill-content .ql-editor h2,
+.quill-content .ql-editor h3 {
+  margin: var(--space-lg) 0 var(--space-md);
+}
+
+/* Remove any Quill-specific styling */
+.quill-content .ql-snow .ql-editor * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  background-color: transparent !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .content-block {
+    padding: var(--space-md);
+  }
+  
+  .text-block h2 {
+    font-size: 1.3rem;
+  }
+  
+  .text-block h3 {
+    font-size: 1.1rem;
+  }
+  
+  .image-block {
+    margin: var(--space-lg) 0;
+  }
+}
 
       /* Tambahkan di bagian CSS yang sudah ada */
       .checkbox {
@@ -1653,14 +1805,17 @@
 
         // Apply Quill styles to text content
         document.querySelectorAll(".quill-content").forEach((el) => {
-          const content = el.innerHTML;
-          el.innerHTML = "";
-          const quill = new Quill(el, {
-            theme: "snow",
-            readOnly: true,
-          });
-          quill.clipboard.dangerouslyPasteHTML(content);
-        });
+  const content = el.innerHTML;
+  el.innerHTML = "";
+  const quill = new Quill(el, {
+    modules: {
+      toolbar: false // Menonaktifkan toolbar
+    },
+    theme: null, // Menghilangkan theme Quill
+    readOnly: true
+  });
+  quill.clipboard.dangerouslyPasteHTML(content);
+});
       }
 
       // Setup completion checkbox functionality

@@ -65,14 +65,16 @@ export const getTutors = async (req: Request, res: Response) => {
     const tutors: any[] = [];
 
     for (const user of users) {
-      const decryptedRole = await decrypt(user.role);
+      const decryptedRole = user.role;
+      console.log("\n\n\nUSER ADMIN: ", user)
+
       if (decryptedRole === 'tutor') {
-        const decryptedEmail = await decrypt(user.encryptedEmail);
-        const decryptedFirstName = await decrypt(user.firstName);
-        const decryptedLastName = await decrypt(user.lastName);
-        const decryptedSpecialization = await decrypt(user.specialization);
-        const decryptedExperience = await decrypt(user.YoE);
-        const decryptedBio = await decrypt(user.bio);
+        const decryptedEmail = decrypt(user.encryptedEmail);
+        const decryptedFirstName = user.firstName;
+        const decryptedLastName = user.lastName;
+        const decryptedSpecialization = user.specialization;
+        const decryptedExperience = user.YoE;
+        const decryptedBio = user.bio;
         // const decryptedPortofolio = await decrypt(user.linkPorto);
 
         const tutorData = {
@@ -81,6 +83,7 @@ export const getTutors = async (req: Request, res: Response) => {
           firstName: decryptedFirstName,
           lastName: decryptedLastName,
           specialization: decryptedSpecialization,
+          phone_number: user.phone_number,
           YoE: decryptedExperience,
           bio: decryptedBio,          
         };
