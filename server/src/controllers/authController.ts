@@ -50,7 +50,11 @@ export const register = async (req: Request, res: Response) => {
 
     // Generate dan kirim OTP
     const otp = generateOTP(emailHashed);
-    await sendOTPEmail(email, otp);
+    await sendOTPEmail({
+      email,
+      type: 'otp',
+      data: {otp: otp}
+    });
 
     res.status(201).json({
       message: 'Registration successful. Please check your email for OTP.',
@@ -164,7 +168,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     // Generate dan kirim OTP
     const otp = generateOTP(hashedEmail);
-    await sendOTPEmail(email, otp);
+    await sendOTPEmail({
+      email,
+      type: 'otp',
+      data: {otp: otp}
+    });
 
     res.status(200).json({ message: 'OTP sent to email' });
   } catch (error) {

@@ -1,53 +1,47 @@
-import nodemailer from "nodemailer";
-
-// Email configuration
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "edulearn20255@gmail.com",
-    pass: "eker rbrk ehtg gtql",
-  },
-});
-
-// Type definitions for better type safety
-type EmailType = "otp" | "payment_success" | "payment_failed" | "payment_challenge";
-
-interface EmailData {
-  name?: string;
-  courseName?: string;
-  amount?: number;
-  transactionId?: string;
-  otp?: string;
-}
-
-interface EmailOptions {
-  email: string;
-  type: EmailType;
-  data: EmailData;
-}
-
-// Template generator functions
-const getEmailTemplate = (type: EmailType, data: EmailData) => {
-  const templates = {
-    otp: generateOTPTemplate(data),
-    payment_success: generatePaymentSuccessTemplate(data),
-    payment_failed: generatePaymentFailedTemplate(data),
-    payment_challenge: generatePaymentChallengeTemplate(data),
-  };
-
-  return templates[type];
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-
-const generateOTPTemplate = (data: EmailData) => ({
-  subject: "🔐 Kode Verifikasi EduPlus E-Learning",
-  text: `
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendOTPEmail = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
+// Email configuration
+const transporter = nodemailer_1.default.createTransport({
+    service: "gmail",
+    auth: {
+        user: "edulearn20255@gmail.com",
+        pass: "eker rbrk ehtg gtql",
+    },
+});
+// Template generator functions
+const getEmailTemplate = (type, data) => {
+    const templates = {
+        otp: generateOTPTemplate(data),
+        payment_success: generatePaymentSuccessTemplate(data),
+        payment_failed: generatePaymentFailedTemplate(data),
+        payment_challenge: generatePaymentChallengeTemplate(data),
+    };
+    return templates[type];
+};
+const generateOTPTemplate = (data) => ({
+    subject: "🔐 Kode Verifikasi EduPlus E-Learning",
+    text: `
 Kode Verifikasi Anda: ${data.otp}
 Berlaku selama 5 menit.
 
 Jangan bagikan kode ini dengan siapapun.
 Tim EduPlus E-Learning
   `,
-  html: `
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -115,10 +109,9 @@ Tim EduPlus E-Learning
 </html>
   `,
 });
-
-const generatePaymentSuccessTemplate = (data: EmailData) => ({
-  subject: "🎉 Pembayaran Berhasil - EduPlus E-Learning",
-  text: `
+const generatePaymentSuccessTemplate = (data) => ({
+    subject: "🎉 Pembayaran Berhasil - EduPlus E-Learning",
+    text: `
 Halo ${data.name},
 
 Pembayaran Anda untuk kursus "${data.courseName}" sebesar ${data.amount} telah berhasil diproses.
@@ -130,7 +123,7 @@ Anda sekarang dapat mengakses kursus tersebut di dashboard Anda.
 Terima kasih telah memilih EduPlus E-Learning!
 Tim EduPlus
   `,
-  html: `
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -206,10 +199,9 @@ Tim EduPlus
 </html>
   `,
 });
-
-const generatePaymentFailedTemplate = (data: EmailData) => ({
-  subject: "⚠️ Pembayaran Gagal - EduPlus E-Learning",
-  text: `
+const generatePaymentFailedTemplate = (data) => ({
+    subject: "⚠️ Pembayaran Gagal - EduPlus E-Learning",
+    text: `
 Halo ${data.name},
 
 Maaf, pembayaran Anda untuk kursus "${data.courseName}" sebesar ${data.amount} gagal diproses.
@@ -221,7 +213,7 @@ Silakan coba lagi atau hubungi tim dukungan kami jika masalah berlanjut.
 Terima kasih,
 Tim EduPlus
   `,
-  html: `
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -297,10 +289,9 @@ Tim EduPlus
 </html>
   `,
 });
-
-const generatePaymentChallengeTemplate = (data: EmailData) => ({
-  subject: "🔍 Verifikasi Pembayaran Diperlukan - EduPlus E-Learning",
-  text: `
+const generatePaymentChallengeTemplate = (data) => ({
+    subject: "🔍 Verifikasi Pembayaran Diperlukan - EduPlus E-Learning",
+    text: `
 Halo ${data.name},
 
 Pembayaran Anda untuk kursus "${data.courseName}" sebesar ${data.amount} memerlukan verifikasi tambahan.
@@ -312,7 +303,7 @@ Proses ini mungkin memakan waktu 1-2 hari kerja. Kami akan mengirimkan pemberita
 Terima kasih atas kesabaran Anda,
 Tim EduPlus
   `,
-  html: `
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -377,29 +368,28 @@ Tim EduPlus
 </html>
   `,
 });
-
-export const sendOTPEmail = async (options: EmailOptions) => {
-  const { email, type, data } = options;
-  const template = getEmailTemplate(type, data);
-
-  const mailOptions = {
-    from: '"EduPlus E-Learning" <edulearn20255@gmail.com>',
-    to: email,
-    subject: template.subject,
-    text: template.text,
-    html: template.html,
-    headers: {
-      "X-Priority": "1",
-      "X-MSMail-Priority": "High",
-      Importance: "High",
-    },
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Email (${type}) sent to ${email}`); // Log untuk testing
-  } catch (error) {
-    console.error(`Error sending ${type} email:`, error);
-    throw new Error(`Failed to send ${type} email`);
-  }
-};
+const sendOTPEmail = (options) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, type, data } = options;
+    const template = getEmailTemplate(type, data);
+    const mailOptions = {
+        from: '"EduPlus E-Learning" <edulearn20255@gmail.com>',
+        to: email,
+        subject: template.subject,
+        text: template.text,
+        html: template.html,
+        headers: {
+            "X-Priority": "1",
+            "X-MSMail-Priority": "High",
+            Importance: "High",
+        },
+    };
+    try {
+        yield transporter.sendMail(mailOptions);
+        console.log(`Email (${type}) sent to ${email}`); // Log untuk testing
+    }
+    catch (error) {
+        console.error(`Error sending ${type} email:`, error);
+        throw new Error(`Failed to send ${type} email`);
+    }
+});
+exports.sendOTPEmail = sendOTPEmail;

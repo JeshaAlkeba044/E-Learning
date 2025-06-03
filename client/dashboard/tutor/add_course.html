@@ -680,8 +680,9 @@
           );
 
           if (response.ok) {
-            alert("Kursus berhasil ditambahkan!");
-            window.location.href = "manage_course.html";
+            // alert("Kursus berhasil ditambahkan!");
+            window.location.href = "./manage_course.html";
+            // alert("testing")
           } else {
             throw new Error("Failed to create course");
           }

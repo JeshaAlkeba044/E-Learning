@@ -1384,17 +1384,20 @@
           // Get course ID from URL
           const urlParams = new URLSearchParams(window.location.search);
           const courseId = urlParams.get("id");
+          console.log("urlParams: ", window.location.search)
+          console.log("courseId: ", courseId  )
+
 
           if (!courseId) {
             alert("Course ID not provided");
-            window.location.href = "/courses.html";
+            window.location.href = "courses.html";
             return;
           }
 
           // Check authentication
           const token = localStorage.getItem("token");
           if (!token) {
-            window.location.href = "/auth/login/indexLogin.html";
+            window.location.href = "../../auth/login/indexLogin.html";
             return;
           }
 
@@ -1441,6 +1444,9 @@
 
           // Load materials
           await loadMaterials(courseId, isEnrolled);
+          
+          
+          checkEnrollmentAfterRedirect();
         } catch (error) {
           console.error("Error:", error);
           alert("Failed to load course data");
@@ -2023,17 +2029,19 @@
             );
 
             if (response.success) {
-              alert(
-                "Pembayaran berhasil! Anda sekarang terdaftar di kursus ini."
-              );
-              document.getElementById("paymentModal").classList.remove("show");
+              // alert(
+              //   "Pembayaran berhasil! Anda sekarang terdaftar di kursus ini."
+              // );
+              // document.getElementById("paymentModal").classList.remove("show");
 
-              // Periksa ulang status enroll dan perbarui tampilan
-              const isEnrolled = await checkEnrollment(courseId);
-              initializeView(isEnrolled);
+              // // Periksa ulang status enroll dan perbarui tampilan
+              // const isEnrolled = await checkEnrollment(courseId);
+              // initializeView(isEnrolled);
 
-              // Reload materials
-              await loadMaterials(courseId, isEnrolled);
+              // // Reload materials
+              // await loadMaterials(courseId, isEnrolled);
+
+              window.location.href = response.data.redirect_url;
             } else {
               alert("Pembayaran gagal: " + response.message);
             }
@@ -2043,44 +2051,112 @@
           }
         });
 
-      // Function to create transaction
-      async function createTransaction(
-        courseId,
-        paymentMethod,
-        amount,
-        voucher
-      ) {
-        try {
-          const response = await fetch(
-            "http://localhost:3000/api/transaction/transactions",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              body: JSON.stringify({
-                id: courseId,
-                paymentMethod,
-                amount: parseInt(amount),
-                voucher,
-              }),
-            }
-          );
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-              errorData.message || "Failed to create transaction"
-            );
+// Function to check enrollment status periodically after redirect
+async function checkEnrollmentAfterRedirect() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const courseId = urlParams.get("id");
+  
+  if (courseId) {
+    // Check if we're coming back from payment
+    if (window.location.hash === '#payment-complete') {
+      // Check enrollment status every 2 seconds for 30 seconds
+      let attempts = 0;
+      const maxAttempts = 15;
+      const interval = setInterval(async () => {
+        attempts++;
+        const isEnrolled = await checkEnrollment(courseId);
+        
+        if (isEnrolled || attempts >= maxAttempts) {
+          clearInterval(interval);
+          if (isEnrolled) {
+            alert("Pembayaran berhasil! Anda sekarang terdaftar di kursus ini.");
+            initializeView(true);
+            loadMaterials(courseId, true);
+          } else if (attempts >= maxAttempts) {
+            alert("Status pembayaran masih diproses. Silakan refresh halaman nanti.");
           }
-
-          return await response.json();
-        } catch (error) {
-          console.error("Transaction error:", error);
-          throw error;
         }
+      }, 2000);
+    }
+  }
+}
+
+
+      // Function to create transaction
+      // async function createTransaction(
+      //   courseId,
+      //   paymentMethod,
+      //   amount,
+      //   voucher
+      // ) {
+      //   try {
+      //     const response = await fetch(
+      //       "http://localhost:3000/api/transaction/transactions",
+      //       {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //         },
+      //         body: JSON.stringify({
+      //           id: courseId,
+      //           paymentMethod,
+      //           amount: parseInt(amount),
+      //           voucher,
+      //         }),
+      //       }
+      //     );
+
+      //     if (!response.ok) {
+      //       const errorData = await response.json();
+      //       throw new Error(
+      //         errorData.message || "Failed to create transaction"
+      //       );
+      //     }
+
+      //     return await response.json();
+      //   } catch (error) {
+      //     console.error("Transaction error:", error);
+      //     throw error;
+      //   }
+      // }
+
+
+
+
+      async function createTransaction(courseId, paymentMethod, amount, voucher) {
+  try {
+    const response = await fetch(
+      "http://localhost:3000/api/transaction/transactions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          id: courseId,
+          paymentMethod,
+          amount: parseInt(amount),
+          voucher,
+        }),
       }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Failed to create transaction"
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Transaction error:", error);
+    throw error;
+  }
+}
     </script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 

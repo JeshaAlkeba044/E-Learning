@@ -2,7 +2,7 @@
 
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
-const { encrypt } = require('../../dist/utils/cryptoUtil');
+const { encrypt, hashEmail } = require('../../dist/utils/cryptoUtil');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
         id_user: uuidv4(),
         firstName: encrypt('Admin'),
         lastName: encrypt('1'),
-        hashEmail: encrypt('admin1@example.com'),
+        hashEmail: hashEmail('admin1@example.com'),
         encryptedEmail: encrypt('admin1@example.com'),
         password: hashedPassword,
         phone_number: encrypt('081234567890'),
@@ -32,7 +32,7 @@ module.exports = {
         id_user: uuidv4(),
         firstName: encrypt('Admin'),
         lastName: encrypt('2'),
-        hashEmail: encrypt('dmin2@example.com'),
+        hashEmail: hashEmail('admin2@example.com'),
         encryptedEmail: encrypt('admin2@example.com'),
         password: hashedPassword,
         phone_number: encrypt('089876543210'),

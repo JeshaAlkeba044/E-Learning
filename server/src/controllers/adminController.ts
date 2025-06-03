@@ -7,6 +7,11 @@ import { Op } from 'sequelize';
 import dayjs from 'dayjs'; 
 import Sequelize from 'sequelize';
 import bcrypt from 'bcryptjs';
+import { sendOTPEmail } from '../services/emailService';
+import { snap } from '../utils/midtrans';
+
+type EmailType = "otp" | "payment_success" | "payment_failed" | "payment_challenge";
+
 
 export const addAdmin = async (req: Request, res: Response) => {
   try {
@@ -230,20 +235,152 @@ export const verifyPayment = async (req: Request, res: Response) => {
   const transactionId = req.params.id;
 
   try {
-    const transaction = await Transaction.findByPk(transactionId);
+    const transaction = await Transaction.findByPk(transactionId, {
+      include: [
+        {
+          model: User,
+          attributes: ['id_user', 'firstName', 'lastName', 'encryptedEmail']
+        },
+        {
+          model: Course,
+          attributes: ['id_course', 'title']
+        }
+      ]
+    });
 
     if (!transaction) {
-      res.status(404).json({ success: false, message: 'Transaksi tidak ditemukan' });
-      return;
+      res.status(404).json({ 
+        success: false, 
+        message: 'Transaction not found in database' 
+      });
+      return 
     }
 
-    transaction.status = 'completed';
+    // Skip Midtrans check if already completed in our database
+    if (transaction.status === 'completed') {
+      res.json({ 
+        success: true, 
+        message: 'Transaction already completed',
+        data: transaction
+      });
+      return 
+    }
+
+    // Check with Midtrans only for pending transactions
+    let statusResponse;
+    try {
+      statusResponse = await snap.transaction.status(transactionId);
+    } catch (midtransError:any) {
+      // If Midtrans returns 404, check if we have enough data locally
+      if (midtransError.httpStatusCode === '404') {
+        // For demo purposes, we'll mark as completed if amount > 0
+        if (transaction.amount > 0) {
+          transaction.status = 'completed';
+          await transaction.save();
+          
+          // Send success email
+          if (transaction.user) {
+            const email = decrypt(transaction.user.encryptedEmail);
+            const firstName = decrypt(transaction.user.firstName);
+            
+            await sendOTPEmail({
+              email,
+              type: 'payment_success',
+              data: {
+                name: firstName,
+                courseName: transaction.course?.title || 'the course',
+                amount: transaction.amount,
+                transactionId: transaction.id_transaction
+              }
+            });
+          }
+          
+          res.json({ 
+            success: true, 
+            message: 'Transaction marked as completed (Midtrans not found)',
+            data: transaction
+          });
+          return 
+        }
+      }
+      
+      console.error('Midtrans error:', midtransError);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Error verifying with Midtrans',
+        error: midtransError.message 
+      });
+      return 
+    }
+
+    const transactionStatus = statusResponse.transaction_status;
+    const paymentType = statusResponse.payment_type;
+    const fraudStatus = statusResponse.fraud_status;
+    
+    let status = transaction.status;
+    let emailType: EmailType = 'otp';
+
+    if (transactionStatus === 'capture') {
+      if (fraudStatus === 'challenge') {
+        status = 'challenge';
+        emailType = 'payment_challenge';
+      } else if (fraudStatus === 'accept') {
+        status = 'completed';
+        emailType = 'payment_success';
+      }
+    } else if (transactionStatus === 'settlement') {
+      status = 'completed';
+      emailType = 'payment_success';
+    } else if (['cancel', 'deny', 'expire'].includes(transactionStatus)) {
+      status = 'failed';
+      emailType = 'payment_failed';
+    }
+
+    // Update transaction
+    transaction.status = status;
+    if (paymentType) {
+      transaction.payment_method = paymentType;
+    }
     await transaction.save();
 
-    res.json({ success: true, message: 'Transaksi berhasil diverifikasi' });
+    // Send email notification if status changed
+    if (emailType !== 'otp' && transaction.user) {
+      const email = decrypt(transaction.user.encryptedEmail);
+      const firstName = decrypt(transaction.user.firstName);
+      
+      await sendOTPEmail({
+        email,
+        type: emailType,
+        data: {
+          name: firstName,
+          courseName: transaction.course?.title || 'the course',
+          amount: transaction.amount,
+          transactionId: transaction.id_transaction
+        }
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Transaction status updated',
+      data: {
+        id: transaction.id_transaction,
+        status: transaction.status,
+        payment_method: transaction.payment_method,
+        amount: transaction.amount,
+        course: transaction.course?.title
+      }
+    });
+    return 
+
   } catch (error) {
     console.error('Error verifying transaction:', error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan saat memverifikasi transaksi' });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+    return 
   }
 };
 

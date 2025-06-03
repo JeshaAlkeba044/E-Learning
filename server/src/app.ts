@@ -62,13 +62,23 @@ app.use('/uploads', express.static(uploadsDir));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes); 
 app.use('/api/learner', learnerRoutes);
+
 app.use('/api/transaction', transactionRoutes);
+// Middleware untuk webhook Midtrans
+app.post('/api/transaction/payment-notification', 
+  express.json(), // Untuk parsing JSON body
+  (req, res) => {
+    // Delegate ke controller
+    const transactionController = require('./controllers/transactionController');
+    transactionController.paymentNotification(req, res);
+  }
+);
+
 app.use('/api/tutor', tutorRoutes);
 
 // Upload image route
 app.post('/api/upload', upload.single('image'), uploadImage);
 app.delete('/api/upload/:filename', deleteImage);
-
 
 
 const PORT = process.env.PORT || 3000;
